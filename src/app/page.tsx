@@ -54,7 +54,7 @@ export default function HomePage(){
             {check.level==='SUSPECT' && <div className="bg-orange-500 text-white text-xs font-black px-2 py-1 inline-block mb-2">⚠️ SUSPECT</div>}
             <div className="font-bold">{model?.name}</div>
             <div className="text-sm">Annoncé: <b>{r.reported_ram}GB RAM / {r.reported_storage}GB</b></div>
-            <div className="text-xs mt-1 text-gray-700">{check.reason}</div>
+            <div className={`text-xs mt-1 font-bold ${check.level !== 'OK' ? 'text-red-600' : 'text-gray-700'}`}>{check.reason}</div>
             <div className={`text-xl font-black mt-2 ${isScam?'line-through text-red-600':''}`}>{r.price.toLocaleString()} FCFA</div>
             <div className="text-sm text-gray-600">{shop?.name}</div>
             {isScam && <div className="mt-2 text-[11px] text-red-700 font-bold">→ Specs physiquement impossible. Max réel {model?.max_ram}GB. Signaler au chef Mokolo.</div>}
