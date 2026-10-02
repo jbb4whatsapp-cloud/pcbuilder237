@@ -1,5 +1,5 @@
 -- =====================================================================
--- PC Builder 237 : script de test du contrat de données (document 09, v0.3)
+-- PC Builder 237 : script de test du contrat de données (document 09, v0.4)
 -- À COLLER EN UNE SEULE FOIS dans l'éditeur SQL Supabase du PROJET DE TEST,
 -- APRÈS toute la chaîne de patchs :
 --   schéma -> agents -> propriétaire -> produits -> lancement
@@ -14,7 +14,8 @@
 --     rapport) signale un problème de préparation : voir plus bas.
 --   * Les rôles sont simulés depuis l'éditeur (set local role + jeton simulé).
 --     Ils reproduisent ce que voit l'API, mais ne remplacent pas le test
---     client (voir la liste « À TESTER AVEC supabase-js » en bas de fichier).
+--     client (voir la liste « À TESTER AVEC supabase-js » en bas de fichier,
+--     couverte en grande partie par supabase/tests/test_supabase_js.mjs).
 --
 -- SI LA PRÉPARATION ÉCHOUE sur « insert into auth.users » (Supabase peut exiger
 -- des colonnes que ce script ne remplit pas) : créez les six utilisateurs dans
@@ -22,8 +23,8 @@
 -- ci-dessous par les leurs et supprimez le bloc « 1. Utilisateurs ». Dans ce
 -- cas les utilisateurs ne seront PAS annulés : les supprimer à la main ensuite.
 --
--- NON EXÉCUTÉ sur Supabase par son auteur. Exécuté seulement sur PostgreSQL 16
--- local (avec simulation de auth et storage).
+-- Exécuté sur le projet Supabase de TEST le 02 octobre 2026 : 65 PASS, 0 FAIL. Rejeu complet
+-- 01 à 09 sur une base de test vide, puis ce script : réussi.
 -- =====================================================================
 
 create or replace function pg_temp.t(
@@ -88,6 +89,8 @@ declare
   v_prod    uuid := 'f3000000-0000-0000-0000-000000000001';
   v_ref1    uuid := 'f4000000-0000-0000-0000-000000000001';
   v_ref2    uuid := 'f4000000-0000-0000-0000-000000000002';
+  v_ref3    uuid := 'f4000000-0000-0000-0000-000000000003';
+  v_col     text;
   v_n       int;
   v_pass    int;
   v_fail    int;
@@ -249,6 +252,42 @@ begin
     format($q$update public.price_reports set status = 'published' where product_id = %L$q$, v_prod), 'OK=0', 'x') || E'\n';
 
   -- -------------------------------------------------------------------
+  -- 8b. Propriétaire de boutique : colonnes réservées à l'auteur et au personnel
+  --     Relevé suspect sur la boutique A, puis rejeté avec note : les sept
+  --     colonnes sont renseignées dans la table.
+  -- -------------------------------------------------------------------
+  v_out := v_out || E'\n-- propriétaire : colonnes masquées\n';
+  v_out := v_out || pg_temp.t('agent1 : relevé suspect sur la boutique A (avec client_ref)', 'authenticated', v_agent1,
+    format($q$insert into public.price_reports (product_id, shop_id, condition, price_fcfa, reported_specs, proof_paths, client_ref)
+              values (%L, %L, 'used', 205000, '{"ram_gb":10,"storage_gb":256}', %L, %L)$q$,
+           v_prod, v_shopA, array[v_agent1::text || '/7/a.jpg'], v_ref3), 'OK=1', 'x') || E'\n';
+  v_out := v_out || pg_temp.t('modérateur : rejette ce relevé avec une note', 'authenticated', v_mod,
+    format($q$update public.price_reports set status = 'rejected', review_note = 'Photo illisible'
+              where product_id = %L and price_fcfa = 205000$q$, v_prod), 'OK=1', 'x') || E'\n';
+
+  -- Contrôle de la donnée : le modérateur doit voir les sept colonnes renseignées.
+  -- Sans cela, un NULL côté propriétaire ne prouverait rien.
+  foreach v_col in array array['proof_paths','check_reason','review_note',
+                               'reported_by','reviewed_by','reviewed_at','client_ref'] loop
+    v_out := v_out || pg_temp.t(format('modérateur : %s renseigné sur ce relevé', v_col),
+      'authenticated', v_mod,
+      format('select 1 from public.price_reports_visible where product_id = %L and price_fcfa = 205000 and %I is not null',
+             v_prod, v_col), 'OK=1') || E'\n';
+  end loop;
+
+  -- Le propriétaire de la boutique A voit le relevé, mais aucune de ces colonnes.
+  v_out := v_out || pg_temp.t('propriétaire : voit ce relevé rejeté (prix, statut, niveau)', 'authenticated', v_owner,
+    format('select 1 from public.price_reports_visible where product_id = %L and price_fcfa = 205000 and status is not null and check_level is not null',
+           v_prod), 'OK=1') || E'\n';
+  foreach v_col in array array['proof_paths','check_reason','review_note',
+                               'reported_by','reviewed_by','reviewed_at','client_ref'] loop
+    v_out := v_out || pg_temp.t(format('propriétaire : %s masqué (relevé d''un autre auteur)', v_col),
+      'authenticated', v_owner,
+      format('select 1 from public.price_reports_visible where product_id = %L and price_fcfa = 205000 and %I is not null',
+             v_prod, v_col), 'OK=0') || E'\n';
+  end loop;
+
+  -- -------------------------------------------------------------------
   -- 9. C9 : un signalement naît toujours 'open'
   -- -------------------------------------------------------------------
   v_out := v_out || E'\n-- C9 signalements\n';
@@ -260,7 +299,7 @@ begin
     format($q$insert into public.flags (shop_id, reason, created_by) values (%L, 'Prix faux pour ce test', %L)$q$, v_shopA, v_agent1), 'ERR 42501', 'x') || E'\n';
   v_out := v_out || pg_temp.t('anon sans session : signalement refusé', 'anon', null,
     format($q$insert into public.flags (shop_id, reason) values (%L, 'Prix faux pour ce test')$q$, v_shopA), 'ERR 42501', 'x') || E'\n';
-  v_out := v_out || pg_temp.t('connexion anonyme : ne relit pas les signalements', 'authenticated', v_anon,
+  v_out := v_out || pg_temp.t('connexion anonyme : ne relit pas les signalements (0 ligne)', 'authenticated', v_anon,
     format('select * from public.flags where shop_id = %L', v_shopA), 'OK=0') || E'\n';
   v_out := v_out || pg_temp.t('modérateur : voit le signalement dans sa file', 'authenticated', v_mod,
     format($q$select * from public.flags where shop_id = %L and status = 'open'$q$, v_shopA), 'OK=1') || E'\n';
@@ -291,19 +330,25 @@ $test$;
 
 -- =====================================================================
 -- À TESTER AVEC supabase-js (ce qu'un script SQL ne peut pas montrer)
--- 🔎 1. Une insertion refusée par un déclencheur (par exemple rejeter un relevé
---       sans note) : error.code vaut-il bien 'PB032' ? Même question pour
---       l'envoi d'un relevé déjà envoyé : error.code = '23505'.
--- 🔎 2. .from('price_reports').insert({...}).select('id,status,check_level,check_codes')
---       réussit pour un agent ; .select() sans argument échoue (42501).
--- 🔎 3. Un modérateur : .from('price_reports').update({status:'rejected', review_note:'…'})
---       sans .select() réussit ; un échec de relecture ne doit pas être pris
---       pour un échec de la mise à jour.
--- 🔎 4. Connexion anonyme (signInAnonymously) : insérer un signalement avec
---       status 'dismissed' réussit ; le relire échoue (42501) ; la ligne est 'open'.
--- 🔎 5. .from('price_reports_visible').select('*') : sans session, refusé ;
---       avec une session d'agent, ne renvoie que ses relevés. Le tableau de bord
---       Supabase peut avertir que la vue n'a pas security_invoker : c'est attendu.
--- 🔎 6. Une photo envoyée sous <uid>/<horodatage>/x.jpg est acceptée ; sous un
---       autre dossier, refusée ; upsert et suppression par l'agent, refusés.
+-- Les points 1 à 4 et 6 sont couverts par supabase/tests/test_supabase_js.mjs
+-- (31 PASS). Le détail et l'état de chaque vérification sont dans le
+-- document 09, section 14.
+-- 1. Une insertion refusée par un déclencheur (par exemple rejeter un relevé
+--    sans note) : error.code vaut-il bien 'PB032' ? Même question pour
+--    l'envoi d'un relevé déjà envoyé : error.code = '23505'.   [vérifié]
+-- 2. .from('price_reports').insert({...}).select('id,status,check_level,check_codes')
+--    réussit pour un agent ; .select() sans argument échoue (42501).   [vérifié]
+-- 3. Un modérateur : .from('price_reports').update({status:'rejected', review_note:'…'})
+--    sans .select() réussit ; un échec de relecture ne doit pas être pris
+--    pour un échec de la mise à jour.   [vérifié]
+-- 4. Connexion anonyme (signInAnonymously) : insérer un signalement avec
+--    status 'dismissed' réussit ; le relire par select renvoie 0 ligne ; la
+--    ligne est 'open'.   [vérifié ; insert puis .select() (42501) : à tester]
+-- 5. .from('price_reports_visible').select('*') : sans session, refusé ;
+--    avec une session d'agent, ne renvoie que ses relevés. Le tableau de bord
+--    Supabase peut avertir que la vue n'a pas security_invoker : c'est attendu.
+--    [refus sans session et lecture agent : vérifiés ; avertissement du tableau
+--    de bord : à regarder]
+-- 6. Une photo envoyée sous <uid>/<horodatage>/x.jpg est acceptée ; sous un
+--    autre dossier, refusée ; upsert et suppression par l'agent, refusés.   [vérifié]
 -- =====================================================================

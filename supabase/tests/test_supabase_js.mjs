@@ -2,23 +2,28 @@
 // PC Builder 237 : vérifications côté client (supabase-js), BASE DE TEST UNIQUEMENT
 // Complète pcbuilder237_test_supabase.sql (qui ne passe pas par l'API).
 //
-// NON EXÉCUTÉ contre Supabase par son auteur : seule la syntaxe a été vérifiée.
+// Exécuté sur le projet de TEST : 31 PASS, 0 FAIL. Rejeu complet 01 à 09
+// sur une base de test vide, puis ce script : réussi.
 //
 // PRÉPARATION
-//   npm init -y && npm i @supabase/supabase-js        (Node 18 ou plus)
+//   npm init -y && npm i @supabase/supabase-js        (Node 18.17 ou plus)
 //   Avoir sur le projet de TEST : la chaîne de patchs complète, une boutique
 //   active, un portable ACTIF dont la fiche a allowed_ram_gb (catalogue de départ
 //   activé), un compte agent (grant_agent), un compte modérateur (rôle moderator),
-//   et « Allow anonymous sign-ins » activé (Authentication > Providers).
+//   un compte propriétaire rattaché à SHOP_ID (shop_members) avec un abonnement
+//   actif (shop_subscriptions), et « Allow anonymous sign-ins » activé
+//   (Authentication > Providers). Comptes créés avec Auto Confirm User coché.
 //
-// LANCEMENT (variables d'environnement, jamais de clé secrète ici)
+// LANCEMENT (variables d'environnement, jamais de clé secrète ici ;
+//            fichier .env.test.local, ignoré par git)
 //   SUPABASE_URL=https://xxxx.supabase.co
-//   SUPABASE_ANON_KEY=...            (clé publique)
+//   SUPABASE_PUBLISHABLE_KEY=...            (clé publique)
 //   AGENT_EMAIL=... AGENT_PASSWORD=...
 //   MOD_EMAIL=...   MOD_PASSWORD=...
+//   OWNER_EMAIL=... OWNER_PASSWORD=...      (propriétaire abonné de SHOP_ID)
 //   SHOP_ID=<uuid d'une boutique active>
 //   PRODUCT_ID=<uuid d'un portable actif, avec allowed_ram_gb>
-//   node pcbuilder237_test_supabase_js.mjs
+//   npm run test:supabase
 //
 // CE QUE LE SCRIPT LAISSE DANS LA BASE DE TEST : quelques relevés (dont un
 // rejeté), un signalement, une photo de 1 octet dans le bucket proofs.
@@ -28,9 +33,10 @@ import { createClient } from '@supabase/supabase-js';
 import { randomUUID } from 'node:crypto';
 
 const need = (k) => { const v = process.env[k]; if (!v) { console.error(`Variable manquante : ${k}`); process.exit(2); } return v; };
-const URL = need('SUPABASE_URL'), KEY = need('SUPABASE_ANON_KEY');
+const URL = need('SUPABASE_URL'), KEY = need('SUPABASE_PUBLISHABLE_KEY');
 const AGENT = { email: need('AGENT_EMAIL'), password: need('AGENT_PASSWORD') };
 const MOD = { email: need('MOD_EMAIL'), password: need('MOD_PASSWORD') };
+const OWNER = { email: need('OWNER_EMAIL'), password: need('OWNER_PASSWORD') };
 const SHOP_ID = need('SHOP_ID'), PRODUCT_ID = need('PRODUCT_ID');
 
 const client = () => createClient(URL, KEY, { auth: { persistSession: false, autoRefreshToken: false } });
@@ -117,6 +123,31 @@ async function main() {
     report(r.error?.code === 'PB032', 'modérateur : rejet sans note = PB032', code(r));
     r = await mod.from('price_reports').update({ status: 'rejected', review_note: 'Test automatique : photo illisible' }).eq('id', pendId);
     report(!r.error, 'modérateur : rejet avec note, sans .select(), réussit', code(r));
+
+    // --- propriétaire de SHOP_ID : colonnes réservées à l'auteur et au personnel ---
+    const MASKED = ['proof_paths', 'check_reason', 'review_note',
+      'reported_by', 'reviewed_by', 'reviewed_at', 'client_ref'];
+
+    // Ce que voit le modérateur : sert à savoir si un NULL côté propriétaire prouve quelque chose
+    const modView = await mod.from('price_reports_visible').select('*').eq('id', pendId).maybeSingle();
+    for (const col of MASKED) {
+      if (modView.data?.[col] === null || modView.data?.[col] === undefined) {
+        note(`propriétaire : ${col} est vide même pour le modérateur, le test de masquage ne prouve rien pour cette colonne`, 'donnée de test à compléter');
+      }
+    }
+
+    const owner = client();
+    const ownerLogin = await owner.auth.signInWithPassword(OWNER);
+    report(!ownerLogin.error, 'propriétaire : connexion', ownerLogin.error?.message);
+
+    r = await owner.from('price_reports_visible').select('*').eq('id', pendId).maybeSingle();
+    report(!r.error && !!r.data, 'propriétaire : voit le relevé de sa boutique (abonnement actif ?)', r.error ? code(r) : 'aucune ligne');
+    const row = r.data;
+    report(!!row && row.price_fcfa != null && row.status != null && row.check_level != null,
+      'propriétaire : prix, statut et niveau visibles', row ? 'colonne vide' : 'aucune ligne');
+    for (const col of MASKED) {
+      report(!!row && row[col] === null, `propriétaire : ${col} masqué`, row ? String(row[col]) : 'aucune ligne');
+    }
     r = await mod.from('price_reports_visible').select('id,status,review_note,reviewed_by').eq('id', pendId).single();
     report(!r.error && r.data.status === 'rejected' && !!r.data.review_note, 'modérateur : relit le rejet par price_reports_visible', code(r));
   }

@@ -1,11 +1,12 @@
 -- =====================================================================
--- PC Builder 237 : patch "contrat de données" (document 09, v0.2)
+-- PC Builder 237 : patch "contrat de données" (document 09, v0.4)
 -- À exécuter APRÈS tous les autres patchs, dans cet ordre :
 --   schéma -> agents -> propriétaire -> produits -> lancement
 --   -> adresse et horaires -> codes de motif -> config_hash -> CE PATCH
 -- À TESTER D'ABORD SUR UN PROJET SUPABASE DE TEST. Rejouable.
--- NON EXÉCUTÉ sur Supabase : vérifié seulement sur une base PostgreSQL 16
--- locale, avec des simulations des schémas auth et storage.
+-- Exécuté sur le projet Supabase de TEST (script SQL et script supabase-js
+-- au vert). Rejeu complet 01 à 09 sur une base de test vide le 02 octobre 2026 : réussi.
+-- PAS ENCORE EN PRODUCTION.
 --
 -- Contenu (changements du document 09, section 12) :
 --   C1  city_id ajouté à la fin de current_prices et de shops_public
@@ -21,7 +22,7 @@
 --   n°1 (C1), n°2 (C3), n°6 (C5), n°11 (C8 et C9).
 -- C4, C6 et C7 ne sont PAS dans ce patch.
 --
--- CONSÉQUENCES POUR LE SITE (à reporter dans le document 09)
+-- CONSÉQUENCES POUR LE SITE (reportées dans le document 09)
 --   * Nouvelle vue public.price_reports_visible : elle remplace la lecture
 --     directe de price_reports pour tout ce qui touche à check_reason,
 --     proof_paths, reported_by, reviewed_*, review_note, client_ref.
@@ -101,8 +102,9 @@ grant select (
 --   * auteur du relevé           : ses relevés
 --   * propriétaire de la boutique : les relevés de sa boutique (abonnement actif)
 --   * personnel                  : tout
--- proof_paths, check_reason : personnel et auteur seulement (il contient la médiane de
--- prix pour 'price_low'). Les autres propriétaires de la boutique ne le voient pas.
+-- proof_paths, check_reason, review_note, reported_by, reviewed_by, reviewed_at,
+-- client_ref : personnel et auteur seulement (check_reason contient la médiane de
+-- prix pour 'price_low'). Les propriétaires de boutique voient le reste du relevé.
 drop view if exists public.price_reports_visible;
 create view public.price_reports_visible with (security_barrier = true) as
 select
@@ -115,11 +117,17 @@ select
   case when public.is_staff() or r.reported_by = auth.uid()
        then r.check_reason end as check_reason,
   r.check_codes, r.status, r.source,
-  r.reported_by, r.reported_at,
-  r.reviewed_by, r.reviewed_at,
+  case when public.is_staff() or r.reported_by = auth.uid()
+       then r.reported_by end as reported_by,
+  r.reported_at,
+  case when public.is_staff() or r.reported_by = auth.uid()
+       then r.reviewed_by end as reviewed_by,
+  case when public.is_staff() or r.reported_by = auth.uid()
+       then r.reviewed_at end as reviewed_at,
   case when public.is_staff() or r.reported_by = auth.uid()
        then r.review_note end as review_note,
-  r.client_ref
+  case when public.is_staff() or r.reported_by = auth.uid()
+       then r.client_ref end as client_ref
 from public.price_reports r
 where auth.uid() is not null
   and (
@@ -230,26 +238,35 @@ commit;
 --   PB032  une note est obligatoire pour rejeter un relevé
 --   23505  + index price_reports_client_ref_key : relevé déjà envoyé
 --
--- VÉRIFICATIONS À FAIRE SUR LA BASE DE TEST (rôles : anon, agent, propriétaire
--- abonné, personnel, connexion anonyme Supabase)
+-- VÉRIFICATIONS (rôles : anon, agent, propriétaire abonné, personnel,
+-- connexion anonyme Supabase). Le détail et l'état de chaque point
+-- (🧫 vérifié sur le projet de test, 🔎 reste à faire) est dans le
+-- document 09, section 14.
 --   * anon : "select check_reason from price_reports" -> 42501 ; idem reported_by,
 --     proof_paths, review_note ; "select *" -> 42501 ;
 --   * anon : current_prices répond, n'a plus check_reason, a city_id et config_hash ;
 --   * connexion anonyme Supabase : price_reports_visible renvoie 0 ligne ;
 --   * agent : price_reports_visible renvoie ses relevés avec check_reason,
 --     jamais ceux d'un autre agent ;
---   * propriétaire abonné : voit les relevés de sa boutique ; check_reason vide
---     pour ceux qu'il n'a pas écrits ; plus rien après expiration de l'abonnement ;
+--   * propriétaire abonné : voit les relevés de sa boutique ; les sept colonnes réservées
+--     (voir la dernière ligne de la liste) vides pour ceux qu'il n'a pas écrits ;
+--     plus rien après expiration de l'abonnement ;
 --   * personnel : voit tout, y compris les relevés en attente ;
 --   * un agent insère un relevé avec .select('id,status,check_level,check_codes') : réussi ;
 --     avec .select() complet : refusé ;
 --   * un modérateur met 'rejected' sans note : PB032 ; avec une note : accepté ;
 --   * même client_ref envoyé deux fois par le même agent : 23505 la seconde fois ;
 --   * connexion anonyme : insérer un signalement avec status 'dismissed' -> créé
---     avec status 'open' ; le personnel le voit dans sa file ;
+--     avec status 'open' ; le personnel le voit dans sa file ; relire le
+--     signalement par select renvoie 0 ligne (insert puis .select() : 42501, à tester) ;
 --   * shops_public : city_id présent, une boutique sans quartier donne city_id nul ;
 --   * le filtre .eq('city_id', ...) sur current_prices fonctionne ;
---   * 🔎 sur Supabase : l'UPDATE du personnel (sans .select()) réussit malgré
---     les droits de colonne ; le tableau de bord n'affiche pas d'alerte bloquante
---     sur la vue price_reports_visible (avertissement "security definer" attendu).
+--   * l'UPDATE du personnel (sans .select()) réussit malgré les droits de
+--     colonne ; le tableau de bord peut avertir que la vue price_reports_visible
+--     n'a pas security_invoker (avertissement attendu : le filtre est écrit
+--     dans la vue) ;
+--   * propriétaire abonné, relevé écrit par un autre : proof_paths, check_reason,
+--     review_note, reported_by, reviewed_by, reviewed_at et client_ref sont NULL
+--     dans price_reports_visible (sept colonnes : f, f, f, f, f, f, f) ;
+--     price_fcfa, status et check_codes restent visibles.
 -- =====================================================================
