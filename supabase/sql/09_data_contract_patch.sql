@@ -101,7 +101,7 @@ grant select (
 --   * auteur du relevé           : ses relevés
 --   * propriétaire de la boutique : les relevés de sa boutique (abonnement actif)
 --   * personnel                  : tout
--- check_reason : personnel et auteur seulement (il contient la médiane de
+-- proof_paths, check_reason : personnel et auteur seulement (il contient la médiane de
 -- prix pour 'price_low'). Les autres propriétaires de la boutique ne le voient pas.
 drop view if exists public.price_reports_visible;
 create view public.price_reports_visible with (security_barrier = true) as
