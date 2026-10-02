@@ -1,6 +1,6 @@
 # ROADMAP MAÎTRE — PC Builder 237
 
-> **Statut** : v1.3 — 2 octobre 2026 (P0-1 terminé sur la base de test ; document 09 en v0.4 ; base de test nettoyée). Document de pilotage unique : il **n'invente aucune règle**, il range, tranche les conflits de version et ordonne le travail. En cas de doute sur une règle, le document 01 à 09 cité fait foi.
+> **Statut** : v1.3 (D3 confirmée) — 2 octobre 2026 (P0-1 terminé sur la base de test ; document 09 en v0.4 ; base de test nettoyée). Document de pilotage unique : il **n'invente aucune règle**, il range, tranche les conflits de version et ordonne le travail. En cas de doute sur une règle, le document 01 à 09 cité fait foi.
 > **Historique** : v1.2 (2 octobre 2026) : D1 et D2 tranchées. v1.3 (2 octobre 2026) : chaîne 1→9 et scripts de test exécutés sur Supabase test, règle « aucun écran avant P0-1 » levée, sections 1, 2, 5 et 7 réécrites. v1.3 révisée (2 octobre 2026) : commit de P0-1 confirmé (`9e03d45`, poussé sur `origin/main`), arborescence réelle du dépôt reportée (scripts 01 à 09 déjà numérotés dans `supabase/sql/`), état réel des documents 07 et 08 relu.
 > **Légende** : ✅ décidé · 🛠 écrit · 🧪 testé sur PostgreSQL local seulement · 🧫 vérifié sur le projet Supabase de test · 🔎 à vérifier (test ou production) · ❓ à décider · ⚠ incohérence à corriger · ⏳ reste à faire
 
@@ -88,7 +88,7 @@ Chaque décision n'apparaît **qu'une fois** ici. Numérotation propre à ce reg
 |---|---|---|---|
 | **D1** ✅ | **Qui relève les prix : le porteur du projet, Yaoundé d'abord, Douala ensuite** (phase MVP) | 01 n°1 · 04 n°3 · 08 n°1 | Tranchée le 2 octobre 2026 |
 | **D2** ✅ | **Qui modère : le porteur du projet** (phase MVP). Reste ❓ : le délai (24 h ouvrées proposé) | 04 n°4 · 08 n°3 | Tranchée ; délai avant le pilote |
-| **D3** 🧫 | Confirmer le patch « contrat de données » : `city_id` dans les vues, fermeture de `check_reason` et de la lecture directe de `price_reports`, `client_ref`, note de rejet obligatoire, signalement forcé `open`. **Retenu par défaut dans le patch, tests au vert ; confirmation attendue** | 09 n°1, 2, 6, 11 | **P0-7** |
+| **D3** ✅ | Patch « contrat de données » confirmé tel quel le 2 octobre 2026 : `city_id` dans les vues, fermeture de `check_reason` et de la lecture directe de `price_reports` (lecture par `price_reports_visible`), `client_ref`, note de rejet obligatoire, signalement forcé `open`. Tests au vert 🧫 | 09 n°1, 2, 6, 11 | Tranchée |
 | **D4** | Deux preuves photo pour occasion et reconditionné, imposées aussi par la base ? | 08 n°7 | P1-1 |
 | **D5** | Règle de contrôle du processeur (`cpu_options`) et champ « lu sur la machine / sur l'étiquette » | 08 n°10 | P1-1 |
 | **D6** | Patchs gardés rejouables ou aplatis en migrations | 03, 09 | P0-4 |
@@ -136,13 +136,13 @@ La règle « aucun écran avant le rapport de P0-1 » est **levée** : le rappor
 |---|---|---|---|---|
 | P0-1 | Chaîne 1→9 sur Supabase **test**, script SQL, 6 vérifications `supabase-js` | S | ✅ 🧫 fait : 71 PASS + 31 PASS, base nettoyée. Commit fait et poussé : `9e03d45` (7 fichiers : `.env.example`, `.gitignore`, `package.json`, doc 09, patch 9, deux scripts de test), arbre de travail propre | Rapport sans échec ; doc 09 en v0.4 |
 | P0-2 | Admin, 2-3 agents, 1 modérateur, 1 propriétaire de test, boutiques, villes/quartiers ; catalogue de départ avec **quelques fiches activées pour le test seulement** | S | ⏳ Partiel sur la base de test (agent, modérateur, propriétaire, boutique, produit, abonnement de test). Reste : données réelles de test et **production** | Un relevé de test va de l'agent au public, par le modérateur |
-| P0-3 | Trancher D1, D2, D3, D8 (sans code) | S | D1 ✅, D2 ✅ ; D3 🧫 en attente de confirmation ; D8 ❓ | Registre à jour |
+| P0-3 | Trancher D1, D2, D3, D8 (sans code) | S | D1 ✅, D2 ✅, D3 ✅ ; **D8 ❓** (reste avant l'activation du catalogue) | Registre à jour |
 | P0-4 | Dépôt/environnements (Vercel, aperçus sur base de test), migrations (D6), 3 clients Supabase (`getUser()`, jamais `getSession()`), types, module de lecture (constantes de colonnes, `mapError`, fonctions pures), `fr.json`, tests Vitest | M | ⏳ **À démarrer** | Tests verts + page de diagnostic |
 | P0-5 | Corrections d'audit : titre, `lang="fr"`, favicon, labels, en-têtes de sécurité, Open Graph, `robots.txt` | S | ⏳ | — |
 | P0-6 | Migrer le front : connexion agent, routes `/agent` `/boutique` `/admin` protégées côté serveur, retrait de l'ancienne table ; relire les relevés par `price_reports_visible` | M | ⏳ | Aucune page cassée |
 | P0-7 | Corriger les incohérences de la section 2 | S | ✅ terminé : n°13, n°20, n°21 (commits `3090ca2`, `b20e13e`, `054f85b`, `66dc181`, `82d91d5`). Restent n°17 et n°18 : à valider par une vraie requête depuis le site (avec P0-4/P1-1) | Docs alignés |
 
-**Sortie phase 0** : P0-1 à P0-6 atteints, D1 à D3 tranchées. Aujourd'hui : P0-1 ✅, D1 ✅, D2 ✅.
+**Sortie phase 0** : P0-1 à P0-6 atteints, D1 à D3 tranchées. Aujourd'hui : P0-1 ✅, P0-7 ✅, D1 ✅, D2 ✅, D3 ✅ ; restent P0-2, P0-4, P0-5, P0-6.
 
 ### Phase 1 — MVP comparateur de portables
 
@@ -175,6 +175,38 @@ La règle « aucun écran avant le rapport de P0-1 » est **levée** : le rappor
    - la vraie connexion anonyme par l'API, et son comportement sur réseau mobile partagé (R12) ;
    - le rejeu du patch 9 seul sur Supabase, et l'avertissement du tableau de bord sur la vue `price_reports_visible`.
 2. **Un seul développeur** pour site, catalogue, modération et admin : confier la vérification des fiches à une autre personne.
+3. **Pas d'agents = pas de prix = pas de lancement** : D1 est tranchée, mais l'exécution (relevés réels à Yaoundé puis Douala) est le vrai chemin critique, pas le code.
+4. **Rejeu d'un patch qui défait un autre** : rejouer le 9 en dernier, puis les deux scripts de test. Rejouer le patch lancement ou adresse retire `city_id` de `shops_public`.
+5. **Catalogue activé sans vérification** : fausses alertes, boutiques accusées à tort. Valeurs actuelles non vérifiées.
+6. **Secrets et base de test** : `.env.test.local` ne doit jamais être commité ni pointer vers la production ; les scripts de test créent des données (relevés, signalements, comptes anonymes, photos) et doivent être lancés sur le projet de TEST uniquement, avec nettoyage ensuite.
+7. **Connexion anonyme** : activée sur la base de test seulement. Ne pas l'activer en production avant D10.
+
+---
+
+## 6. Organisation du dossier
+
+```
+docs/
+  00-ROADMAP-MAITRE.md        ← ce fichier (seul point d'entrée)
+  01 … 09 (une seule version chacune)
+  archive/                    ← 10-plan…, anciennes versions
+supabase/
+  seed/                       ← catalogue de départ
+  sql/
+    01_schema.sql … 09_data_contract_patch.sql   ← numérotés dans l'ordre d'exécution
+  tests/
+    test_supabase.sql
+    test_supabase_js.mjs
+.env.example                  ← modèle (site + tests) ; suivi par git
+.env.local                    ← site, non commité
+.env.test.local               ← tests, non commité, base de TEST uniquement
+```
+Cette arborescence est celle du dépôt aujourd'hui. Le numéro dans le nom des scripts supprime l'ambiguïté sur la séquence d'exécution.
+
+## 7. Prochaines actions (dans l'ordre)
+
+1. ✅ **Contrôles après le commit : faits** (patch 7 corrigé, en-tête « Node 18.17 ou plus », seul `.env.example` suivi par git).
+2. ✅ **D3 confirmée** (2 octobre 2026). Le patch 9 reste tel quel, aucun rejeu nécessaire.
 3. **Pas d'agents = pas de prix = pas de lancement** : D1 est tranchée, mais l'exécution (relevés réels à Yaoundé puis Douala) est le vrai chemin critique, pas le code.
 4. **Rejeu d'un patch qui défait un autre** : rejouer le 9 en dernier, puis les deux scripts de test. Rejouer le patch lancement ou adresse retire `city_id` de `shops_public`.
 5. **Catalogue activé sans vérification** : fausses alertes, boutiques accusées à tort. Valeurs actuelles non vérifiées.

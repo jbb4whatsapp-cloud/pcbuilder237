@@ -499,24 +499,24 @@ C1, C2, C3, C5, C8 et C9 sont écrits dans `pcbuilder237_data_contract_patch.sql
 
 | # | Question | Statut |
 |---|---|---|
-| 1 | Filtre par ville : deux requêtes (v1) ou `city_id` dans la vue (C1) ? | 🧫 `city_id` retenu par défaut dans le patch, tests au vert ; à confirmer |
-| 2 | Fermer la fuite de `check_reason` et la lecture directe de `price_reports` (C3 élargi : droits de colonne + vue `price_reports_visible`) | 🧫 retenu par défaut dans le patch, tests au vert ; recommandé avant l'ouverture ; à confirmer |
+| 1 | Filtre par ville : deux requêtes (v1) ou `city_id` dans la vue (C1) ? | ✅ confirmé le 2 octobre 2026 (tests au vert 🧫)  |
+| 2 | Fermer la fuite de `check_reason` et la lecture directe de `price_reports` (C3 élargi : droits de colonne + vue `price_reports_visible`) | ✅ confirmé le 2 octobre 2026 (tests au vert 🧫)  |
 | 3 | Mesure de l'usage : outil externe en phase 1, table `events` en phase 4 ? | ❓ |
 | 4 | Limite de fréquence des signalements et des envois : où (action serveur) et quelles valeurs ? | ❓ (document 03, n°3) |
 | 5 | Durées de cache et invalidation à la demande après modération | ❓ |
-| 6 | Clé d'idempotence des relevés (C5) | 🧫 `client_ref` retenu par défaut dans le patch, tests au vert ; à confirmer |
+| 6 | Clé d'idempotence des relevés (C5) | ✅ confirmé le 2 octobre 2026 (tests au vert 🧫)  |
 | 7 | Ville dans l'adresse de la page (proposé) plutôt que dans un cookie seul | ❓ |
 | 8 | Afficher `ram_gb` et `storage_gb` sur toute ligne de portable (pas de configuration de base dans les `specs`) | ❓ |
 | 9 | Texte d'une carte produit dont aucune ligne n'est éligible au prix de départ (tous suspects ou hors stock) | ❓ |
 | 10 | Vue publique des produits (C6) ou simple discipline de colonnes | ❓ |
-| 11 | Exiger la note de rejet des relevés (C8) et forcer `status = 'open'` des signalements (C9) | 🧫 retenu par défaut dans le patch, tests au vert ; recommandé ; à confirmer |
+| 11 | Exiger la note de rejet des relevés (C8) et forcer `status = 'open'` des signalements (C9) | ✅ confirmé le 2 octobre 2026 (tests au vert 🧫)  |
 | 12 | Connexion anonyme pour les signalements et les configurations : l'activer, avec un test anti-robot ? | ❓ (activée sur la base de test seulement ; en production, désactivée tant que cette décision n'est pas prise) |
 
 ---
 
 ## 16. Suite proposée
 
-1. **Confirmer** les décisions n°1, 2, 6 et 11 (section 15) ou demander des changements ; le patch en tient compte aujourd'hui telles que proposées, et les deux scripts passent avec ces choix.
+1. ✅ Décisions n°1, 2, 6 et 11 (section 15) confirmées le 2 octobre 2026 ; le patch reste tel quel.
 2. Le rejeu complet 01 à 09 sur une base de test vide est fait 🧫.
 3. **Nettoyer la base de test** : les scripts laissent des relevés (dont un rejeté), un signalement et une photo de 1 octet dans le bucket `proofs`.
 4. **Commit** du patch, des deux scripts de test et de ce document ; vérifier avant que `.env.test.local` est ignoré par git.
