@@ -108,13 +108,17 @@ create view public.price_reports_visible with (security_barrier = true) as
 select
   r.id, r.product_id, r.shop_id, r.condition,
   r.price_fcfa, r.in_stock, r.warranty_months,
-  r.reported_specs, r.config_hash, r.proof_paths,
+  r.reported_specs, r.config_hash,
+  case when public.is_staff() or r.reported_by = auth.uid()
+       then r.proof_paths end as proof_paths,
   r.check_level,
   case when public.is_staff() or r.reported_by = auth.uid()
        then r.check_reason end as check_reason,
   r.check_codes, r.status, r.source,
   r.reported_by, r.reported_at,
-  r.reviewed_by, r.reviewed_at, r.review_note,
+  r.reviewed_by, r.reviewed_at,
+  case when public.is_staff() or r.reported_by = auth.uid()
+       then r.review_note end as review_note,
   r.client_ref
 from public.price_reports r
 where auth.uid() is not null
