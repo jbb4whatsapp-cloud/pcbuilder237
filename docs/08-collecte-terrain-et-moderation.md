@@ -8,7 +8,7 @@ Ce document répond aux trois questions qui bloquent le lancement : **qui relèv
 
 **Toutes les valeurs chiffrées sont des hypothèses de travail**, à remplacer par les mesures de la collecte pilote (section 10). Aucune décision n'est prise à la place du porteur du projet : chaque point ouvert est repris dans la section 13.
 
-Sources : documents 01 à 07, schéma SQL v1 et patchs « produits », « lancement », « adresse et horaires », « codes de motif » et « catalogue de départ ». Tous les patchs ont maintenant été lus, et la chaîne complète a été exécutée sur une base PostgreSQL 16 **locale** avec des simulations de l'authentification et du stockage Supabase (section 12). Cette vérification locale a ensuite été complétée sur le projet Supabase de test (P0-1 ✅ : script SQL 65 PASS, script supabase-js 31 PASS ; document 09 v0.4). Rien n'est en production.
+Sources : documents 01 à 07, schéma SQL v1 et patchs « produits », « lancement », « adresse et horaires », « codes de motif » et « catalogue de départ ». Tous les patchs ont maintenant été lus, et la chaîne complète a été exécutée sur une base PostgreSQL 16 **locale** avec des simulations de l'authentification et du stockage Supabase (section 12). Cette vérification locale a ensuite été complétée sur le projet Supabase de test (P0-1 ✅ : script SQL 71 PASS, script supabase-js 31 PASS ; document 09 v0.4). Rien n'est en production.
 
 ---
 
