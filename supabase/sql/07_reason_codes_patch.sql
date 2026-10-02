@@ -13,7 +13,8 @@
 -- Pourquoi (documents 03 section 6.1 et 07 sections 4 et 7) :
 --   * le site choisit le texte d'alerte public d'après un CODE, pas en lisant la
 --     phrase française de check_reason (qui reste un texte pour le personnel et
---     l'agent) ;
+--     l'agent) ;git ls-files --eol supabase | head
+grep -lU $'\r' supabase/sql/*.sql supabase/seed/*.sql supabase/tests/*.sql
 --   * le site choisit le message d'erreur d'après un CODE SQLSTATE, pas d'après le
 --     texte de l'exception.
 --
@@ -83,10 +84,10 @@ declare
   v_md5  text;
   v_deja boolean;
 begin
-  select md5(replace(prosrc, chr(13), '')), position('check_codes' in prosrc) > 0
+  select md5(prosrc), position('check_codes' in prosrc) > 0
     into v_md5, v_deja
   from pg_proc where oid = 'public.price_reports_before_insert()'::regprocedure;
-  if not v_deja and v_md5 is distinct from 'd0e4e9f639262bfe58028083910430c4' then
+  if not v_deja and v_md5 is distinct from '0ac3817077d4576f5bbe8fedbbda6155' then
     raise exception 'price_reports_before_insert() diffère de la version du schéma v1 (md5 %). Comparer et fusionner à la main avant de continuer.', v_md5;
   end if;
 end $$;
