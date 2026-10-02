@@ -1,14 +1,14 @@
 # Collecte des prix, vérification sur place et modération — PC Builder 237
 
 > **Statut** : brouillon v0.3 — 2 octobre 2026 (patchs « agents » et « propriétaire de boutique » reçus et vérifiés ; deux écarts corrigés, section 12)
-> **Historique** : v0.3 — décision MVP intégrée : **le porteur du projet relève et modère** (Yaoundé puis Douala) ; conséquence sur la séparation relevé/modération (section 3) ; chaîne de patchs complétée (section 12) ; requêtes de suivi et lecture par `price_reports_visible` (section 9) ; décisions 1 à 3 (section 13) mises à jour.
-> **Légende** : ✅ décidé par le porteur du projet · 🛠 déjà en place dans le schéma ou les patchs (écrit, non exécuté sur une base de production) · ❓ proposition à valider · 🔍 à vérifier sur le terrain ou sur une fiche constructeur
+> **Historique** : v0.3 — décision MVP intégrée : **le porteur du projet relève et modère** (Yaoundé puis Douala) ; conséquence sur la séparation relevé/modération (section 3) ; chaîne de patchs complétée (section 12) ; requêtes de suivi et lecture par `price_reports_visible` (section 9) ; décisions 1 à 3 (section 13) mises à jour. Statuts de vérification mis à jour après P0-1 (base de test).
+> **Légende** : ✅ décidé par le porteur du projet · 🛠 déjà en place dans le schéma ou les patchs (écrit, non exécuté sur une base de production) · 🧫 vérifié sur le projet Supabase de test · ❓ proposition à valider · 🔍 à vérifier sur le terrain ou sur une fiche constructeur
 
 Ce document répond aux trois questions qui bloquent le lancement : **qui relève les prix, qui modère, à partir de quand le site est-il assez rempli pour ouvrir** (document 01, question 1 ; document 04, section 5, décisions 2, 3 et 4). Il décrit aussi ce que fait concrètement un agent en boutique et un modérateur devant sa file, ce que les documents 05 et 07 ne détaillent pas.
 
 **Toutes les valeurs chiffrées sont des hypothèses de travail**, à remplacer par les mesures de la collecte pilote (section 10). Aucune décision n'est prise à la place du porteur du projet : chaque point ouvert est repris dans la section 13.
 
-Sources : documents 01 à 07, schéma SQL v1 et patchs « produits », « lancement », « adresse et horaires », « codes de motif » et « catalogue de départ ». Tous les patchs ont maintenant été lus, et la chaîne complète a été exécutée sur une base PostgreSQL 16 **locale** avec des simulations de l'authentification et du stockage Supabase (section 12). Ce n'est pas un test sur Supabase.
+Sources : documents 01 à 07, schéma SQL v1 et patchs « produits », « lancement », « adresse et horaires », « codes de motif » et « catalogue de départ ». Tous les patchs ont maintenant été lus, et la chaîne complète a été exécutée sur une base PostgreSQL 16 **locale** avec des simulations de l'authentification et du stockage Supabase (section 12). Cette vérification locale a ensuite été complétée sur le projet Supabase de test (P0-1 ✅ : script SQL 65 PASS, script supabase-js 31 PASS ; document 09 v0.4). Rien n'est en production.
 
 ---
 
@@ -137,7 +137,7 @@ Vérifier que rien ne reste en brouillon ; noter les boutiques fermées, démén
 - Rejet : note obligatoire, neutre, qui dit quoi corriger (modèles : document 07, section 9).
 
 ### 6.2 Que faire selon le motif 🛠
-Les codes viennent du patch « codes de motif » (écrit, non exécuté).
+Les codes viennent du patch « codes de motif » (exécuté sur la base de test 🧫).
 
 | Code | Que vérifier | Publier si… | Rejeter si… |
 |---|---|---|---|
@@ -245,7 +245,7 @@ from public.price_reports
 where reported_at > now() - interval '30 days'
 group by reported_by;
 ```
-> **Lecture depuis l'application** : K1 à K5 s'exécutent telles quelles dans l'éditeur SQL. Depuis l'application, lire `price_reports_visible` et non `price_reports`, dont les colonnes sensibles sont fermées par le patch contrat de données 🧪 (document 09, section 13, point 11) ❓ à vérifier sur Supabase.
+> **Lecture depuis l'application** : K1 à K5 s'exécutent telles quelles dans l'éditeur SQL. Depuis l'application, lire `price_reports_visible` et non `price_reports`, dont les colonnes sensibles sont fermées par le patch contrat de données 🧫 (document 09, section 13, point 11) ; lecture depuis le site à vérifier avec une vraie requête.
 
 La vue `agents_overview` du patch « agents » 🛠 ne donne que le total de relevés et la date du dernier : elle ne compte ni les rejets ni les alertes. K4 reste donc utile, et la vue sert à l'admin pour voir qui est actif (elle n'est lisible que depuis l'éditeur SQL).
 
@@ -299,7 +299,7 @@ Relevés en lisant l'ensemble, puis en exécutant la chaîne complète sur une b
 
 | # | Constat | Conséquence | Statut |
 |---|---|---|---|
-| 1 | `config_hash` valait `md5(reported_specs::text)` : toute la configuration annoncée comptait. Le document 02, section 10, point 4 affirmait le contraire (« déjà corrigé »), ce qui était faux. Test : deux relevés identiques sauf la batterie restaient **deux lignes** dans `current_prices` | Doublons de lignes ; règle de prix bas rarement déclenchée | 🛠 Corrigé par `pcbuilder237_config_hash_patch.sql` : l'empreinte ne porte que sur `ram_gb`, `storage_gb` et `cpu`. Les relevés existants sont recalculés. Après le patch, les deux relevés de test n'occupent plus qu'une ligne (le plus récent). **Remettre le point 4 du document 02 en « à faire », puis 🛠 après exécution** |
+| 1 | `config_hash` valait `md5(reported_specs::text)` : toute la configuration annoncée comptait. Le document 02, section 10, point 4 affirmait le contraire (« déjà corrigé »), ce qui était faux. Test : deux relevés identiques sauf la batterie restaient **deux lignes** dans `current_prices` | Doublons de lignes ; règle de prix bas rarement déclenchée | 🛠 Corrigé par `pcbuilder237_config_hash_patch.sql` : l'empreinte ne porte que sur `ram_gb`, `storage_gb` et `cpu`. Les relevés existants sont recalculés. Après le patch, les deux relevés de test n'occupent plus qu'une ligne (le plus récent). Point 4 du document 02 : exécuté sur la base de test 🧫, production à faire (lot P1-5) |
 | 2 | Le processeur n'avait aucune clé définie dans `reported_specs` | Aucun contrôle possible | 🛠 La clé `cpu` est posée (texte, normalisé : « i5-8350U » et « I5 8350u » = même empreinte). Un relevé sans `cpu` forme un groupe à part. **Reste à décider** : la règle de contrôle (liste `cpu_options` dans la fiche produit, nouveau code de motif), et un champ pour distinguer « configuration lue sur la machine » de « lue sur l'étiquette » |
 | 3 | **Défaut dans le patch « codes de motif » d'origine** : `v_codes := v_codes \|\| 'code'` échoue (« malformed array literal »). Je l'ai constaté sur les quatre règles. Conséquence : tout relevé qui devait passer en attente (RAM au-dessus du maximum, RAM ou stockage hors liste, prix bas) aurait été **refusé avec une erreur** au lieu d'arriver chez le modérateur | La file d'attente serait restée vide et les agents n'auraient pas compris leurs erreurs | 🛠 Corrigé aux quatre endroits (`array_append`) dans une version corrigée de `pcbuilder237_reason_codes_patch.sql` et, au cas où l'ancienne version serait déjà exécutée, dans le patch `config_hash`. Les deux chemins aboutissent à la même fonction. Vérifié : RAM 64 Go → `impossible` / `ram_above_max` ; 10 Go → `suspect` / `ram_not_allowed` ; disque 300 Go → `suspect` / `storage_not_allowed` ; prix à 60 000 FCFA face à trois relevés autour de 190 000 → `suspect` / `price_low`, tous **en attente** |
 | 4 | Ordre des patchs | Voir la liste ci-dessous | ✅ Vérifié |
@@ -309,7 +309,7 @@ Relevés en lisant l'ensemble, puis en exécutant la chaîne complète sur une b
 
 **Comportements des patchs « agents » et « propriétaire de boutique » vérifiés** : un propriétaire sans abonnement actif ne peut ni envoyer de relevé ni modifier sa fiche ; un propriétaire abonné envoie un relevé qui arrive **toujours en attente** avec l'origine « boutique », peut changer les horaires mais pas le nom ; il ne peut pas agir sur une autre boutique ; un compte sans rôle ni boutique est refusé ; un relevé d'agent sans anomalie est publié aussitôt ; le visiteur anonyme ne lit ni `shops.phone` ni `shops.address` directement, mais lit la vue `shops_public` (téléphone ouvert en période de lancement, adresse et horaires réservés aux boutiques abonnées).
 
-**Limite de ces vérifications** : base locale PostgreSQL 16 avec des simulations de `auth` et `storage`. Les fonctions d'administration (`grant_agent`, `grant_shop_owner`, `record_subscription`) ont été appelées avec les droits du propriétaire de la base ; leur restriction d'exécution aux autres rôles n'a pas été testée, ni le comportement exact de Supabase Auth, du stockage ou de PostgREST. À refaire sur le projet de **test** Supabase.
+**Limite de ces vérifications** : base locale PostgreSQL 16 avec des simulations de `auth` et `storage`. Les fonctions d'administration (`grant_agent`, `grant_shop_owner`, `record_subscription`) ont été appelées avec les droits du propriétaire de la base ; leur restriction d'exécution aux autres rôles n'a pas été testée, ni le comportement exact de Supabase Auth, du stockage ou de PostgREST. Refait sur le projet de test Supabase au lot P0-1 (🧫) ; les points restés 🔎 sont listés dans le document 09, section 14.
 
 ---
 
@@ -332,5 +332,4 @@ Relevés en lisant l'ensemble, puis en exécutant la chaîne complète sur une b
 
 ## 14. Suite proposée
 
-- **Exécuter la chaîne de 9 scripts sur le projet Supabase de test** (lot P0-1 de `00-ROADMAP-MAITRE.md`), avec leurs listes de vérifications. C'est la seule façon de confirmer ce que la base locale ne montre pas.
-- Le document 09 (contrat de données) est écrit ; il passera en v0.4 après ce test.
+Voir `00-ROADMAP-MAITRE.md` (sections 4 et 7). La chaîne de 9 scripts est exécutée sur la base de test (P0-1 ✅) ; le document 09 est en v0.4. Prochaines étapes : confirmer D3, puis le pilote de collecte (lots P1-1 et P1-2).

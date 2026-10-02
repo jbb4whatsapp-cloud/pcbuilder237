@@ -1,8 +1,8 @@
 # Textes et messages — PC Builder 237
 
 > **Statut** : brouillon v0.3 — 2 octobre 2026 (décisions 1, 2 et 3 intégrées : vouvoiement, codes de motif, « prix constaté en boutique »)
-> **Historique** : v0.3 — documents 01, 02 et 05 alignés sur la section 3.0 ; messages `PB032` et « relevé déjà envoyé » ajoutés (7.2, 7.3) ; motif de l'agent relu par `price_reports_visible` (section 6) ; décisions 6, 9 et 10 mises à jour ; « suite proposée » remplacée.
-> **Légende** : ✅ décidé par le porteur du projet · 🛠 déjà en place dans le schéma, les patchs ou les documents · ❓ proposition à valider
+> **Historique** : v0.3 — documents 01, 02 et 05 alignés sur la section 3.0 ; messages `PB032` et « relevé déjà envoyé » ajoutés (7.2, 7.3) ; motif de l'agent relu par `price_reports_visible` (section 6) ; décisions 6, 9 et 10 mises à jour ; « suite proposée » remplacée. Statuts de vérification passés de 🧪 à 🧫 après P0-1 (base de test).
+> **Légende** : ✅ décidé par le porteur du projet · 🛠 déjà en place dans le schéma, les patchs ou les documents · 🧫 vérifié sur le projet Supabase de test · ❓ proposition à valider
 
 Ce document fixe **les mots** du produit : libellés, alertes, messages d'erreur, messages WhatsApp pré-remplis, textes de modération et pages de confiance. Il suit le document 05 (pages, composants, états) et lit les valeurs réelles de la base dans le schéma SQL v1 et les patchs 🛠.
 
@@ -193,7 +193,7 @@ Règles d'assemblage :
 
 ### 4.4 Codes de motif ✅ 🛠
 
-Décision : le site choisit la raison d'après un **code**, pas d'après la phrase de `check_reason`. Le patch `pcbuilder237_reason_codes_patch.sql` 🛠 (écrit, non exécuté sur Supabase ; **version du zip « 08 » seulement**, l'autre est défectueuse) ajoute `price_reports.check_codes` (tableau de textes), rempli par le serveur et exposé dans `current_prices`.
+Décision : le site choisit la raison d'après un **code**, pas d'après la phrase de `check_reason`. Le patch `pcbuilder237_reason_codes_patch.sql` 🛠 (écrit et exécuté sur le projet Supabase de test 🧫 ; version corrigée, celle du zip « 08 ») ajoute `price_reports.check_codes` (tableau de textes), rempli par le serveur et exposé dans `current_prices`.
 
 | Code | Contrôle | Niveau | Texte public (section 4.2) |
 |---|---|---|---|
@@ -305,7 +305,7 @@ Textes de contrôle avant envoi :
 
 - Compression : « Réduction des photos en cours… »
 - Succès : « Relevé envoyé. » Si publié aussitôt : « Il est visible par les acheteurs. » Sinon : « Il sera examiné par un modérateur. »
-- Si le serveur le met en attente, l'agent voit la **raison technique** (texte de `check_reason`), car elle l'aide à corriger une faute de saisie : par exemple « RAM 10 Go non standard pour ThinkPad T480 ». Elle n'est pas réservée au personnel pour l'auteur du relevé. Elle se lit dans `price_reports_visible` (le patch contrat de données 🧪 retire `check_reason` de `current_prices` et ferme la lecture directe de `price_reports`) ; après l'insertion, ne demander que `id, status, check_level, check_codes` (document 09, section 7).
+- Si le serveur le met en attente, l'agent voit la **raison technique** (texte de `check_reason`), car elle l'aide à corriger une faute de saisie : par exemple « RAM 10 Go non standard pour ThinkPad T480 ». Elle n'est pas réservée au personnel pour l'auteur du relevé. Elle se lit dans `price_reports_visible` (le patch contrat de données 🧫 retire `check_reason` de `current_prices` et ferme la lecture directe de `price_reports`) ; après l'insertion, ne demander que `id, status, check_level, check_codes` (document 09, section 7).
 
 ---
 
@@ -328,7 +328,7 @@ Textes de contrôle avant envoi :
 
 ### 7.2 Correspondance avec les erreurs du serveur ✅ 🛠
 
-Décision : l'interface choisit le message d'après le **code d'erreur** (`error.code`), pas d'après le texte. Le patch `pcbuilder237_reason_codes_patch.sql` 🛠 (écrit, non exécuté sur Supabase) donne un code SQLSTATE de la classe `PB` aux erreurs des déclencheurs et fonctions que j'ai pu relire.
+Décision : l'interface choisit le message d'après le **code d'erreur** (`error.code`), pas d'après le texte. Le patch `pcbuilder237_reason_codes_patch.sql` 🛠 (écrit et exécuté sur le projet Supabase de test 🧫) donne un code SQLSTATE de la classe `PB` aux erreurs des déclencheurs et fonctions que j'ai pu relire.
 
 | Code | Erreur du serveur | Message affiché |
 |---|---|---|
@@ -347,8 +347,8 @@ Décision : l'interface choisit le message d'après le **code d'erreur** (`error
 | `PB025` | demande déjà traitée | « Cette demande a déjà été traitée. » |
 | `PB030` | droit insuffisant pour ce relevé | « Votre compte n'est pas autorisé à envoyer un relevé. Pour une boutique, un abonnement actif est nécessaire. » |
 | `PB031` | modification réservée au personnel (fiche boutique) | « Le nom, le quartier, le statut et le badge de la boutique ne peuvent être modifiés que par le personnel. » |
-| `PB032` 🧪 | note obligatoire pour rejeter un relevé (patch contrat de données) | (personnel) « Ajoutez une note pour rejeter ce relevé. » ❓ |
-| `23505` + `price_reports_client_ref_key` 🧪 | relevé déjà envoyé (renvoi après coupure) | « Ce relevé a déjà été envoyé. » ❓ (l'interface le traite comme un succès, sans doublon) |
+| `PB032` 🧫 | note obligatoire pour rejeter un relevé (patch contrat de données) | (personnel) « Ajoutez une note pour rejeter ce relevé. » ❓ |
+| `23505` + `price_reports_client_ref_key` 🧫 | relevé déjà envoyé (renvoi après coupure) | « Ce relevé a déjà été envoyé. » ❓ (l'interface le traite comme un succès, sans doublon) |
 | `23514` + `price_reports_needs_proof` | contrainte « au moins une preuve » | « Ajoutez au moins une photo de preuve. » |
 | `23514` + contrainte de `price_fcfa` | prix hors bornes | « Le prix doit être un nombre supérieur à zéro. » |
 | `23514` + contrainte des signalements | motif de 5 à 1 000 caractères | voir section 8 |
@@ -362,7 +362,7 @@ Pour les contraintes `23514` et `23505`, le code seul ne suffit pas : l'interfac
 
 ### 7.3 Messages côté personnel (non publics) 🛠
 
-Messages des fonctions et déclencheurs, réservés au personnel (interface d'administration) : « une note est obligatoire pour rejeter une fiche produit », « une note est obligatoire pour rejeter un relevé » 🧪, « une note est obligatoire pour refuser une demande », « réservé au personnel », « demande inconnue », « demande déjà traitée ». Ils sont compréhensibles tels quels ; l'interface les affiche sans transformation.
+Messages des fonctions et déclencheurs, réservés au personnel (interface d'administration) : « une note est obligatoire pour rejeter une fiche produit », « une note est obligatoire pour rejeter un relevé » 🧫, « une note est obligatoire pour refuser une demande », « réservé au personnel », « demande inconnue », « demande déjà traitée ». Ils sont compréhensibles tels quels ; l'interface les affiche sans transformation.
 
 ---
 
@@ -489,19 +489,18 @@ Je peux écrire ce fichier `fr.json` à partir des sections 3 à 9 quand les dé
 | # | Question | Statut |
 |---|---|---|
 | 1 | Vouvoiement dans l'interface | ✅ décidé |
-| 2 | Codes de motif (`check_codes`) et codes d'erreur plutôt que lecture des phrases du serveur | ✅ décidé, patch écrit 🛠 (non exécuté) |
+| 2 | Codes de motif (`check_codes`) et codes d'erreur plutôt que lecture des phrases du serveur | ✅ décidé, patch écrit 🛠 et exécuté sur la base de test 🧫 |
 | 3 | Vocabulaire public : « prix constaté en boutique » ; « relevé » réservé à l'interface agent, modérateur et propriétaire (section 3.0) | ✅ décidé |
 | 4 | Devis d'un panier réparti sur plusieurs boutiques : un message par boutique plus un devis complet au contact du projet (proposé), ou autre ? Numéro du porteur du projet à fournir | ❓ |
 | 5 | Indiquer qu'un prix à alerte a été examiné par un modérateur ? Demande d'exposer une colonne dans la vue `current_prices` | ❓ |
 | 6 | Garantie « non précisée » : l'afficher en clair (proposé) ou la rendre obligatoire hors neuf (document 02, section 10, point 5) ? | ❓ renvoyée à la **décision D7** (registre `00-ROADMAP-MAITRE.md`) |
 | 7 | Les raisons techniques de mise en attente (`check_reason`) sont-elles montrées à l'agent auteur du relevé ? (proposé : oui, section 6) | ❓ |
 | 8 | Ton des pages de confiance et des conseils de sécurité : à relire avec les agents et un juriste pour les mentions légales | ❓ |
-| 9 | Retirer `check_reason` de la vue publique `current_prices` (il contient la médiane de prix) : l'agent et le personnel le lisent déjà dans `price_reports`. Recommandé ; la vue doit être recréée, donc à faire avec une autre modification de la vue | ✅ fait dans le patch contrat de données 🧪 (non exécuté sur Supabase) |
+| 9 | Retirer `check_reason` de la vue publique `current_prices` (il contient la médiane de prix) : l'agent et le personnel le lisent déjà dans `price_reports`. Recommandé ; la vue doit être recréée, donc à faire avec une autre modification de la vue | ✅ fait dans le patch contrat de données 🧫 (vérifié sur la base de test) |
 | 10 | Aligner les documents 01, 02 et 05 sur le vocabulaire de la section 3.0 | ✅ fait (01 v0.3, 02 v0.3, 04 v0.4, 05 v0.4) |
 
 ---
 
 ## 13. Suite proposée
 
-- Le fichier `fr.json` des messages (sections 3 à 9), maintenant que les décisions 1 à 3 sont prises (lot P0-4 de `00-ROADMAP-MAITRE.md`).
-- Les patchs « codes de motif » (version du zip 08) et « adresse et horaires » sont **écrits**. Ils sont exécutés dans la chaîne de 9 scripts au lot **P0-1**, avec leurs listes de vérifications.
+Voir `00-ROADMAP-MAITRE.md` (sections 4 et 7). Le fichier `fr.json` et le module de lecture relèvent du lot P0-4. Les patchs « codes de motif » et « adresse et horaires » sont exécutés dans la chaîne 1→9 sur la base de test (P0-1 ✅). Restent à valider les textes marqués ❓.
