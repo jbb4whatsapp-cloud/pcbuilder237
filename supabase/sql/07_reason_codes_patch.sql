@@ -79,11 +79,14 @@ begin;
 --    section 2 avec votre version.
 -- ---------------------------------------------------------------------
 do $$
-declare v_md5 text;
+declare
+  v_md5  text;
+  v_deja boolean;
 begin
-  select md5(prosrc) into v_md5
+  select md5(replace(prosrc, chr(13), '')), position('check_codes' in prosrc) > 0
+    into v_md5, v_deja
   from pg_proc where oid = 'public.price_reports_before_insert()'::regprocedure;
-  if v_md5 is distinct from 'd0e4e9f639262bfe58028083910430c4' then
+  if not v_deja and v_md5 is distinct from 'd0e4e9f639262bfe58028083910430c4' then
     raise exception 'price_reports_before_insert() diffère de la version du schéma v1 (md5 %). Comparer et fusionner à la main avant de continuer.', v_md5;
   end if;
 end $$;

@@ -56,7 +56,7 @@ begin;
 do $$
 declare v_md5 text;
 begin
-  select md5(prosrc) into v_md5
+  select md5(replace(prosrc, chr(13), '')) into v_md5
   from pg_proc where oid = 'public.price_reports_before_insert()'::regprocedure;
   if v_md5 <> all (array['9599a26d7c0b8234dca44315de917cf6', '8cdb70b3f4f704c7e6a937094daf8906', '0908d243849b6bc22a74eca75b0e7b76']) then
     raise exception 'price_reports_before_insert() est dans une version inconnue (md5 %). Comparer et fusionner à la main.', v_md5;
