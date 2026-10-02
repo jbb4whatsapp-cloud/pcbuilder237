@@ -185,10 +185,10 @@ Chaque règle est une fonction pure qui reçoit la configuration et renvoie un r
 
 | # | Écart | Couvert par | État |
 |---|---|---|---|
-| 1 | Pas d'**origine** du relevé (agent ou boutique), ni de rôle propriétaire de boutique | `pcbuilder237_shop_owner_patch.sql` | 🛠 écrit, 🧪 local, 🔎 Supabase |
-| 2 | Pas de table d'**abonnements** | `pcbuilder237_shop_owner_patch.sql` | 🛠 écrit, 🧪 local, 🔎 Supabase |
-| 3 | Un relevé `ok` était publié automatiquement, même venant d'une boutique (la règle ✅ de la section 1 demande une validation) | `pcbuilder237_shop_owner_patch.sql` : un relevé de boutique est toujours `pending` | 🛠 écrit, 🧪 local, 🔎 Supabase |
-| 4 | **`config_hash` calculé sur toute la configuration annoncée** (`md5(reported_specs::text)`) : la batterie compte, deux relevés presque identiques donnent deux lignes. ⚠ Une version précédente de ce document l'indiquait à tort comme « déjà corrigé » (document 08, section 12, écart 1) | `pcbuilder237_config_hash_patch.sql` : empreinte limitée à `ram_gb`, `storage_gb`, `cpu` | **À FAIRE** : 🛠 patch écrit, 🧪 local, pas exécuté sur Supabase. Passera à ✅ après P0-1 |
+| 1 | Pas d'**origine** du relevé (agent ou boutique), ni de rôle propriétaire de boutique | `supabase/sql/03_shop_owner_patch.sql` | 🛠 écrit, 🧫 vérifié sur la base de test, 🔎 production |
+| 2 | Pas de table d'**abonnements** | `supabase/sql/03_shop_owner_patch.sql` | 🛠 écrit, 🧫 vérifié sur la base de test, 🔎 production |
+| 3 | Un relevé `ok` était publié automatiquement, même venant d'une boutique (la règle ✅ de la section 1 demande une validation) | `supabase/sql/03_shop_owner_patch.sql` : un relevé de boutique est toujours `pending` | 🛠 écrit, 🧫 vérifié sur la base de test, 🔎 production |
+| 4 | **`config_hash` calculé sur toute la configuration annoncée** (`md5(reported_specs::text)`) : la batterie compte, deux relevés presque identiques donnent deux lignes. ⚠ Une version précédente de ce document l'indiquait à tort comme « déjà corrigé » (document 08, section 12, écart 1) | `supabase/sql/08_config_hash_patch.sql` : empreinte limitée à `ram_gb`, `storage_gb`, `cpu` | **FAIT sur la base de test** : 🛠 patch écrit, 🧫 exécuté sur le projet Supabase de test (P0-1 ✅). Production à faire (P1-5) |
 | 5 | Garantie facultative, même pour l'occasion et le reconditionné | Aucun patch : **décision D7** | ❓ |
 | 6 | Règles anti-arnaque limitées à la RAM, au stockage et au prix | Partiel : `pcbuilder237_reason_codes_patch.sql` (version du zip « 08 ») pose les **codes de motif** pour ces trois règles ; la règle processeur reste à décider (**D5**) | 🛠 codes de motif écrits ; ❓ règle processeur |
 
