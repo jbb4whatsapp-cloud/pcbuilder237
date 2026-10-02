@@ -288,6 +288,31 @@ begin
   end loop;
 
   -- -------------------------------------------------------------------
+  -- 8c. Relevé envoyé par une boutique : il naît toujours en attente,
+  --     avec l origine « boutique » (règle du MVP, document 02, section 10)
+  -- -------------------------------------------------------------------
+  v_out := v_out || E'\n-- propriétaire : relevé de boutique\n';
+  v_out := v_out || pg_temp.t('propriétaire abonné : insère un relevé conforme sur sa boutique', 'authenticated', v_owner,
+    format($q$insert into public.price_reports (product_id, shop_id, condition, price_fcfa, reported_specs, proof_paths)
+              values (%L, %L, 'used', 199000, '{"ram_gb":16,"storage_gb":256}', %L)$q$,
+           v_prod, v_shopA, array[v_owner::text || '/1/a.jpg']), 'OK=1', 'x') || E'\n';
+  v_out := v_out || pg_temp.v('ce relevé conforme est enregistré pending, source shop (jamais publié sans modération)',
+    format($q$select status::text || ',' || source::text from public.price_reports
+              where product_id = %L and price_fcfa = 199000$q$, v_prod),
+    'pending,shop') || E'\n';
+  v_out := v_out || pg_temp.t('propriétaire : envoie status published et source agent', 'authenticated', v_owner,
+    format($q$insert into public.price_reports (product_id, shop_id, condition, price_fcfa, reported_specs, proof_paths, status, source)
+              values (%L, %L, 'used', 198000, '{"ram_gb":16,"storage_gb":256}', %L, 'published', 'agent')$q$,
+           v_prod, v_shopA, array[v_owner::text || '/2/a.jpg']), 'OK=1', 'x') || E'\n';
+  v_out := v_out || pg_temp.v('... les valeurs envoyées sont écrasées : pending, source shop',
+    format($q$select status::text || ',' || source::text from public.price_reports
+              where product_id = %L and price_fcfa = 198000$q$, v_prod),
+    'pending,shop') || E'\n';
+  v_out := v_out || pg_temp.t('propriétaire auteur : voit proof_paths et reported_by sur son propre relevé', 'authenticated', v_owner,
+    format('select 1 from public.price_reports_visible where product_id = %L and price_fcfa = 199000 and proof_paths is not null and reported_by is not null',
+           v_prod), 'OK=1') || E'\n';
+
+  -- -------------------------------------------------------------------
   -- 9. C9 : un signalement naît toujours 'open'
   -- -------------------------------------------------------------------
   v_out := v_out || E'\n-- C9 signalements\n';
@@ -311,8 +336,10 @@ begin
   update public.shop_subscriptions
      set starts_on = public.today_douala() - 30, ends_on = public.today_douala() - 1
    where shop_id = v_shopA;
-  v_out := v_out || pg_temp.t('propriétaire : plus aucune ligne après expiration', 'authenticated', v_owner,
-    format('select * from public.price_reports_visible where product_id = %L', v_prod), 'OK=0') || E'\n';
+  v_out := v_out || pg_temp.t('propriétaire : ne voit plus les relevés des autres après expiration', 'authenticated', v_owner,
+    format('select * from public.price_reports_visible where product_id = %L and price_fcfa not in (198000, 199000)', v_prod), 'OK=0') || E'\n';
+  v_out := v_out || pg_temp.t('propriétaire : garde ses 2 propres relevés (il en est l''auteur)', 'authenticated', v_owner,
+    format('select * from public.price_reports_visible where product_id = %L and price_fcfa in (198000, 199000)', v_prod), 'OK=2') || E'\n';
 
   -- -------------------------------------------------------------------
   -- 11. Rapport et annulation de tout
