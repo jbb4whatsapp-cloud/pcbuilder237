@@ -1,8 +1,8 @@
 # Architecture technique — PC Builder 237
 
 > **Statut** : brouillon v0.3 — 2 octobre 2026
-> **Historique** : v0.3 — liste des objets de base complétée (section 3) ; règle 5 précisée pour le personnel (4.2) ; connexion anonyme pour les signalements (4.4) ; flux 5.1 et 5.5 alignés sur les patchs « codes de motif » et « contrat de données » (écrits, 🧪 testés en local, **non exécutés sur Supabase**).
-> **Légende** : ✅ décidé par le porteur du projet · 🛠 déjà en place (schéma SQL v1 et patchs, ou site actuel) · ❓ proposition à valider
+> **Historique** : v0.3 — liste des objets de base complétée (section 3) ; règle 5 précisée pour le personnel (4.2) ; connexion anonyme pour les signalements (4.4) ; flux 5.1 et 5.5 alignés sur les patchs « codes de motif » et « contrat de données » (écrits, 🧫 vérifiés sur le projet Supabase de test, **pas en production**).
+> **Légende** : ✅ décidé par le porteur du projet · 🛠 déjà en place (schéma SQL v1 et patchs, ou site actuel) · ❓ proposition à valider · 🧫 vérifié sur le projet Supabase de test
 
 Ce document décrit comment le produit décrit dans les documents 01 (vision) et 02 (règles métier) est construit. Principe directeur : **la base de données est la source de vérité et la barrière de sécurité**. Le navigateur affiche et propose, il ne décide jamais d'un niveau de confiance, d'un statut de relevé ou d'un droit d'accès.
 
@@ -17,7 +17,7 @@ Ce document décrit comment le produit décrit dans les documents 01 (vision) et
 | Base de données, authentification, stockage | Supabase (PostgreSQL, Auth, Storage) | 🛠 |
 | Langage | TypeScript | ❓ |
 | Tests de la logique métier | Vitest (fonctions pures de compatibilité et de prix) | ❓ |
-| Migrations | Dossier `supabase/migrations/` versionné dans Git, appliqué avec la CLI Supabase | ❓ |
+| Migrations | Phase 1 : patchs rejouables dans `supabase/sql/` (D6 ✅, chaîne 1→9 rejouée une seule fois en production, lot P1-5). Après le go/no-go : dossier `supabase/migrations/` appliqué avec la CLI Supabase | ✅ |
 
 Deux projets Supabase : **test** et **production**. Chaque script SQL est d'abord exécuté sur le projet de test (c'est déjà la consigne en tête des scripts 🛠).
 
@@ -45,8 +45,8 @@ Visiteur ──► Next.js (Vercel) ──► Supabase
 | Géographie | `countries`, `cities`, `neighborhoods` |
 | Boutiques | `shops` (statut, badge `is_verified`, montage), `shop_members`, `shop_subscriptions` |
 | Catalogue | `products` (catégorie + `specs` en JSON, statut de validation : en attente, validé, rejeté) |
-| Relevés | `price_reports` (état, prix, garantie, configuration annoncée, preuves, niveau de contrôle, `check_codes` (codes de motif), statut de modération, origine, `client_ref` 🧪 pour un renvoi sans doublon) ; vue `price_reports_visible` 🧪 pour l'auteur, le propriétaire de la boutique et le personnel (la lecture directe des colonnes sensibles est fermée) |
-| Lecture publique | vue `current_prices` (dernier relevé publié de moins de 45 jours, par produit, boutique, état et configuration ; `city_id` et `config_hash` ajoutés, `check_reason` retiré 🧪 patch contrat de données) |
+| Relevés | `price_reports` (état, prix, garantie, configuration annoncée, preuves, niveau de contrôle, `check_codes` (codes de motif), statut de modération, origine, `client_ref` 🧫 pour un renvoi sans doublon) ; vue `price_reports_visible` 🧫 pour l'auteur, le propriétaire de la boutique et le personnel (la lecture directe des colonnes sensibles est fermée) |
+| Lecture publique | vue `current_prices` (dernier relevé publié de moins de 45 jours, par produit, boutique, état et configuration ; `city_id` et `config_hash` ajoutés, `check_reason` retiré 🧫 patch contrat de données) |
 | Builder | `builds`, `build_items` |
 | Modération | `flags` (signalements), champs de revue sur `price_reports` |
 | Lancement | `launch_settings` (fin de la période de contact ouvert), `shop_requests` (demandes d'ajout de boutique), vue `shops_public` 🛠 |
@@ -98,8 +98,8 @@ Pour la `Content-Security-Policy`, partir d'une version stricte et l'assouplir s
 ### 5.1 Un agent envoie un relevé 🛠
 1. L'agent se connecte, choisit boutique, produit, état, prix, stock, garantie, configuration annoncée.
 2. Le front compresse les photos (< 1 Mo conseillé) et les envoie dans `proofs/<uid>/…`.
-3. Le front insère la ligne dans `price_reports` avec les chemins des preuves et un `client_ref` généré à l'ouverture du formulaire (un renvoi après coupure échoue avec `23505` : « déjà envoyé » 🧪).
-4. Les déclencheurs vérifient le produit, la boutique, les preuves, calculent `check_level`, `check_reason` et `check_codes`, fixent `source = 'agent'`. Le front relit seulement `id, status, check_level, check_codes` ; le motif en français se relit dans `price_reports_visible` 🧪.
+3. Le front insère la ligne dans `price_reports` avec les chemins des preuves et un `client_ref` généré à l'ouverture du formulaire (un renvoi après coupure échoue avec `23505` : « déjà envoyé » 🧫).
+4. Les déclencheurs vérifient le produit, la boutique, les preuves, calculent `check_level`, `check_reason` et `check_codes`, fixent `source = 'agent'`. Le front relit seulement `id, status, check_level, check_codes` ; le motif en français se relit dans `price_reports_visible` 🧫.
 5. Niveau `ok` : publié automatiquement. Sinon : `pending`, file des modérateurs.
 
 ### 5.2 Une boutique envoie un relevé 🛠
@@ -117,7 +117,7 @@ Même chemin, mais le déclencheur `price_reports_shop_rules` fixe `source = 'sh
 3. Il sauvegarde (`builds`), partage via `share_slug`, ou demande un devis WhatsApp avec la liste pré-remplie. ✅ Le devis va à la boutique si elle est contactable, sinon au contact du porteur du projet (panier sur plusieurs boutiques : ❓).
 
 ### 5.5 Un modérateur traite la file 🛠
-Il lit les relevés `pending` (par `price_reports_visible`) avec leurs preuves, publie ou rejette avec une note, **obligatoire au rejet** (`PB032` 🧪). Auteur et date de décision sont conservés.
+Il lit les relevés `pending` (par `price_reports_visible`) avec leurs preuves, publie ou rejette avec une note, **obligatoire au rejet** (`PB032` 🧫). Auteur et date de décision sont conservés.
 
 ### 5.6 Une boutique propose un produit ✅ (patch produits 🛠)
 1. Le propriétaire abonné saisit marque, nom, catégorie et caractéristiques d'un produit absent du catalogue.
@@ -134,7 +134,7 @@ Calculé dans la base (déclencheur) 🛠, à partir de `products.specs` ✅. Le
 
 ❓ **Décision à trancher** : garder les règles dans des déclencheurs SQL (simple, impossible à contourner) tant qu'elles restent peu nombreuses ; les réorganiser en table de règles ou en fonction par catégorie quand elles dépasseront une dizaine. Pour le moment, chaque nouvelle règle = un script de migration testé.
 
-❓ **Langue des motifs.** Le motif d'un contrôle (`check_reason`) est écrit en français dans la base, ce qui convient tant que le site est en français seulement ✅ (phase 1). Si l'anglais est ajouté plus tard, il faudra stocker un code de motif (par exemple `ram_not_allowed`) et composer le texte côté site. Le prévoir dès qu'une règle est réécrite évite de retraiter les relevés existants.
+❓ **Langue des motifs.** Le motif d'un contrôle (`check_reason`) est écrit en français dans la base, ce qui convient tant que le site est en français seulement ✅ (phase 1). Le code de motif existe déjà (`check_codes`, patch « codes de motif » 🧫) : si l'anglais est ajouté, le texte public se compose côté site à partir du code, sans retraiter les relevés existants.
 
 ### 6.2 Compatibilité (builder) ❓
 - Module TypeScript indépendant de l'interface : une fonction pure par règle, qui reçoit la configuration et renvoie `{ niveau: 'erreur' | 'avertissement', message }`.

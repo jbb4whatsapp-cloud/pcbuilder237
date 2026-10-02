@@ -2,7 +2,7 @@
 
 > **Statut** : brouillon v0.3 — 2 octobre 2026 (aligné sur le schéma SQL v1, le patch produits, le patch `config_hash` et le document 01)
 > **Historique** : v0.3 — écart `config_hash` résolu par le patch dédié ; décisions renumérotées dans l'ordre ; « suite proposée » mise à jour.
-> **Légende** : ✅ décidé par le porteur du projet · 🛠 déjà en place dans le schéma ou le site · ❓ proposition à valider · 🔍 valeur à vérifier sur la fiche constructeur avant saisie
+> **Légende** : ✅ décidé par le porteur du projet · 🛠 déjà en place dans le schéma ou le site · ❓ proposition à valider · 🧫 vérifié sur le projet Supabase de test · 🔍 valeur à vérifier sur la fiche constructeur avant saisie
 
 Ce document répond à la décision n°5 du document 04 (« liste des portables du catalogue de départ, avec leurs valeurs autorisées tirées des fiches constructeur »). Le catalogue est la **référence des contrôles anti-arnaque** (document 02, section 2) : une valeur fausse ici produit soit de fausses alertes contre des boutiques honnêtes, soit des arnaques non détectées.
 
@@ -75,7 +75,7 @@ Relu dans `pcbuilder237_schema.sql` (fonction `price_reports_before_insert`) :
 | Comparaison | `allowed_ram_gb @> to_jsonb(ram)` | Fonctionne avec un entier dans un tableau ; 1000 et 1024 sont deux valeurs distinctes, donc **les deux sont listées** |
 | Processeur, batterie | **Pas de contrôle dans le déclencheur actuel** | Le document 01 les cite pour les portables ; ce sont les « règles à ajouter » du document 02. `cpu_options` est prévu pour elles mais inactif |
 | Prix | Plancher à 50 % de la médiane, au moins 3 relevés publiés sur 60 jours | Rien à saisir dans le catalogue ; il faut des relevés avant que la règle serve |
-| Empreinte de configuration | `config_hash = md5(reported_specs::text)` dans le schéma v1 | **Écart résolu par `pcbuilder237_config_hash_patch.sql` 🛠** (écrit, 🧪 local, pas encore exécuté sur Supabase) : l'empreinte ne porte plus que sur `ram_gb`, `storage_gb` et `cpu`. Avant ce patch, tout le contenu de `reported_specs` comptait, batterie comprise : deux relevés qui ne diffèrent que par la batterie ne se remplaçaient pas et ne comptaient pas dans la même médiane (document 02, section 10, point 4 ; document 08, section 12, écart 1) |
+| Empreinte de configuration | `config_hash = md5(reported_specs::text)` dans le schéma v1 | **Écart résolu par `pcbuilder237_config_hash_patch.sql` 🛠** (écrit, 🧫 exécuté sur le projet Supabase de test ; production à faire, lot P1-5) : l'empreinte ne porte plus que sur `ram_gb`, `storage_gb` et `cpu`. Avant ce patch, tout le contenu de `reported_specs` comptait, batterie comprise : deux relevés qui ne diffèrent que par la batterie ne se remplaçaient pas et ne comptaient pas dans la même médiane (document 02, section 10, point 4 ; document 08, section 12, écart 1) |
 
 ---
 
@@ -211,7 +211,7 @@ Tests à écrire avant la phase 1 pour chaque modèle d'un lot (à répéter sur
 
 Les modèles de la section 4 sont des hypothèses. Pour les confirmer :
 
-1. Chaque agent (document 04, question 1) relève, **pendant la phase de collecte avant ouverture**, les modèles de portables vus en boutique : marque, modèle exact, boutique, état. Pas de prix à ce stade si le temps manque.
+1. Le porteur du projet (D1 ✅, MVP) ou, si des agents sont recrutés, chaque agent (document 04, question 1) relève, **pendant la phase de collecte avant ouverture**, les modèles de portables vus en boutique : marque, modèle exact, boutique, état. Pas de prix à ce stade si le temps manque.
 2. Le porteur du projet classe les modèles par fréquence (nombre de boutiques qui les ont) dans chaque ville.
 3. Les 15 premiers modèles (ou le nombre retenu au seuil de lancement) entrent au catalogue, après vérification de la section 6.
 4. Un modèle vu en boutique mais absent du catalogue est géré comme prévu : l'agent propose une fiche, elle reste en attente de validation (document 05).
@@ -239,7 +239,7 @@ Le résultat remplace la section 4 dans la version suivante de ce document.
 | 4 | Qui vérifie les fiches constructeur ? Le porteur du projet assurant la modération (✅ D2), la vérification lui revient par défaut ; un second regard d'une autre personne reste souhaitable (section 6, étape 5) | ❓ (D8) |
 | 5 | Garder dans `specs` les champs informatifs (`ram_type`, `ram_slots`, `ram_soldered_gb`, `source_url`, `verified_on`), même non lus ? Le script les inclut déjà ; `cpu_options` reste à ajouter avec la règle processeur (D5) | ❓ |
 | 6 | Mise à niveau non officielle (32 Go sur une machine limitée à 16 Go) : laisser en `impossible` examiné par un modérateur (proposé), ou assouplir ? | ❓ |
-| 7 | ~~`config_hash`~~ | ✅ Résolu : patch `config_hash` 🛠 (voir section 2.5) ; à confirmer après exécution sur Supabase |
+| 7 | ~~`config_hash`~~ | ✅ Résolu : patch `config_hash` 🛠 (voir section 2.5) ; exécuté sur la base de test 🧫, production à faire (lot P1-5) |
 
 ---
 

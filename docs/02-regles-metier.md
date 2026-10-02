@@ -2,7 +2,7 @@
 
 > **Statut** : brouillon v0.3 — 2 octobre 2026
 > **Historique** : v0.3 — section 10 réécrite d'après les documents 08 et 09 (le point 4 n'était **pas** corrigé ; point 5 renvoyé à la décision D7 du registre `00-ROADMAP-MAITRE.md`).
-> **Légende** : ✅ décidé par le porteur du projet · 🛠 déjà implémenté dans le schéma SQL v1 · ❓ proposition à valider
+> **Légende** : ✅ décidé par le porteur du projet · 🛠 déjà implémenté dans le schéma SQL v1 · ❓ proposition à valider · 🧫 vérifié sur le projet Supabase de test · 🔎 à vérifier en production
 
 Ce document décrit la logique propre au marché. Un développeur ne peut pas la deviner : elle doit être respectée dans le code, côté serveur en priorité.
 
@@ -181,7 +181,7 @@ Chaque règle est une fonction pure qui reçoit la configuration et renvoie un r
 
 ## 10. Écarts connus entre ces règles et le schéma v1
 
-À traiter dans la phase 0. Chaque écart indique le script qui le couvre ; **aucun n'est encore exécuté sur Supabase** (lot P0-1 du `00-ROADMAP-MAITRE.md`). Un écart ne passe à ✅ qu'après ce test.
+À traiter dans la phase 0. Chaque écart indique le script qui le couvre. Les patchs 3 à 9 sont exécutés sur la base de test (🧫, lot P0-1 ✅ du `00-ROADMAP-MAITRE.md`) ; **aucun n'est encore en production** (lot P1-5).
 
 | # | Écart | Couvert par | État |
 |---|---|---|---|

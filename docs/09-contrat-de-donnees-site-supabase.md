@@ -428,7 +428,7 @@ La liste des colonnes de chaque lecture est écrite **une seule fois**, dans une
 
 ## 12. Modifications demandées à la base
 
-C1, C2, C3, C5, C8 et C9 sont écrits dans `pcbuilder237_data_contract_patch.sql` et vérifiés sur le projet de test 🧫 (retenus par défaut, en attente de confirmation) ; C4, C6 et C7 ne sont **pas** écrits. **C1 à C3 touchent la même vue** (`current_prices`) et sont faites en **un seul patch**, car retirer une colonne impose de recréer la vue (document 07, décision n°9) ; l'ordre des colonnes existantes ne doit pas changer.
+C1, C2, C3, C5, C8 et C9 sont écrits dans `pcbuilder237_data_contract_patch.sql` et vérifiés sur le projet de test 🧫 (confirmés le 2 octobre 2026, D3 ✅) ; C4, C6 et C7 ne sont **pas** écrits. **C1 à C3 touchent la même vue** (`current_prices`) et sont faites en **un seul patch**, car retirer une colonne impose de recréer la vue (document 07, décision n°9) ; l'ordre des colonnes existantes ne doit pas changer.
 
 | # | Changement | Raison | Priorité |
 |---|---|---|---|
@@ -445,6 +445,8 @@ C1, C2, C3, C5, C8 et C9 sont écrits dans `pcbuilder237_data_contract_patch.sql
 ---
 
 ## 13. Écarts avec les autres documents
+
+> **État au 2 octobre 2026** : les points 1 à 10 sont reportés dans les documents concernés (roadmap, section 2, n°12). Le point 11 (requêtes K1 à K4 lues par l'application) reste à vérifier avec une vraie requête depuis le site (P0-4, P1-1).
 
 1. **Document 02, section 10, point 4** : toujours barré « déjà corrigé ». C'est faux (document 08, section 12). Le remettre en « à faire », puis en « fait » : le patch `config_hash` est exécuté sur la base de test, il reste à l'exécuter en production.
 2. **Document 05, sections 4.1 et 4.2** : « relevé par un agent » côté acheteur, à aligner sur « Constaté par un agent » (document 07, section 3.0, décision n°10).
@@ -518,8 +520,8 @@ C1, C2, C3, C5, C8 et C9 sont écrits dans `pcbuilder237_data_contract_patch.sql
 
 1. ✅ Décisions n°1, 2, 6 et 11 (section 15) confirmées le 2 octobre 2026 ; le patch reste tel quel.
 2. Le rejeu complet 01 à 09 sur une base de test vide est fait 🧫.
-3. **Nettoyer la base de test** : les scripts laissent des relevés (dont un rejeté), un signalement et une photo de 1 octet dans le bucket `proofs`.
-4. **Commit** du patch, des deux scripts de test et de ce document ; vérifier avant que `.env.test.local` est ignoré par git.
-5. Reporter dans les autres documents les écarts de la section 13 (07 : `PB032`, message de relevé déjà envoyé ; 08 : requêtes de suivi ; 02 : point 10.4), puis passer P0-1 à ✅ dans la feuille de route et lever la règle « aucun écran avant le rapport de P0-1 ».
+3. ✅ Base de test nettoyée (relevés, signalements, comptes anonymes et photos de test à 0).
+4. ✅ Patch, scripts de test et document commités (`9e03d45`) ; `.env.test.local` ignoré par git.
+5. ✅ Écarts de la section 13 reportés ; P0-1 passé à ✅ dans la feuille de route ; la règle « aucun écran avant le rapport de P0-1 » est levée.
 6. Écrire `fr.json` (document 07, section 11) et le module de lecture (constantes de colonnes, `mapError`, fonctions pures de la section 5), en lisant les relevés d'un auteur ou d'une boutique par `price_reports_visible`.
 7. Restent sans patch : C4 (vue agrégée), C6 (vue publique des produits), C7 (table `events`) et les décisions n°3, 4, 5, 7 à 10 et 12. La connexion anonyme reste désactivée en production jusqu'à la décision n°12.

@@ -1,8 +1,8 @@
 # Pages et parcours utilisateur — PC Builder 237
 
 > **Statut** : brouillon v0.4 — 2 octobre 2026 (décisions des sections 9 et 10 intégrées)
-> **Historique** : v0.4 — vocabulaire public « constaté par un agent » ; renvois aux décisions D4 (photos) et D7 (garantie) ; connexion anonyme précisée pour le signalement ; note de rejet obligatoire imposée par la base 🧪.
-> **Légende** : ✅ décidé par le porteur du projet · 🛠 déjà en place (schéma SQL, site actuel) · ❓ proposition à valider
+> **Historique** : v0.4 — vocabulaire public « constaté par un agent » ; renvois aux décisions D4 (photos) et D7 (garantie) ; connexion anonyme précisée pour le signalement ; note de rejet obligatoire imposée par la base 🧫.
+> **Légende** : ✅ décidé par le porteur du projet · 🛠 déjà en place (schéma SQL, site actuel) · ❓ proposition à valider · 🧫 vérifié sur le projet Supabase de test
 
 Ce document décrit ce que voit et fait chaque type d'utilisateur. Il s'appuie sur les documents 01 (vision), 02 (règles métier), 03 (architecture) et 04 (feuille de route). Les prix et noms de produits cités en exemple sont fictifs.
 
@@ -66,7 +66,7 @@ Pour le MVP, ce rôle est tenu par le porteur du projet (Yaoundé d'abord, Doual
 ### 2.4 Modérateur 🛠 ❓
 1. Ouvre la file des relevés en attente, triée du plus ancien au plus récent.
 2. Voit pour chacun : produit, boutique, prix, configuration annoncée, raison du contrôle, photos de preuve, historique de l'agent.
-3. Publie ou rejette, avec une note obligatoire en cas de rejet (imposée par la base : `PB032` 🧪).
+3. Publie ou rejette, avec une note obligatoire en cas de rejet (imposée par la base : `PB032` 🧫).
 4. Valide ou rejette les fiches produit proposées par les boutiques, après comparaison avec la fiche constructeur ✅.
 5. Traite ensuite les signalements ouverts.
 6. Traite les demandes d'ajout de boutique : création en un geste ou refus avec note 🛠.
@@ -179,7 +179,7 @@ Deux villes au lancement ✅. Choix mémorisé, modifiable depuis l'en-tête de 
 ### 4.5 Bouton WhatsApp ❓
 Message pré-rempli (exemple fictif) :
 
-> « Bonjour, j'ai vu sur PC Builder 237 : Lenovo ThinkPad T480, occasion, 16 Go / 256 Go, 235 000 FCFA (relevé le 28/09). Est-il toujours disponible ? »
+> « Bonjour, j'ai vu sur PC Builder 237 : Lenovo ThinkPad T480, occasion, 16 Go / 256 Go, 235 000 FCFA (prix constaté le 28/09). Est-il toujours disponible ? »
 
 Pendant la période de lancement, le bouton apparaît pour toutes les boutiques ; ensuite, pour les boutiques abonnées seulement ✅. Le lien utilise le numéro sans le `+` (document 03, section 4.4). Pour le builder, le message contient la liste des composants avec leurs prix. ✅ Si la boutique n'est pas contactable, le devis est envoyé au contact du porteur du projet (numéro à renseigner, ❓). Cas d'un panier réparti sur plusieurs boutiques : ❓ à trancher.
 
@@ -261,4 +261,4 @@ Ils servent à : repérer les produits cherchés mais sans prix (priorité de co
 2. **Numéro du porteur du projet** pour les devis du builder, et comportement d'un devis qui concerne plusieurs boutiques.
 3. **Demande d'ajout de boutique** : la table `shop_requests` existe 🛠 (patch lancement). Restent à concevoir l'écran de l'agent et l'écran de traitement.
 4. **Droit de réponse** : à préparer après la période de lancement. Table de réponses rattachées aux relevés, modération, saisie par le personnel pour une boutique sans compte. Le patch SQL sera écrit à ce moment-là.
-5. **Anglais** : reporté. Le motif des contrôles (`check_reason`) reste écrit en français dans la base ; si l'anglais est ajouté, il faudra le remplacer par un code de motif (document 03, section 6.1).
+5. **Anglais** : reporté. Le motif des contrôles (`check_reason`) reste écrit en français dans la base, pour le personnel et l'agent ; le public lit les codes de motif (`check_codes`, document 07, section 4.4), donc l'anglais n'exigera pas de retraiter les relevés (document 03, section 6.1).

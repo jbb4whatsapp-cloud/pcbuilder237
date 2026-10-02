@@ -2,7 +2,7 @@
 
 > **Statut** : brouillon v0.4 — 2 octobre 2026 (décisions du document 05 intégrées ; chaîne de patchs complète ; D1 et D2 tranchées)
 > **Historique** : v0.4 — chaîne des 9 scripts ; qui relève et qui modère (✅ le porteur du projet, Yaoundé puis Douala). **L'ordre d'exécution détaillé (lots P0 et P1) et le registre unique des décisions sont dans `00-ROADMAP-MAITRE.md`** : en cas de différence, ce dernier prime.
-> **Légende** : ✅ décidé par le porteur du projet · 🛠 déjà en place · ❓ proposition à valider
+> **Légende** : ✅ décidé par le porteur du projet · 🛠 déjà en place · ❓ proposition à valider · 🧫 vérifié sur le projet Supabase de test
 
 Ce document répond à la question ouverte n°5 du document 01 (« liste exacte des fonctionnalités du MVP »). Tout ce qui suit est une **proposition** : l'ordre des phases est à valider.
 
@@ -22,11 +22,11 @@ Ce document répond à la question ouverte n°5 du document 01 (« liste exacte 
 ### Phase 0 — Remise à niveau du site actuel
 *Objectif : un site propre sur lequel construire, branché sur le nouveau schéma.*
 
-- Exécuter sur le projet de **test**, dans cet ordre (scripts écrits 🛠, jamais exécutés sur Supabase) : schéma v1 → « agents » → « propriétaire de boutique » → « produits » → « lancement » → « adresse et horaires » → « codes de motif » (version du zip 08) → `config_hash` → « contrat de données » (toujours le dernier). Puis `pcbuilder237_test_supabase.sql`.
+- Exécuter sur le projet de **test**, dans cet ordre (scripts écrits 🛠, exécutés sur le projet de test 🧫, lot P0-1 ✅ ; **production : lot P1-5**) : schéma v1 → « agents » → « propriétaire de boutique » → « produits » → « lancement » → « adresse et horaires » → « codes de motif » (version du zip 08) → `config_hash` → « contrat de données » (toujours le dernier). Puis `supabase/tests/test_supabase.sql`.
 - Créer le premier admin, deux ou trois agents de test, quelques boutiques et produits.
 - Corrections rapides de l'audit : titre, description, `lang="fr"`, favicon, labels, en-têtes de sécurité, Open Graph, `robots.txt`.
 - Migrer le front vers le nouveau schéma : l'ancien site cesse de fonctionner tant que ce n'est pas fait (avertissement en tête du schéma 🛠).
-- Traiter les écarts du document 02, section 10 : modération des relevés de boutique (patch propriétaire 🛠), `config_hash` (patch dédié 🛠, **pas encore corrigé** tant que non exécuté), garantie (décision D7 ❓), règles anti-arnaque (codes de motif 🛠 ; règle processeur D5 ❓).
+- Traiter les écarts du document 02, section 10 : modération des relevés de boutique (patch propriétaire 🛠), `config_hash` (patch dédié, exécuté sur la base de test 🧫 ; production à faire), garantie (décision D7 ❓), règles anti-arnaque (codes de motif 🛠 ; règle processeur D5 ❓).
 
 **Sortie** : un site déployé en test, login agent et admin fonctionnels, aucune page cassée.
 

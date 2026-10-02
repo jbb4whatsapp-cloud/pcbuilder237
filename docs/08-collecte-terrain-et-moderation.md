@@ -44,7 +44,7 @@ Un comparateur sans prix récents ne sert à rien (document 04, section 1). Le s
 
 **⚠ Conséquence à traiter ❓** : tant que la même personne relève et modère, la règle ci-dessous (« une même personne ne relève pas et ne modère pas le même relevé ») **ne peut pas être appliquée**, et la base ne l'impose pas. Les relevés `ok` sont publiés sans modération ; le seul second regard possible est le contrôle par échantillon (section 6.3), à faire par une autre personne dès qu'il y en a une.
 
-**Proposition de départ** ❓ : 2 agents par ville, pour qu'une absence n'interrompe pas la collecte ; 1 modérateur pour les deux villes ; le porteur du projet comme admin et responsable catalogue au début. Une même personne ne doit pas à la fois relever un prix et modérer ce relevé.
+**Proposition de départ si des agents sont recrutés** ❓ (hors MVP, où le porteur du projet relève seul, D1 ✅) : 2 agents par ville, pour qu'une absence n'interrompe pas la collecte ; 1 modérateur pour les deux villes ; le porteur du projet comme admin et responsable catalogue au début. Une même personne ne doit pas à la fois relever un prix et modérer ce relevé.
 
 ### Rémunération des agents ❓ (sans objet tant que le porteur relève lui-même)
 
@@ -72,6 +72,8 @@ Une ligne de prix = un produit dans une boutique, pour un état et une configura
 | Lignes à tenir à jour | 12 × 6 × 1,5 ≈ **108** |
 | Cycle de rafraîchissement visé | **21 jours** (la moitié de la limite de 45 jours : une tournée manquée ne fait pas disparaître les prix) |
 | Relevés par agent et par jour de tournée (photos et échanges inclus) | 20 |
+
+*MVP : ces cadences valent pour une seule personne, le porteur du projet, qui relève et modère ; « agent » désigne alors cette personne.*
 
 **Résultat** : 108 ÷ 21 ≈ **5 relevés par jour et par ville**, soit une tournée de 20 relevés tous les quatre jours environ. Côté modération, si 20 % des relevés déclenchent une alerte, cela fait environ **un relevé à examiner par jour et par ville**.
 
@@ -271,8 +273,8 @@ Les durées sont indicatives.
 
 | Étape | Contenu | Sortie |
 |---|---|---|
-| 1. Préparation | Catalogue de départ vérifié et activé (document 06) ; schéma et patchs exécutés sur la base de **test** ; 2 à 3 agents formés (section 5) ; machines de test pour valider la section 5.4 | Agents capables de saisir un relevé complet |
-| 2. Pilote à Mokolo | 1 semaine, 2 agents, un seul quartier ; chaque relevé revu par un modérateur | Mesures réelles : relevés par jour, taux d'alerte, taux de rejet, temps de saisie |
+| 1. Préparation | Catalogue de départ vérifié et activé (document 06) ; schéma et patchs exécutés sur la base de **test** ; protocole de la section 5 maîtrisé (agents formés s'il y en a) ; machines de test pour valider la section 5.4 | Agents capables de saisir un relevé complet |
+| 2. Pilote à Mokolo | 1 semaine, un seul quartier ; MVP : le porteur du projet relève (si des agents sont recrutés : 2 agents) ; chaque relevé revu par un modérateur (**D19 ❓** : en solo, qui exerce ce second regard ?) | Mesures réelles : relevés par jour, taux d'alerte, taux de rejet, temps de saisie |
 | 3. Ajustement | Corriger les fiches produit fausses, le formulaire, la formation ; refaire le calcul de la section 4 | Hypothèses remplacées par des mesures |
 | 4. Collecte étendue | Tous les quartiers prévus à Yaoundé, puis Douala | Seuils de la section 8 suivis chaque semaine |
 | 5. Répétition générale | Parcours acheteur testé sur téléphone, connexion lente ; sauvegardes actives ; pages de confiance en ligne (document 04, phase 1) | Go ou no-go sur les seuils |
@@ -332,4 +334,4 @@ Relevés en lisant l'ensemble, puis en exécutant la chaîne complète sur une b
 
 ## 14. Suite proposée
 
-Voir `00-ROADMAP-MAITRE.md` (sections 4 et 7). La chaîne de 9 scripts est exécutée sur la base de test (P0-1 ✅) ; le document 09 est en v0.4. Prochaines étapes : confirmer D3, puis le pilote de collecte (lots P1-1 et P1-2).
+Voir `00-ROADMAP-MAITRE.md` (sections 4 et 7). La chaîne de 9 scripts est exécutée sur la base de test (P0-1 ✅) ; le document 09 est en v0.4. D3 ✅ confirmée ; prochaines étapes : P0-4 (socle du site), puis le pilote de collecte (lots P1-1 et P1-2).

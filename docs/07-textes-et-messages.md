@@ -186,7 +186,7 @@ Règles d'assemblage :
 
 ### 4.3 Ce que le texte public ne montre jamais ❓
 
-- Le texte brut de `check_reason`. La vue `current_prices` le renvoie encore tel quel (« RAM annoncée 64 Go > maximum 32 Go pour ThinkPad T480 », « Prix très inférieur à la médiane récente (235 000 FCFA) »). C'est un texte **pour le personnel et l'agent** : trop sec pour le public, et il expose la médiane de prix. Le site ne l'affiche pas ; voir la décision n°9 (section 12) pour le retirer de la vue publique.
+- Le texte brut de `check_reason`. La vue publique `current_prices` ne le contient plus (patch contrat de données 🧫, décision n°9) ; il reste lisible par l'auteur du relevé et par le personnel dans `price_reports_visible` (par exemple « RAM annoncée 64 Go > maximum 32 Go pour ThinkPad T480 », « Prix très inférieur à la médiane récente (235 000 FCFA) »). C'est un texte **pour le personnel et l'agent** : trop sec pour le public, et il expose la médiane de prix. Le site public ne l'affiche jamais.
 - Le nom de la boutique **dans** le texte d'alerte (il est déjà sur la ligne de prix).
 - Les mots « arnaque », « faux », « fraude », « mensonge », « trompeur ».
 - La différence `suspect` / `impossible` (section 3.4).

@@ -1,6 +1,6 @@
 # ROADMAP MAÎTRE — PC Builder 237
 
-> **Statut** : v1.3 (D3 confirmée) — 2 octobre 2026 (P0-1 terminé sur la base de test ; document 09 en v0.4 ; base de test nettoyée). Document de pilotage unique : il **n'invente aucune règle**, il range, tranche les conflits de version et ordonne le travail. En cas de doute sur une règle, le document 01 à 09 cité fait foi.
+> **Statut** : v1.4 (D3 confirmée, D6 tranchée, cohérence des documents) — 2 octobre 2026 (P0-1 terminé sur la base de test ; document 09 en v0.4 ; base de test nettoyée). Document de pilotage unique : il **n'invente aucune règle**, il range, tranche les conflits de version et ordonne le travail. En cas de doute sur une règle, le document 01 à 09 cité fait foi.
 > **Historique** : v1.2 (2 octobre 2026) : D1 et D2 tranchées. v1.3 (2 octobre 2026) : chaîne 1→9 et scripts de test exécutés sur Supabase test, règle « aucun écran avant P0-1 » levée, sections 1, 2, 5 et 7 réécrites. v1.3 révisée (2 octobre 2026) : commit de P0-1 confirmé (`9e03d45`, poussé sur `origin/main`), arborescence réelle du dépôt reportée (scripts 01 à 09 déjà numérotés dans `supabase/sql/`), état réel des documents 07 et 08 relu.
 > **Légende** : ✅ décidé · 🛠 écrit · 🧪 testé sur PostgreSQL local seulement · 🧫 vérifié sur le projet Supabase de test · 🔎 à vérifier (test ou production) · ❓ à décider · ⚠ incohérence à corriger · ⏳ reste à faire
 
@@ -24,9 +24,9 @@
 | 04 Feuille de route | **v0.4** ✅ | `docs/` | Chaîne de 9 scripts, D1/D2 ; **ce document prime** pour l'ordre d'exécution |
 | 05 Pages et parcours | **v0.4** ✅ | `docs/` | Vocabulaire, renvois D4/D7 |
 | 06 Catalogue de départ | **v0.3** ✅ | `docs/` | `config_hash` résolu, décisions renumérotées |
-| 07 Textes et messages | **v0.3** ✅ | `docs/` | `PB032`, `23505`, décisions 6, 9, 10 ; message « relevé déjà envoyé » présent (§7.2) mais statuts 🧪 et « non exécuté » à passer en 🧫 (voir §2, n°20) |
-| 08 Collecte et modération | **v0.3** ✅ | `docs/` | Décision MVP ; note sur `price_reports_visible` ajoutée sous K4 ; §12 et §14 encore au statut « base locale / P0-1 à faire » (voir §2, n°20) |
-| 09 Contrat de données | **v0.4** ✅ | `docs/09-contrat-de-donnees-site-supabase.md` | Vérifié sur la base de test ; D3 « retenue par défaut », confirmation attendue |
+| 07 Textes et messages | **v0.3** ✅ | `docs/` | `PB032`, `23505`, décisions 6, 9, 10 ; message « relevé déjà envoyé » présent (§7.2) ; statuts alignés sur 🧫 |
+| 08 Collecte et modération | **v0.3** ✅ | `docs/` | Décision MVP ; note sur `price_reports_visible` ajoutée sous K4 ; §12 et §14 alignés sur P0-1 ✅ ; pilote et cadences à lire pour une seule personne (D1) |
+| 09 Contrat de données | **v0.4** ✅ | `docs/09-contrat-de-donnees-site-supabase.md` | Vérifié sur la base de test ; D3 ✅ confirmée |
 | 10 Plan de réalisation | v0.1 | racine | **Absorbé par ce document** (sections 4 et 5) ; à archiver |
 
 ### Scripts SQL : chaîne canonique (ordre d'exécution **obligatoire**)
@@ -91,7 +91,7 @@ Chaque décision n'apparaît **qu'une fois** ici. Numérotation propre à ce reg
 | **D3** ✅ | Patch « contrat de données » confirmé tel quel le 2 octobre 2026 : `city_id` dans les vues, fermeture de `check_reason` et de la lecture directe de `price_reports` (lecture par `price_reports_visible`), `client_ref`, note de rejet obligatoire, signalement forcé `open`. Tests au vert 🧫 | 09 n°1, 2, 6, 11 | Tranchée |
 | **D4** | Deux preuves photo pour occasion et reconditionné, imposées aussi par la base ? | 08 n°7 | P1-1 |
 | **D5** | Règle de contrôle du processeur (`cpu_options`) et champ « lu sur la machine / sur l'étiquette » | 08 n°10 | P1-1 |
-| **D6** | Patchs gardés rejouables ou aplatis en migrations | 03, 09 | P0-4 |
+| **D6** ✅ | Patchs gardés rejouables pendant la phase 1 (chaîne 1→9 rejouée une seule fois en production, P1-5) ; migrations Supabase après le go/no-go | 03, 09 | Tranchée le 2 octobre 2026 |
 | **D7** | Garantie : obligatoire hors neuf, ou « non précisée » affichée ? | 02 §10.5 · 07 n°6 | P1-1 |
 | **D8** | Qui vérifie les fiches constructeur (responsable catalogue) ; liste réelle des modèles ; stockage annoncé = disque principal | 06 n°1-4, 6 | Activation du catalogue (avant pilote) |
 
@@ -110,6 +110,7 @@ Chaque décision n'apparaît **qu'une fois** ici. Numérotation propre à ce reg
 | D17 | Preuves photo publiques (suppose le retrait EXIF) ; unicité d'un nom rejeté | 03 n°2, 8 | P1-1 / P1-2 |
 | D18 | Rémunération (sans objet tant que le porteur relève lui-même), contrôle par échantillon (10 %), validité du badge (6 mois), accord des boutiques relu par un juriste | 08 n°2, 6, 8, 9 · 07 n°8 | Pilote |
 | **D19** ❓ | **Séparation relevé / modération** : le porteur fait les deux (D1, D2), donc la règle « une personne ne relève pas et ne modère pas le même relevé » (08 §3) ne s'applique pas. Qui exerce le second regard (échantillon 10 %) ? | 08 §3 | Pilote |
+| D20 | Montrer le motif technique (`check_reason`) à l'agent auteur du relevé (proposé : oui) | 07 n°7 | P1-1 |
 
 ### Phases 2 à 4 (ne pas traiter maintenant)
 Contenu et tarifs du pack d'abonnement (01 n°2-4) · devis multi-boutiques (07 n°4) · mention « examiné par un modérateur » (07 n°5) · droit de réponse (05 §4.7) · table `events` (C7) · vue agrégée (C4).
@@ -137,7 +138,7 @@ La règle « aucun écran avant le rapport de P0-1 » est **levée** : le rappor
 | P0-1 | Chaîne 1→9 sur Supabase **test**, script SQL, 6 vérifications `supabase-js` | S | ✅ 🧫 fait : 71 PASS + 31 PASS, base nettoyée. Commit fait et poussé : `9e03d45` (7 fichiers : `.env.example`, `.gitignore`, `package.json`, doc 09, patch 9, deux scripts de test), arbre de travail propre | Rapport sans échec ; doc 09 en v0.4 |
 | P0-2 | Admin, 2-3 agents, 1 modérateur, 1 propriétaire de test, boutiques, villes/quartiers ; catalogue de départ avec **quelques fiches activées pour le test seulement** | S | ⏳ Partiel sur la base de test (agent, modérateur, propriétaire, boutique, produit, abonnement de test). Reste : données réelles de test et **production** | Un relevé de test va de l'agent au public, par le modérateur |
 | P0-3 | Trancher D1, D2, D3, D8 (sans code) | S | D1 ✅, D2 ✅, D3 ✅ ; **D8 ❓** (reste avant l'activation du catalogue) | Registre à jour |
-| P0-4 | Dépôt/environnements (Vercel, aperçus sur base de test), migrations (D6), 3 clients Supabase (`getUser()`, jamais `getSession()`), types, module de lecture (constantes de colonnes, `mapError`, fonctions pures), `fr.json`, tests Vitest | M | ⏳ **À démarrer** | Tests verts + page de diagnostic |
+| P0-4 | Dépôt/environnements (Vercel, aperçus sur base de test), patchs rejouables (D6 ✅), 3 clients Supabase (`getUser()`, jamais `getSession()`), types, module de lecture (constantes de colonnes, `mapError`, fonctions pures), `fr.json`, tests Vitest | M | ⏳ **À démarrer** | Tests verts + page de diagnostic |
 | P0-5 | Corrections d'audit : titre, `lang="fr"`, favicon, labels, en-têtes de sécurité, Open Graph, `robots.txt` | S | ⏳ | — |
 | P0-6 | Migrer le front : connexion agent, routes `/agent` `/boutique` `/admin` protégées côté serveur, retrait de l'ancienne table ; relire les relevés par `price_reports_visible` | M | ⏳ | Aucune page cassée |
 | P0-7 | Corriger les incohérences de la section 2 | S | ✅ terminé : n°13, n°20, n°21 (commits `3090ca2`, `b20e13e`, `054f85b`, `66dc181`, `82d91d5`). Restent n°17 et n°18 : à valider par une vraie requête depuis le site (avec P0-4/P1-1) | Docs alignés |
@@ -184,95 +185,28 @@ La règle « aucun écran avant le rapport de P0-1 » est **levée** : le rappor
 ---
 
 ## 6. Organisation du dossier
-
-```
 docs/
-  00-ROADMAP-MAITRE.md        ← ce fichier (seul point d'entrée)
-  01 … 09 (une seule version chacune)
-  archive/                    ← 10-plan…, anciennes versions
+00-ROADMAP-MAITRE.md ← ce fichier (seul point d'entrée)
+01 … 09 (une seule version chacune)
+archive/ ← 10-plan…, anciennes versions
 supabase/
-  seed/                       ← catalogue de départ
-  sql/
-    01_schema.sql … 09_data_contract_patch.sql   ← numérotés dans l'ordre d'exécution
-  tests/
-    test_supabase.sql
-    test_supabase_js.mjs
-.env.example                  ← modèle (site + tests) ; suivi par git
-.env.local                    ← site, non commité
-.env.test.local               ← tests, non commité, base de TEST uniquement
-```
+seed/ ← catalogue de départ
+sql/
+01_schema.sql … 09_data_contract_patch.sql ← numérotés dans l'ordre d'exécution
+tests/
+test_supabase.sql
+test_supabase_js.mjs
+.env.example ← modèle (site + tests) ; suivi par git
+.env.local ← site, non commité
+.env.test.local ← tests, non commité, base de TEST uniquement
+
 Cette arborescence est celle du dépôt aujourd'hui. Le numéro dans le nom des scripts supprime l'ambiguïté sur la séquence d'exécution.
 
 ## 7. Prochaines actions (dans l'ordre)
 
-1. ✅ **Contrôles après le commit : faits** (patch 7 corrigé, en-tête « Node 18.17 ou plus », seul `.env.example` suivi par git).
-2. ✅ **D3 confirmée** (2 octobre 2026). Le patch 9 reste tel quel, aucun rejeu nécessaire.
-3. **Pas d'agents = pas de prix = pas de lancement** : D1 est tranchée, mais l'exécution (relevés réels à Yaoundé puis Douala) est le vrai chemin critique, pas le code.
-4. **Rejeu d'un patch qui défait un autre** : rejouer le 9 en dernier, puis les deux scripts de test. Rejouer le patch lancement ou adresse retire `city_id` de `shops_public`.
-5. **Catalogue activé sans vérification** : fausses alertes, boutiques accusées à tort. Valeurs actuelles non vérifiées.
-6. **Secrets et base de test** : `.env.test.local` ne doit jamais être commité ni pointer vers la production ; les scripts de test créent des données (relevés, signalements, comptes anonymes, photos) et doivent être lancés sur le projet de TEST uniquement, avec nettoyage ensuite.
-7. **Connexion anonyme** : activée sur la base de test seulement. Ne pas l'activer en production avant D10.
-
----
-
-## 6. Organisation du dossier
-
-```
-docs/
-  00-ROADMAP-MAITRE.md        ← ce fichier (seul point d'entrée)
-  01 … 09 (une seule version chacune)
-  archive/                    ← 10-plan…, anciennes versions
-supabase/
-  seed/                       ← catalogue de départ
-  sql/
-    01_schema.sql … 09_data_contract_patch.sql   ← numérotés dans l'ordre d'exécution
-  tests/
-    test_supabase.sql
-    test_supabase_js.mjs
-.env.example                  ← modèle (site + tests) ; suivi par git
-.env.local                    ← site, non commité
-.env.test.local               ← tests, non commité, base de TEST uniquement
-```
-Cette arborescence est celle du dépôt aujourd'hui. Le numéro dans le nom des scripts supprime l'ambiguïté sur la séquence d'exécution.
-
-## 7. Prochaines actions (dans l'ordre)
-
-1. ✅ **Contrôles après le commit : faits** (patch 7 corrigé, en-tête « Node 18.17 ou plus », seul `.env.example` suivi par git).
-2. **Confirmer D3** : une ligne par décision (n°1, 2, 6, 11 du doc 09 §15), ou demander des changements au patch. Si un changement est demandé, rejouer le patch 9, puis les deux scripts de test.
-3. **P0-4** : démarrer le socle du site (dépôt, environnements, 3 clients Supabase, `fr.json`, module de lecture, Vitest). C'est le chemin critique côté code.
-4. ✅ **P0-7 terminé** (voir la section 2). Test d'insertion propriétaire ajouté : 71 PASS. Les n°17 et n°18 se valideront avec le site (P0-4, P1-1).
-5. **Catalogue activé sans vérification** : fausses alertes, boutiques accusées à tort. Valeurs actuelles non vérifiées.
-6. **Secrets et base de test** : `.env.test.local` ne doit jamais être commité ni pointer vers la production ; les scripts de test créent des données (relevés, signalements, comptes anonymes, photos) et doivent être lancés sur le projet de TEST uniquement, avec nettoyage ensuite.
-7. **Connexion anonyme** : activée sur la base de test seulement. Ne pas l'activer en production avant D10.
-
----
-
-## 6. Organisation du dossier
-
-```
-docs/
-  00-ROADMAP-MAITRE.md        ← ce fichier (seul point d'entrée)
-  01 … 09 (une seule version chacune)
-  archive/                    ← 10-plan…, anciennes versions
-supabase/
-  seed/                       ← catalogue de départ
-  sql/
-    01_schema.sql … 09_data_contract_patch.sql   ← numérotés dans l'ordre d'exécution
-  tests/
-    test_supabase.sql
-    test_supabase_js.mjs
-.env.example                  ← modèle (site + tests) ; suivi par git
-.env.local                    ← site, non commité
-.env.test.local               ← tests, non commité, base de TEST uniquement
-```
-Cette arborescence est celle du dépôt aujourd'hui. Le numéro dans le nom des scripts supprime l'ambiguïté sur la séquence d'exécution.
-
-## 7. Prochaines actions (dans l'ordre)
-
-1. ✅ **Contrôles après le commit : faits** (patch 7 corrigé, en-tête « Node 18.17 ou plus », seul `.env.example` suivi par git).
-2. **Confirmer D3** : une ligne par décision (n°1, 2, 6, 11 du doc 09 §15), ou demander des changements au patch. Si un changement est demandé, rejouer le patch 9, puis les deux scripts de test.
-3. **P0-4** : démarrer le socle du site (dépôt, environnements, 3 clients Supabase, `fr.json`, module de lecture, Vitest). C'est le chemin critique côté code.
-4. **P0-7** : corriger les points ouverts de la section 2 : n°13 (en-tête du patch 9 qui cite « document 09 v0.2 »), n°20 (statuts 🧪 et « non exécuté » à passer en 🧫 dans les documents 07 et 08, « suite proposée » à remplacer), puis valider n°17 et n°18.
-   - Test d'insertion propriétaire : ✅ ajouté et passé (71 PASS). Reste à commiter `test_supabase.sql` et les docs 02 et 09 (compteur 71).
-5. **P0-2** : préparer les données de test réelles, puis la liste des comptes (admin, agents, modérateur) pour la production.
-6. En parallèle, côté terrain : **D8** (qui vérifie les fiches, liste réelle des modèles) et **D2** (délai de modération), nécessaires avant le pilote Mokolo.
+1. ✅ Contrôles après le commit de P0-1 ; D3 confirmée ; D6 tranchée (patchs rejouables en phase 1).
+2. **P0-4** : démarrer le socle du site (dépôt, environnements, 3 clients Supabase, `fr.json`, module de lecture, Vitest). C'est le chemin critique côté code.
+3. **P0-2** : données de test réelles, puis liste des comptes (admin, agents éventuels, modérateur) pour la production.
+4. **Côté terrain, en parallèle** : D8 (qui vérifie les fiches, liste réelle des modèles), D2 (délai de modération) et D19 (qui exerce le second regard sur les relevés du porteur, puisqu'il relève et modère seul).
+5. **P0-5 et P0-6** après P0-4 (corrections d'audit, migration du front).
+6. Valider les n°17 et n°18 de la section 2 avec la première vraie requête depuis le site (P0-4 / P1-1).

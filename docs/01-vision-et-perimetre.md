@@ -63,7 +63,7 @@ Le produit couvre le **neuf**, l'**occasion** et le **reconditionné** (très pr
 
 ### Contenu couvert
 - ✅ Neuf, occasion et reconditionné, avec garantie et état pour chaque prix.
-- ✅ **Portables (laptops)** : catégorie prioritaire, car ce sont les produits les plus répandus sur le marché actuellement. Ils sont couverts par le comparateur et par les contrôles anti-arnaque (RAM, stockage, processeur, état de la batterie).
+- ✅ **Portables (laptops)** : catégorie prioritaire, car ce sont les produits les plus répandus sur le marché actuellement. Ils sont couverts par le comparateur et par les contrôles anti-arnaque (RAM, stockage et prix aujourd'hui ; processeur et état de la batterie à venir, décision D5).
 - Composants pour le builder : processeur, carte mère, RAM, carte graphique, stockage, alimentation, boîtier, refroidissement.
 - PC complets (tours et ordinateurs de marque).
 - ❓ Le builder (assemblage) ne s'applique pas aux portables : on les compare, on ne les compose pas.
