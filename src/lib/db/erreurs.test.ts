@@ -27,6 +27,7 @@ describe('mapError', () => {
     expect(mapError(viole('price_reports_price_fcfa_check'))).toBe(CLE.prixInvalide)
     expect(mapError(viole('price_reports_warranty_months_check'))).toBe(CLE.garantieInvalide)
     expect(mapError(viole('flags_reason_check'))).toBe(CLE.motifSignalement)
+    expect(mapError(viole('flags_has_target'))).toBe(CLE.cibleSignalement)
     expect(mapError(viole('shops_phone_format'))).toBe(CLE.telephoneInvalide)
     expect(mapError(viole('autre_contrainte'))).toBe(CLE.generique)
   })

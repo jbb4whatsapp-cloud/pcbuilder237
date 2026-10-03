@@ -23,6 +23,7 @@ export const CLE = {
   prixInvalide: 'error.price_invalid',
   garantieInvalide: 'error.warranty_invalid',
   motifSignalement: 'error.flag_reason_invalid',
+  cibleSignalement: 'error.flag_target_missing',
   telephoneInvalide: 'error.phone_invalid',
 } as const
 
@@ -55,6 +56,7 @@ export function mapError(erreur: ErreurSupabase | null | undefined): string {
       ['price_reports_price_fcfa_check', CLE.prixInvalide],
       ['price_reports_warranty_months_check', CLE.garantieInvalide],
       ['flags_reason_check', CLE.motifSignalement],
+      ['flags_has_target', CLE.cibleSignalement],
       ['shops_phone_format', CLE.telephoneInvalide],
     ])
   }
