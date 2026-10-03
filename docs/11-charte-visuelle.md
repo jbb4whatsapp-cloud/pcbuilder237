@@ -1,6 +1,6 @@
 # Charte visuelle — PC Builder 237
 
-> **Statut** : brouillon v0.1 — 3 octobre 2026 (direction B « Marché et vert profond » retenue ; maquettes de départ rangées dans docs/maquettes/).
+> **Statut** : brouillon v0.2 — 3 octobre 2026 (direction B « Marché et vert profond » retenue ; maquettes de départ rangées dans docs/maquettes/ ; phase vendeurs à avancer, décision n°9 ; charte appliquée à /produits et à la fiche produit).
 > **Légende** : ✅ décidé par le porteur du projet · 🛠 appliqué dans le code · ❓ proposition à valider
 
 Ce document fixe l'apparence du produit : couleurs, typographie, formes et composants. Il prolonge le document 05 (pages et composants) et le document 07 (textes). Il ne change aucune règle métier : en cas de doute, les documents 01 à 09 font foi.
@@ -19,7 +19,7 @@ Ce document fixe l'apparence du produit : couleurs, typographie, formes et compo
 | 6 | Pas de mode sombre en version 1 | ❓ |
 | 7 | En-tête en aplat vert profond, sans dégradé (plus léger à charger) | ❓ |
 | 8 | Pas de logo dessiné : le nom « PC Builder 237 » en texte, favicon à fournir | ❓ |
-| 9 | Avancer la phase vendeurs (espace boutique, suivi d'abonnement) dans la feuille de route ? | ❓ |
+| 9 | Avancer la phase vendeurs (espace boutique, suivi d'abonnement) dans la feuille de route : oui (3 octobre 2026) ; placement exact à fixer dans la feuille de route | ✅ |
 
 ---
 
@@ -30,7 +30,7 @@ Conséquences pour le visuel, sans toucher aux règles déjà décidées : l'abo
 - L'espace boutique (/boutique) est une surface de premier rang : il montre l'état de l'abonnement, les informations de la boutique et les relevés de ses produits, dans la même charte que le site public.
 - Ce que l'abonné obtient de visible : le bouton de contact (après la période de lancement), l'adresse et les horaires (document 09, section 4.2). La charte leur donne de la place, pas un meilleur rang.
 - Boutique non contactable : nom et quartier, aucun bouton, aucune couleur d'alerte. Pour un champ réservé, le texte neutre du document 09 : « Adresse et horaires réservés aux boutiques abonnées » ❓ (ton à valider avec le porteur : informatif, jamais culpabilisant).
-- Planning ❓ : l'espace boutique est aujourd'hui en phase 4 et l'enregistrement d'un abonnement se fait dans l'éditeur SQL. Si les vendeurs sont la source de revenus, avancer cette phase est à décider.
+- Planning ✅ : l'espace boutique était en phase 4 et l'enregistrement d'un abonnement se fait dans l'éditeur SQL. Décision du 3 octobre 2026 : avancer cette phase, puisque les vendeurs sont la source de revenus prioritaire. Le placement exact (avant ou après le formulaire agent) reste à fixer dans la feuille de route.
 
 ---
 
@@ -141,3 +141,5 @@ Accroche proposée ❓ : « Comparez les prix des PC à Yaoundé et Douala », a
 ## 10. Application au code
 
 Prévu dans l'ordre : variables de couleurs et d'espacement dans la feuille de style globale ; composants communs ; puis les pages /produits, /produits/[id], /connexion et /acces-refuse ; ensuite le formulaire agent (P1-1) directement dans cette charte.
+
+**État au 3 octobre 2026** 🛠 : variables de couleurs, classes de composants (carte, pastille, badges, boutons, bloc d'alerte), en-tête, `/produits` et la fiche produit sont appliqués (commit `8301de8`, branche `p0-6-front`). Restent : `/connexion` et `/acces-refuse`, l'état « boutique non contactable » (texte à valider), le bouton « Signaler » et l'icône WhatsApp, puis le formulaire agent.
