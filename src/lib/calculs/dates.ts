@@ -34,3 +34,16 @@ export function dateComplete(iso: string): string {
   if (Number.isNaN(d.getTime())) return ''
   return COMPLET.format(d)
 }
+
+const COURT = new Intl.DateTimeFormat('fr-FR', {
+  timeZone: FUSEAU,
+  day: '2-digit',
+  month: '2-digit',
+})
+
+/** Jour/mois sans année, pour les messages WhatsApp : « 28/09 ». */
+export function dateCourte(iso: string): string {
+  const d = new Date(iso)
+  if (Number.isNaN(d.getTime())) return ''
+  return COURT.format(d)
+}

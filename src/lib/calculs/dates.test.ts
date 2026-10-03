@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { libelleRelatif, dateComplete } from './dates'
+import { libelleRelatif, dateComplete, dateCourte } from './dates'
 
 // 23:30 UTC le 3 octobre = 00:30 le 4 octobre à Douala (UTC+1)
 const MAINTENANT = new Date('2026-10-03T23:30:00Z')
@@ -29,5 +29,15 @@ describe('dateComplete', () => {
   })
   it('date invalide : chaîne vide', () => {
     expect(dateComplete('x')).toBe('')
+  })
+})
+
+describe('dateCourte', () => {
+  it('jour/mois au fuseau de Douala', () => {
+    expect(dateCourte('2026-10-03T23:30:00Z')).toBe('04/10')
+    expect(dateCourte('2026-09-28T10:00:00Z')).toBe('28/09')
+  })
+  it('date invalide : chaîne vide', () => {
+    expect(dateCourte('x')).toBe('')
   })
 })

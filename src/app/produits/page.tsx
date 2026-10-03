@@ -129,7 +129,7 @@ export default async function Produits({
             return (
               <li key={p.id} className="border p-4">
                 <div className="text-sm text-gray-600">{p.brand}</div>
-                <div className="font-bold">{p.name}</div>
+                <Link href={`/produits/${p.id}`} className="font-bold underline">{p.name}</Link>
                 <div className="mt-2">
                   {depart === null
                     ? message('product.no_price')
