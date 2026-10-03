@@ -230,6 +230,9 @@ export default async function Fiche({
                   </div>
                 )}
 
+                {l.in_stock && !wa && (
+                  <p className="mt-3 text-sm text-secondaire">{message('contact.unavailable')}</p>
+                )}
                 {!l.in_stock ? (
                   <p className="mt-3 text-sm text-secondaire">{message('stock.out_last')}</p>
                 ) : (

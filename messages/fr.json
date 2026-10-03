@@ -163,7 +163,8 @@
     "seen": "Constaté {when}"
   },
   "contact": {
-    "whatsapp": "Contacter sur WhatsApp"
+    "whatsapp": "Contacter sur WhatsApp",
+    "unavailable": "Cette boutique ne peut pas être contactée depuis le site."
   },
   "disclaimer": {
     "prices": "Les prix affichés ont été constatés en boutique à la date indiquée. Ils peuvent avoir changé depuis. PC Builder 237 ne vend pas les produits : le prix final est celui de la boutique."
