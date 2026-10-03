@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
+import { BoutonDeconnexion } from '@/app/connexion/deconnexion'
 import { message } from '@/lib/messages'
 
 export const metadata: Metadata = {
@@ -12,9 +12,7 @@ export default function AccesRefuse() {
     <main className="max-w-sm mx-auto p-6">
       <h1 className="text-2xl font-bold mb-4">{message('login.denied_title')}</h1>
       <p className="mb-6">{message('login.denied_text')}</p>
-      <Link href="/connexion" className="underline">
-        {message('action.sign_in')}
-      </Link>
+      <BoutonDeconnexion />
     </main>
   )
 }

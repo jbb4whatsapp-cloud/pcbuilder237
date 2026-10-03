@@ -140,6 +140,7 @@
     "submitting": "Connexion en cours…",
     "invalid": "Adresse e-mail ou mot de passe incorrect.",
     "denied_title": "Accès refusé",
-    "denied_text": "Votre compte n'a pas accès à cet espace. Connectez-vous avec un compte autorisé."
+    "denied_text": "Votre compte n'a pas accès à cet espace. Connectez-vous avec un compte autorisé.",
+    "logout": "Se déconnecter"
   }
 }
