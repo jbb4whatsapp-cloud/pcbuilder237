@@ -13,8 +13,7 @@
 -- Pourquoi (documents 03 section 6.1 et 07 sections 4 et 7) :
 --   * le site choisit le texte d'alerte public d'après un CODE, pas en lisant la
 --     phrase française de check_reason (qui reste un texte pour le personnel et
---     l'agent) ;git ls-files --eol supabase | head
-grep -lU $'\r' supabase/sql/*.sql supabase/seed/*.sql supabase/tests/*.sql
+--     l'agent) ;
 --   * le site choisit le message d'erreur d'après un CODE SQLSTATE, pas d'après le
 --     texte de l'exception.
 --
