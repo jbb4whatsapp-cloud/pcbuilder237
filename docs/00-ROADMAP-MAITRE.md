@@ -237,5 +237,7 @@ Une ligne par lot terminé : à mettre à jour à la fin de chaque lot (pas à c
 | 3 oct. 2026 | `c247ff2` | Document 11 « Charte visuelle » v0.1 (direction B) et maquettes de départ |
 | 3 oct. 2026 | `6394191` | Maquettes : noms alignés sur le document 11, doublon retiré |
 | 3 oct. 2026 | `8301de8` | Charte B appliquée : variables de style, composants, en-tête, `/produits` et fiche produit (branche `p0-6-front`) |
+| 3 oct. 2026 | `5796e96` | Charte appliquée à la connexion et à la déconnexion (branche `p0-6-front`) |
+| 3 oct. 2026 | `0502c35` | Mention neutre pour une boutique non contactable, clé `contact.unavailable` (branche `p0-6-front`) |
 
-**À venir** : fin de la charte (connexion, accès refusé, boutique non contactable), puis formulaire agent (P1-1) et modération (P1-2). **Décision du 3 octobre 2026** : la phase vendeurs (espace boutique, suivi d'abonnement) est avancée, car les vendeurs sont la source de revenus prioritaire (document 11, section 2) ; son placement exact dans les phases reste à fixer.
+**À venir** : reste de la charte (bouton « Signaler », icône WhatsApp ; l'accueil, `/agent` et `/admin` suivront leur réécriture), puis formulaire agent (P1-1) et modération (P1-2). **Décision du 3 octobre 2026** : la phase vendeurs (espace boutique, suivi d'abonnement) est avancée, car les vendeurs sont la source de revenus prioritaire (document 11, section 2) ; son placement exact dans les phases reste à fixer.
