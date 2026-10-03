@@ -28,7 +28,7 @@
 | 08 Collecte et modération | **v0.3** ✅ | `docs/` | Décision MVP ; note sur `price_reports_visible` ajoutée sous K4 ; §12 et §14 alignés sur P0-1 ✅ ; pilote et cadences à lire pour une seule personne (D1) |
 | 09 Contrat de données | **v0.4** ✅ | `docs/09-contrat-de-donnees-site-supabase.md` | Vérifié sur la base de test ; D3 ✅ confirmée |
 | 10 Plan de réalisation | v0.1 | racine | **Absorbé par ce document** (sections 4 et 5) ; à archiver |
-| 11 Charte visuelle | **v0.1** ✅ | `docs/` | Direction B retenue ; maquettes dans `docs/maquettes/` |
+| 11 Charte visuelle | **v0.2** ✅ | `docs/` | Direction B retenue ; maquettes dans `docs/maquettes/` ; phase vendeurs à avancer (décision n°9) |
 
 ### Scripts SQL : chaîne canonique (ordre d'exécution **obligatoire**)
 
@@ -234,5 +234,8 @@ Une ligne par lot terminé : à mettre à jour à la fin de chaque lot (pas à c
 | 3 oct. 2026 | `bf5724d` | P0-6 (H) : bouton de déconnexion |
 | 3 oct. 2026 | `483a0ca` | P1-3 (I) : liste publique des portables, filtres ville et état |
 | 3 oct. 2026 | `a057f37` | P1-3 (J) : fiche produit, alerte neutre, meilleur prix, WhatsApp |
+| 3 oct. 2026 | `c247ff2` | Document 11 « Charte visuelle » v0.1 (direction B) et maquettes de départ |
+| 3 oct. 2026 | `6394191` | Maquettes : noms alignés sur le document 11, doublon retiré |
+| 3 oct. 2026 | `8301de8` | Charte B appliquée : variables de style, composants, en-tête, `/produits` et fiche produit (branche `p0-6-front`) |
 
-**À venir** : application de la charte visuelle (document 11, direction B) à `/produits` et à la fiche, puis formulaire agent (P1-1) et modération (P1-2). Décision à prendre : avancer la phase vendeurs (document 11, section 2) ?
+**À venir** : fin de la charte (connexion, accès refusé, boutique non contactable), puis formulaire agent (P1-1) et modération (P1-2). **Décision du 3 octobre 2026** : la phase vendeurs (espace boutique, suivi d'abonnement) est avancée, car les vendeurs sont la source de revenus prioritaire (document 11, section 2) ; son placement exact dans les phases reste à fixer.
