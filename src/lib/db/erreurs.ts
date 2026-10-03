@@ -28,7 +28,7 @@ export const CLE = {
 } as const
 
 // PB001 à PB003, PB010 à PB013, PB020 à PB025, PB030 à PB032
-const PB_CONNUS = new Set([
+export const PB_CONNUS = new Set([
   'PB001', 'PB002', 'PB003',
   'PB010', 'PB011', 'PB012', 'PB013',
   'PB020', 'PB021', 'PB022', 'PB023', 'PB024', 'PB025',

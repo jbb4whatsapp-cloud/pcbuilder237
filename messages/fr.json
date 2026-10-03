@@ -1,0 +1,135 @@
+{
+  "condition": {
+    "new": "Neuf",
+    "refurbished": "Reconditionné",
+    "used": "Occasion"
+  },
+  "category": {
+    "laptop": "Portables",
+    "prebuilt": "PC complets",
+    "cpu": "Processeurs",
+    "motherboard": "Cartes mères",
+    "ram": "Mémoire (RAM)",
+    "gpu": "Cartes graphiques",
+    "storage": "Stockage (SSD, disques durs)",
+    "psu": "Alimentations",
+    "case": "Boîtiers",
+    "cooler": "Refroidissement",
+    "other": "Autres"
+  },
+  "source": {
+    "agent": "Constaté par un agent",
+    "shop": "Déclaré par la boutique"
+  },
+  "warranty": {
+    "none": "Aucune garantie",
+    "months": "Garantie {months} mois",
+    "unknown": "Garantie non précisée"
+  },
+  "stock": {
+    "in": "En stock",
+    "out": "Hors stock"
+  },
+  "spec": {
+    "ram": "Mémoire : {value} Go",
+    "storage": "Disque principal : {value} Go",
+    "battery": "Batterie : {value} %"
+  },
+  "badge": {
+    "verified": {
+      "label": "Vérifiée",
+      "tooltip": "Un agent de PC Builder 237 a visité cette boutique. Ce badge ne s'achète pas."
+    },
+    "source": {
+      "tooltip": "Qui a constaté ou communiqué ce prix."
+    },
+    "alert": {
+      "label": "À vérifier",
+      "tooltip": "Les spécifications annoncées ne correspondent pas aux configurations connues pour ce modèle."
+    },
+    "out_of_stock": {
+      "label": "Hors stock",
+      "tooltip": "Cette boutique n'avait pas ce produit en stock lors du dernier constat."
+    }
+  },
+  "alert": {
+    "title": "Spécifications incohérentes, à vérifier",
+    "advice": "Demandez à voir la machine et vérifiez la mémoire et le stockage avant de payer.",
+    "footer": "Cette alerte vient d'une comparaison automatique avec la fiche du modèle. Elle ne signifie pas que la boutique a mal agi.",
+    "more": "D'autres points sont à vérifier.",
+    "reason": {
+      "ram_above_max": "La mémoire annoncée ({ram_gb} Go) dépasse ce que le constructeur prévoit pour ce modèle ({max_ram_gb} Go au maximum).",
+      "ram_not_allowed": "La mémoire annoncée ({ram_gb} Go) ne correspond pas aux configurations connues pour ce modèle.",
+      "storage_not_allowed": "Le stockage annoncé ({storage_gb} Go) ne correspond pas aux capacités habituelles pour ce modèle.",
+      "price_low": "Ce prix est nettement plus bas que les autres prix constatés pour ce produit. Vérifiez l'état exact et la configuration."
+    }
+  },
+  "whatsapp": {
+    "single_product": "Bonjour, j'ai vu sur PC Builder 237 : {product}, {condition}{config}, {price} FCFA (prix constaté le {date}).{extras} {question}",
+    "config": ", {ram} Go / {storage} Go",
+    "warranty": " Garantie annoncée : {months} mois.",
+    "battery": " Batterie annoncée : {pct} %.",
+    "question_available": "Est-il toujours disponible ?",
+    "question_confirm_specs": "Pouvez-vous me confirmer la mémoire et le stockage de cette machine ?"
+  },
+  "state": {
+    "loading": "Chargement…",
+    "slow": "Cela prend plus de temps que prévu. La connexion est peut-être lente.",
+    "empty_prices": "Aucun prix récent pour ce produit dans cette ville. Essayez l'autre ville ou un autre état.",
+    "search_empty": "Aucun produit ne correspond à « {query} ». Vérifiez l'orthographe ou cherchez la marque seule.",
+    "interrupted": "L'envoi a été interrompu. Votre relevé est conservé, vous pouvez le renvoyer.",
+    "access_denied": "Cette page est réservée. Connectez-vous avec un compte autorisé."
+  },
+  "action": {
+    "retry": "Réessayer",
+    "resend": "Renvoyer",
+    "change_city": "Changer de ville",
+    "sign_in": "Se connecter",
+    "sign_in_again": "Se reconnecter",
+    "home": "Retour à l'accueil"
+  },
+  "flag": {
+    "button": "Signaler",
+    "title_price": "Signaler ce prix",
+    "title_shop": "Signaler cette boutique",
+    "intro": "Dites-nous ce qui ne va pas. Nous vérifions chaque signalement.",
+    "field": "Que souhaitez-vous signaler ?",
+    "help": "Décrivez les faits : prix demandé en boutique différent du prix affiché, machine différente de l'annonce, etc. Pas d'insultes.",
+    "too_short": "Écrivez au moins 5 caractères.",
+    "too_long": "1 000 caractères au maximum.",
+    "thanks": "Merci, nous vérifions.",
+    "rate_limited": "Vous avez envoyé plusieurs signalements récemment. Réessayez plus tard."
+  },
+  "error": {
+    "network": "Impossible de charger les prix. Vérifiez votre connexion et réessayez.",
+    "generic": "Une erreur est survenue. Réessayez ; si elle persiste, contactez-nous.",
+    "forbidden": "Cette action n'est pas autorisée pour votre compte.",
+    "not_found": "Cette page n'existe pas ou a été déplacée.",
+    "session_expired": "Votre session a expiré. Reconnectez-vous, votre formulaire est conservé.",
+    "unavailable": "Le service est momentanément indisponible. Réessayez dans quelques minutes.",
+    "product_exists": "Ce produit existe déjà dans le catalogue.",
+    "report_already_sent": "Ce relevé a déjà été envoyé.",
+    "proof_required": "Ajoutez au moins une photo de preuve.",
+    "price_invalid": "Le prix doit être un nombre supérieur à zéro.",
+    "warranty_invalid": "La garantie doit être comprise entre 0 et 60 mois.",
+    "flag_reason_invalid": "Le motif doit faire entre 5 et 1 000 caractères.",
+    "flag_target_missing": "Indiquez la boutique ou le prix concerné par votre signalement.",
+    "phone_invalid": "Le numéro doit commencer par +237, suivi de 9 chiffres commençant par 2 ou 6.",
+    "pb001": "Ce produit n'est pas disponible. Choisissez un autre produit ou prévenez un modérateur.",
+    "pb002": "Cette boutique n'est pas disponible pour le moment.",
+    "pb003": "Une photo n'a pas pu être enregistrée. Renvoyez-la et réessayez.",
+    "pb010": "Ajoutez une note pour rejeter cette fiche.",
+    "pb011": "Les caractéristiques sont trop longues. Raccourcissez-les.",
+    "pb012": "Vous avez déjà 20 fiches en attente de validation. Attendez leur examen avant d'en proposer d'autres.",
+    "pb013": "Cette fiche a été validée : seul le personnel peut la modifier.",
+    "pb020": "Vous avez déjà 10 demandes en cours. Attendez qu'elles soient traitées.",
+    "pb021": "Cette demande ne peut être modifiée que par le personnel.",
+    "pb022": "Ajoutez une note pour refuser cette demande.",
+    "pb023": "Cette action est réservée au personnel.",
+    "pb024": "Cette demande n'existe pas.",
+    "pb025": "Cette demande a déjà été traitée.",
+    "pb030": "Votre compte n'est pas autorisé à envoyer un relevé. Pour une boutique, un abonnement actif est nécessaire.",
+    "pb031": "Le nom, le quartier, le statut et le badge de la boutique ne peuvent être modifiés que par le personnel.",
+    "pb032": "Ajoutez une note pour rejeter ce relevé."
+  }
+}
