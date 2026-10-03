@@ -41,8 +41,8 @@ function lien(actuels: Filtres, changement: Partial<Filtres>): string {
   return texte ? `/produits?${texte}` : '/produits'
 }
 
-const CLASSE_LIEN = 'px-3 py-2 border text-sm'
-const CLASSE_ACTIF = 'px-3 py-2 border text-sm bg-black text-white'
+const CLASSE_LIEN = 'pastille'
+const CLASSE_ACTIF = 'pastille pastille-active'
 
 export default async function Produits({
   searchParams,
@@ -82,7 +82,7 @@ export default async function Produits({
   if (erreur) {
     return (
       <main className="max-w-3xl mx-auto p-4">
-        <p role="alert">{message(mapError(erreur))}</p>
+        <p role="alert" className="text-erreur">{message(mapError(erreur))}</p>
       </main>
     )
   }
@@ -127,10 +127,10 @@ export default async function Produits({
           {liste.map((p) => {
             const depart = prixDeDepart(parProduit.get(p.id) ?? [], f.etat)
             return (
-              <li key={p.id} className="border p-4">
-                <div className="text-sm text-gray-600">{p.brand}</div>
-                <Link href={`/produits/${p.id}`} className="font-bold underline">{p.name}</Link>
-                <div className="mt-2">
+              <li key={p.id} className="carte">
+                <div className="text-sm text-secondaire">{p.brand}</div>
+                <Link href={`/produits/${p.id}`} className="font-medium text-vert underline">{p.name}</Link>
+                <div className="mt-2 text-xl font-medium">
                   {depart === null
                     ? message('product.no_price')
                     : message('product.from', { price: formaterPrix(depart) })}
@@ -143,14 +143,14 @@ export default async function Produits({
 
       <div className="flex justify-between mt-6 text-sm">
         {f.page > 0 ? (
-          <Link href={lien(f, { page: f.page - 1 })} className="underline">
+          <Link href={lien(f, { page: f.page - 1 })} className="pastille">
             {message('list.previous')}
           </Link>
         ) : (
           <span />
         )}
         {liste.length === TAILLE && (
-          <Link href={lien(f, { page: f.page + 1 })} className="underline">
+          <Link href={lien(f, { page: f.page + 1 })} className="pastille">
             {message('list.next')}
           </Link>
         )}

@@ -47,9 +47,9 @@ function texteGarantie(mois: number | null): string {
   return message('warranty.months', { months: mois })
 }
 
-const CLASSE_LIEN = 'px-3 py-2 border text-sm'
-const CLASSE_ACTIF = 'px-3 py-2 border text-sm bg-black text-white'
-const CLASSE_BADGE = 'inline-block text-xs border px-2 py-1 mr-2'
+const CLASSE_LIEN = 'pastille'
+const CLASSE_ACTIF = 'pastille pastille-active'
+const CLASSE_BADGE = 'badge badge-neutre'
 
 export default async function Fiche({
   params,
@@ -88,7 +88,7 @@ export default async function Fiche({
   if (erreur) {
     return (
       <main className="max-w-3xl mx-auto p-4">
-        <p role="alert">{message(mapError(erreur))}</p>
+        <p role="alert" className="text-erreur">{message(mapError(erreur))}</p>
       </main>
     )
   }
@@ -117,10 +117,10 @@ export default async function Fiche({
 
   return (
     <main className="max-w-3xl mx-auto p-4">
-      <Link href="/produits" className="text-sm underline">
+      <Link href="/produits" className="inline-flex min-h-[44px] items-center text-sm text-vert underline">
         {message('product.back')}
       </Link>
-      <div className="mt-4 text-sm text-gray-600">{p.brand}</div>
+      <div className="mt-4 text-sm text-secondaire">{p.brand}</div>
       <h1 className="text-2xl font-bold">{p.name}</h1>
 
       <nav aria-label="Villes" className="flex flex-wrap gap-2 mt-4">
@@ -169,30 +169,30 @@ export default async function Fiche({
               : null
 
             return (
-              <li key={l.report_id} className={`border p-4 ${l.in_stock ? '' : 'opacity-60'}`}>
+              <li key={l.report_id} className={`carte ${l.in_stock ? '' : 'carte-grisee'}`}>
                 <div className="flex flex-wrap items-baseline justify-between gap-2">
                   <div>
-                    <div className="font-bold">{l.shop_name}</div>
+                    <div className="font-medium">{l.shop_name}</div>
                     {l.neighborhood_id && lieu.get(l.neighborhood_id) && (
-                      <div className="text-sm text-gray-600">{lieu.get(l.neighborhood_id)}</div>
+                      <div className="text-sm text-secondaire">{lieu.get(l.neighborhood_id)}</div>
                     )}
                   </div>
-                  <div className="text-xl font-black">{formaterPrix(l.price_fcfa)}</div>
+                  <div className="text-xl font-medium">{formaterPrix(l.price_fcfa)}</div>
                 </div>
 
-                <div className="mt-2">
-                  {etiquette && (
-                    <span className={CLASSE_BADGE} title={message('badge.best_price.tooltip')}>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {etiquette && !enAlerte && (
+                    <span className="badge badge-ocre" title={message('badge.best_price.tooltip')}>
                       {message('badge.best_price.label')}
                     </span>
                   )}
                   {enAlerte && (
-                    <span className={CLASSE_BADGE} title={message('badge.alert.tooltip')}>
+                    <span className="badge badge-alerte" title={message('badge.alert.tooltip')}>
                       {message('badge.alert.label')}
                     </span>
                   )}
                   {l.shop_verified && !enAlerte && (
-                    <span className={CLASSE_BADGE} title={message('badge.verified.tooltip')}>
+                    <span className="badge badge-succes" title={message('badge.verified.tooltip')}>
                       {message('badge.verified.label')}
                     </span>
                   )}
@@ -214,7 +214,7 @@ export default async function Fiche({
                 </ul>
 
                 {alerte.type !== 'aucune' && (
-                  <div role="note" className="mt-3 border border-orange-400 bg-orange-50 p-3 text-sm">
+                  <div role="note" className="bloc-alerte mt-3">
                     <p className="font-bold">{message('alert.title')}</p>
                     {alerte.type === 'motifs' &&
                       alerte.codes.slice(0, 2).map((code) => (
@@ -226,19 +226,19 @@ export default async function Fiche({
                       <p className="mt-1">{message('alert.more')}</p>
                     )}
                     <p className="mt-1">{message('alert.advice')}</p>
-                    <p className="mt-2 text-xs text-gray-600">{message('alert.footer')}</p>
+                    <p className="mt-2 text-sm text-secondaire">{message('alert.footer')}</p>
                   </div>
                 )}
 
                 {!l.in_stock ? (
-                  <p className="mt-3 text-sm text-gray-600">{message('stock.out_last')}</p>
+                  <p className="mt-3 text-sm text-secondaire">{message('stock.out_last')}</p>
                 ) : (
                   wa && (
                     <a
                       href={wa}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-block mt-3 px-4 py-3 bg-black text-white font-bold"
+                      className="bouton-whatsapp mt-3"
                     >
                       {message('contact.whatsapp')}
                     </a>
@@ -250,7 +250,7 @@ export default async function Fiche({
         </ul>
       )}
 
-      <p className="mt-8 text-xs text-gray-600">{message('disclaimer.prices')}</p>
+      <p className="mt-8 text-sm text-secondaire">{message('disclaimer.prices')}</p>
     </main>
   )
 }

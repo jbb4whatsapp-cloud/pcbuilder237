@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import localFont from "next/font/local";
 import "./globals.css";
 
@@ -42,6 +43,11 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <header className="entete">
+          <Link href="/" className="entete-nom">
+            PC Builder 237
+          </Link>
+        </header>
         {children}
       </body>
     </html>
