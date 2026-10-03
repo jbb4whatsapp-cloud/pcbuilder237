@@ -131,5 +131,15 @@
     "pb030": "Votre compte n'est pas autorisé à envoyer un relevé. Pour une boutique, un abonnement actif est nécessaire.",
     "pb031": "Le nom, le quartier, le statut et le badge de la boutique ne peuvent être modifiés que par le personnel.",
     "pb032": "Ajoutez une note pour rejeter ce relevé."
+  },
+  "login": {
+    "title": "Connexion",
+    "email": "Adresse e-mail",
+    "password": "Mot de passe",
+    "submit": "Se connecter",
+    "submitting": "Connexion en cours…",
+    "invalid": "Adresse e-mail ou mot de passe incorrect.",
+    "denied_title": "Accès refusé",
+    "denied_text": "Votre compte n'a pas accès à cet espace. Connectez-vous avec un compte autorisé."
   }
 }
