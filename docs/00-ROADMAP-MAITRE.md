@@ -1,7 +1,7 @@
 # ROADMAP MAÎTRE — PC Builder 237
 
-> **Statut** : v1.4 (D3 confirmée, D6 tranchée, cohérence des documents) — 2 octobre 2026 (P0-1 terminé sur la base de test ; document 09 en v0.4 ; base de test nettoyée). Document de pilotage unique : il **n'invente aucune règle**, il range, tranche les conflits de version et ordonne le travail. En cas de doute sur une règle, le document 01 à 09 cité fait foi.
-> **Historique** : v1.2 (2 octobre 2026) : D1 et D2 tranchées. v1.3 (2 octobre 2026) : chaîne 1→9 et scripts de test exécutés sur Supabase test, règle « aucun écran avant P0-1 » levée, sections 1, 2, 5 et 7 réécrites. v1.3 révisée (2 octobre 2026) : commit de P0-1 confirmé (`9e03d45`, poussé sur `origin/main`), arborescence réelle du dépôt reportée (scripts 01 à 09 déjà numérotés dans `supabase/sql/`), état réel des documents 07 et 08 relu.
+> **Statut** : v1.5 (état du code après P0-4, P0-5, P0-6 en cours et P1-3 entamé) — 3 octobre 2026 (document 07 en v0.4, document 09 en v0.5 ; production partiellement durcie, voir la section 5). Document de pilotage unique : il **n'invente aucune règle**, il range, tranche les conflits de version et ordonne le travail. En cas de doute sur une règle, le document 01 à 09 cité fait foi.
+> **Historique** : v1.2 (2 octobre 2026) : D1 et D2 tranchées. v1.3 (2 octobre 2026) : chaîne 1→9 et scripts de test exécutés sur Supabase test, règle « aucun écran avant P0-1 » levée, sections 1, 2, 5 et 7 réécrites. v1.3 révisée (2 octobre 2026) : commit de P0-1 confirmé (`9e03d45`, poussé sur `origin/main`), arborescence réelle du dépôt reportée (scripts 01 à 09 déjà numérotés dans `supabase/sql/`), état réel des documents 07 et 08 relu. v1.5 (3 octobre 2026) : P0-4 et P0-5 terminés, P0-6 en cours sur la branche `p0-6-front`, P1-3 entamé (liste et fiche produit) ; risques 8 à 11 ajoutés ; règles d'accès retenues ; section 8 « Journal » ajoutée.
 > **Légende** : ✅ décidé · 🛠 écrit · 🧪 testé sur PostgreSQL local seulement · 🧫 vérifié sur le projet Supabase de test · 🔎 à vérifier (test ou production) · ❓ à décider · ⚠ incohérence à corriger · ⏳ reste à faire
 
 **Ce qui est vrai aujourd'hui** :
@@ -116,7 +116,7 @@ Chaque décision n'apparaît **qu'une fois** ici. Numérotation propre à ce reg
 Contenu et tarifs du pack d'abonnement (01 n°2-4) · devis multi-boutiques (07 n°4) · mention « examiné par un modérateur » (07 n°5) · droit de réponse (05 §4.7) · table `events` (C7) · vue agrégée (C4).
 
 ### Déjà tranchées ✅ (ne plus rouvrir)
-Français seul en phase 1 · vouvoiement · « prix constaté en boutique » · codes de motif et d'erreur plutôt que lecture des phrases · seul le personnel crée une boutique · pas de « prix ancien » avant 45 jours · historique public des prix plus tard · contact ouvert à toutes les boutiques pendant le lancement · connexion agent par e-mail + code agent · **la base décide, le site affiche**.
+Français seul en phase 1 · vouvoiement · « prix constaté en boutique » · codes de motif et d'erreur plutôt que lecture des phrases · seul le personnel crée une boutique · pas de « prix ancien » avant 45 jours · historique public des prix plus tard · contact ouvert à toutes les boutiques pendant le lancement · connexion agent par e-mail + code agent · **la base décide, le site affiche**. Retenu à l'implémentation, à confirmer : `/agent` pour agent, modérateur et administrateur ; `/admin` pour modérateur et administrateur (le porteur relève et modère, D1 et D2) ; une connexion anonyme n'ouvre aucun espace ; l'étiquette « Meilleur prix » n'apparaît qu'avec au moins deux lignes éligibles du même état et de la même configuration.
 
 ---
 
@@ -138,12 +138,12 @@ La règle « aucun écran avant le rapport de P0-1 » est **levée** : le rappor
 | P0-1 | Chaîne 1→9 sur Supabase **test**, script SQL, 6 vérifications `supabase-js` | S | ✅ 🧫 fait : 71 PASS + 31 PASS, base nettoyée. Commit fait et poussé : `9e03d45` (7 fichiers : `.env.example`, `.gitignore`, `package.json`, doc 09, patch 9, deux scripts de test), arbre de travail propre | Rapport sans échec ; doc 09 en v0.4 |
 | P0-2 | Admin, 2-3 agents, 1 modérateur, 1 propriétaire de test, boutiques, villes/quartiers ; catalogue de départ avec **quelques fiches activées pour le test seulement** | S | ⏳ Partiel sur la base de test (agent, modérateur, propriétaire, boutique, produit, abonnement de test). Reste : données réelles de test et **production** | Un relevé de test va de l'agent au public, par le modérateur |
 | P0-3 | Trancher D1, D2, D3, D8 (sans code) | S | D1 ✅, D2 ✅, D3 ✅ ; **D8 ❓** (reste avant l'activation du catalogue) | Registre à jour |
-| P0-4 | Dépôt/environnements (Vercel, aperçus sur base de test), patchs rejouables (D6 ✅), 3 clients Supabase (`getUser()`, jamais `getSession()`), types, module de lecture (constantes de colonnes, `mapError`, fonctions pures), `fr.json`, tests Vitest | M | ⏳ **À démarrer** | Tests verts + page de diagnostic |
-| P0-5 | Corrections d'audit : titre, `lang="fr"`, favicon, labels, en-têtes de sécurité, Open Graph, `robots.txt` | S | ⏳ | — |
-| P0-6 | Migrer le front : connexion agent, routes `/agent` `/boutique` `/admin` protégées côté serveur, retrait de l'ancienne table ; relire les relevés par `price_reports_visible` | M | ⏳ | Aucune page cassée |
+| P0-4 | Dépôt/environnements (Vercel, aperçus sur base de test), patchs rejouables (D6 ✅), 3 clients Supabase (`getUser()`, jamais `getSession()`), types, module de lecture (constantes de colonnes, `mapError`, fonctions pures), `fr.json`, tests Vitest | M | ✅ fait le 3 octobre 2026 (derniers commits : `fe5278b` module de lecture, `cdfd223` `fr.json`, `ae44b26` page `/diagnostic`) ; tests Vitest verts | Tests verts + page de diagnostic |
+| P0-5 | Corrections d'audit : titre, `lang="fr"`, favicon, labels, en-têtes de sécurité, Open Graph, `robots.txt` | S | ✅ fait le 3 octobre 2026 (`b0f2aad`) : titre, langue, métadonnées, en-têtes de sécurité, `robots.txt`, contrôle de types de l'application ; reportés : labels de l'ancienne page, image Open Graph, CSP, favicon | — |
+| P0-6 | Migrer le front : connexion agent, routes `/agent` `/boutique` `/admin` protégées côté serveur, retrait de l'ancienne table ; relire les relevés par `price_reports_visible` | M | ⏳ **En cours** sur la branche `p0-6-front`, **jamais fusionnée dans `main` avant P1-5** : proxy (`007460b`), connexion et gardes par rôle (`0fded6e`), déconnexion (`bf5724d`) faits ; reste la réécriture de `/`, `/agent` et `/admin`, le retrait de `src/lib/supabase.ts` et de `ignoreBuildErrors`, la route `/boutique` | Aucune page cassée |
 | P0-7 | Corriger les incohérences de la section 2 | S | ✅ terminé : n°13, n°20, n°21 (commits `3090ca2`, `b20e13e`, `054f85b`, `66dc181`, `82d91d5`). Restent n°17 et n°18 : à valider par une vraie requête depuis le site (avec P0-4/P1-1) | Docs alignés |
 
-**Sortie phase 0** : P0-1 à P0-6 atteints, D1 à D3 tranchées. Aujourd'hui : P0-1 ✅, P0-7 ✅, D1 ✅, D2 ✅, D3 ✅ ; restent P0-2, P0-4, P0-5, P0-6.
+**Sortie phase 0** : P0-1 à P0-6 atteints, D1 à D3 tranchées. Aujourd'hui (3 octobre 2026) : P0-1, P0-4, P0-5 et P0-7 ✅, D1 à D3 ✅ ; restent P0-2 (données réelles et production) et P0-6 (en cours).
 
 ### Phase 1 — MVP comparateur de portables
 
@@ -152,7 +152,7 @@ La règle « aucun écran avant le rapport de P0-1 » est **levée** : le rappor
 | P1-1 | Formulaire agent : photos compressées **sans EXIF**, envoi en 3 temps (photos, relevé avec `client_ref`, relecture des colonnes ouvertes), reprise après coupure, demande d'ajout de boutique. Essai sur vrai téléphone, connexion lente | L | P0, D4, D5, D7 |
 | P1-2 | File de modération : relevés, signalements, demandes de boutique, fiches proposées ; note obligatoire au rejet (`PB032`) ; mises à jour sans `.select()` complet | M | P1-1 |
 | **Pilote Mokolo** | Collecte réelle (doc 08 §10) avec **catalogue vérifié** | — | P1-2, D1 ✅, D2 ✅, D8 |
-| P1-3 | Lecture publique : ville, `/produits`, `/produits/[id]`, `/boutiques/[id]` ; tri sans effet de l'abonnement ; client public sans cookies ; filtre `city_id` | L | P0-4 |
+| P1-3 | Lecture publique : ville, `/produits`, `/produits/[id]`, `/boutiques/[id]` ; tri sans effet de l'abonnement ; client public sans cookies ; filtre `city_id` | L | P0-4 ; **avancé** sur `p0-6-front` : liste `/produits` (`483a0ca`) et fiche `/produits/[id]` (`a057f37`) ; restent `/boutiques/[id]` et l'accueil |
 | P1-4 | Accueil, signalement (limite côté serveur), pages de confiance, partage WhatsApp, mesure d'usage | M | P1-3, D9, D10, D12, D14 |
 | P1-5 | Production : chaîne 1→9, **puis script SQL et script supabase-js sur la production** (retester R10 et R11), sauvegardes **avec restauration testée**, administrateur et agents réels, connexion anonyme désactivée sauf décision D10, aucune fiche activée sans vérification | M | P1-4, D10, D16 |
 | P1-6 | Répétition générale sur téléphone ; seuils par ville (doc 08 §8) ; confidentialité en ligne | S | D15 |
@@ -181,6 +181,10 @@ La règle « aucun écran avant le rapport de P0-1 » est **levée** : le rappor
 5. **Catalogue activé sans vérification** : fausses alertes, boutiques accusées à tort. Valeurs actuelles non vérifiées.
 6. **Secrets et base de test** : `.env.test.local` ne doit jamais être commité ni pointer vers la production ; les scripts de test créent des données (relevés, signalements, comptes anonymes, photos) et doivent être lancés sur le projet de TEST uniquement, avec nettoyage ensuite.
 7. **Connexion anonyme** : activée sur la base de test seulement. Ne pas l'activer en production avant D10.
+8. **Production actuelle très ouverte (ancien schéma).** Le 3 octobre, les deux règles de modification de `price_reports` ont été supprimées (vérifié : 0 ligne modifiable pour `anon`). Restent ouverts : insertions publiques sur `agents`, `shops`, `models` et `price_reports`, lecture publique de `agents` (numéros de téléphone). L'ancienne page `/agent` en dépend ; la migration P1-5 remplace tout. D'ici là, ne pas communiquer l'adresse du site.
+9. **Branche `p0-6-front`** : ne jamais la fusionner dans `main` avant la migration de production, sinon les pages écrites pour le nouveau schéma casseraient le site en ligne. Variables Vercel : Production vers la base de production, Preview vers la base de test, en type Config (valeurs publiques, pas Secret).
+10. **Dette de types** : `ignoreBuildErrors` toujours actif ; `typecheck:app` ne couvre que les fichiers neufs (à élargir à chaque réécriture) ; l'ancien client `src/lib/supabase.ts` coexiste avec le nouveau (avertissement « Multiple GoTrueClient » sans effet, mais l'ancienne page n'utilise pas la session de connexion).
+11. **Éditeur SQL Supabase** : le rôle actif peut rester `authenticated` (`select current_user;`). Commencer par `reset role;` et ne jamais accepter les `GRANT` proposés par l'éditeur.
 
 ---
 
@@ -205,8 +209,29 @@ Cette arborescence est celle du dépôt aujourd'hui. Le numéro dans le nom des 
 ## 7. Prochaines actions (dans l'ordre)
 
 1. ✅ Contrôles après le commit de P0-1 ; D3 confirmée ; D6 tranchée (patchs rejouables en phase 1).
-2. **P0-4** : démarrer le socle du site (dépôt, environnements, 3 clients Supabase, `fr.json`, module de lecture, Vitest). C'est le chemin critique côté code.
+2. ✅ **P0-4** terminé (3 octobre 2026). Le chemin critique côté code est maintenant le formulaire agent (P1-1), précédé du choix du visuel (maquettes).
 3. **P0-2** : données de test réelles, puis liste des comptes (admin, agents éventuels, modérateur) pour la production.
 4. **Côté terrain, en parallèle** : D8 (qui vérifie les fiches, liste réelle des modèles), D2 (délai de modération) et D19 (qui exerce le second regard sur les relevés du porteur, puisqu'il relève et modère seul).
-5. **P0-5 et P0-6** après P0-4 (corrections d'audit, migration du front).
+5. ✅ P0-5 terminé ; **P0-6** en cours (section 8).
 6. Valider les n°17 et n°18 de la section 2 avec la première vraie requête depuis le site (P0-4 / P1-1).
+
+## 8. Journal
+
+Une ligne par lot terminé : à mettre à jour à la fin de chaque lot (pas à chaque commit), avec les décisions et les risques qui en découlent.
+
+| Date | Commit | Contenu |
+|---|---|---|
+| 2 oct. 2026 | `9e03d45` | P0-1 : chaîne 1 à 9 sur la base de test, 71 PASS et 31 PASS |
+| 3 oct. 2026 | `fe5278b` | P0-4 (C) : colonnes, types, `mapError`, fonctions pures (dates, WhatsApp, prix, alerte) |
+| 3 oct. 2026 | `f6e685d` | `mapError` reconnaît la contrainte `flags_has_target` |
+| 3 oct. 2026 | `cdfd223` | P0-4 (D) : `messages/fr.json` et test d'alignement avec `mapError` |
+| 3 oct. 2026 | `ae44b26` | P0-4 (E) : page `/diagnostic` ; la production lit bien `countries` |
+| 3 oct. 2026 | `b0f2aad` | P0-5 : langue, métadonnées, en-têtes de sécurité, `robots.txt`, `typecheck:app` |
+| 3 oct. 2026 | (base de production) | Suppression des deux règles de modification de `price_reports` ; variables Vercel séparées (Production et Preview) |
+| 3 oct. 2026 | `007460b` | P0-6 (F) : proxy de session (branche `p0-6-front`) |
+| 3 oct. 2026 | `0fded6e` | P0-6 (G) : connexion, rôles, gardes de `/agent` et `/admin` |
+| 3 oct. 2026 | `bf5724d` | P0-6 (H) : bouton de déconnexion |
+| 3 oct. 2026 | `483a0ca` | P1-3 (I) : liste publique des portables, filtres ville et état |
+| 3 oct. 2026 | `a057f37` | P1-3 (J) : fiche produit, alerte neutre, meilleur prix, WhatsApp |
+
+**À venir** : choix du visuel (maquettes), puis formulaire agent (P1-1) et modération (P1-2).

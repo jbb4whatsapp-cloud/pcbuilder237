@@ -1,6 +1,6 @@
 # Contrat de données site ↔ Supabase — PC Builder 237
 
-> **Statut** : brouillon v0.4 — 2 octobre 2026 (schéma v1 et tous les patchs relus ; chaîne complète 01 à 09 rejouée sur une base de test vide ; script SQL (71 PASS) et script supabase-js (31 PASS) réussis sur le projet Supabase de test ; pas encore en production).
+> **Statut** : brouillon v0.5 — 3 octobre 2026 (module de lecture écrit ; schéma v1 et tous les patchs relus ; chaîne complète 01 à 09 rejouée sur une base de test vide ; script SQL (71 PASS) et script supabase-js (31 PASS) réussis sur le projet Supabase de test ; pas encore en production).
 > **Légende** : ✅ décidé par le porteur du projet · 🛠 lu dans le schéma v1, un patch ou un document reçu · 🧫 écrit dans `pcbuilder237_data_contract_patch.sql` et vérifié sur le projet Supabase de test (script SQL ou script supabase-js) · 🧪 vérifié seulement sur une base PostgreSQL locale · 🔎 reste à vérifier sur Supabase · ❓ proposition à valider
 
 Ce document dit, **page par page**, ce que le site lit dans Supabase, ce qu'il y écrit, avec quel client, et ce qu'il fait quand ça échoue. Il prolonge le document 03 (architecture : « la base est la source de vérité »), le document 05 (pages), le document 07 (textes et codes d'erreur) et le document 08 (modération). Il sert de référence à tout développeur, humain ou IA, qui écrit le code du site.
@@ -25,6 +25,8 @@ Ce document dit, **page par page**, ce que le site lit dans Supabase, ce qu'il y
 **Ce que la v0.3 a changé** : le patch « contrat de données » traite C1, C2, C3, C5, C8 et C9 (🧫) ; `check_reason` disparaît de `current_prices` ; `price_reports` n'est plus lisible en entier par personne (nouvelle vue `price_reports_visible` pour les auteurs, les propriétaires de boutique et le personnel) ; `city_id` et `config_hash` sont dans les vues ; un relevé a une clé d'idempotence (`client_ref`) ; le rejet d'un relevé exige une note (`PB032`) ; un signalement naît toujours `open`. Les décisions n°1, 2, 6 et 11 y sont **retenues par défaut**, en attente de confirmation (section 15).
 
 **Ce que la v0.4 a changé** : les sept colonnes de `price_reports_visible` réservées à l'auteur et au personnel sont nommées partout (`proof_paths`, `check_reason`, `review_note`, `reported_by`, `reviewed_by`, `reviewed_at`, `client_ref`) ; le masquage est vérifié côté propriétaire (script SQL et script supabase-js) ; les statuts de vérification distinguent la base de test (🧫) du local (🧪) ; la section 14 dit, point par point, ce qui est vérifié et ce qui reste 🔎.
+
+**Ce que la v0.5 a changé** (3 octobre 2026) : le module de lecture est écrit et testé dans `src/lib/db/` et `src/lib/calculs/` (constantes de colonnes, types, `mapError` — qui reconnaît aussi `flags_has_target` —, pagination, dates, WhatsApp, meilleur prix, alerte), avec `messages/fr.json`. Premières pages branchées sur la branche `p0-6-front` : connexion, gardes par rôle, liste et fiche produit. La section 17 recense les écarts constatés à l'implémentation.
 
 ---
 
@@ -525,3 +527,19 @@ C1, C2, C3, C5, C8 et C9 sont écrits dans `pcbuilder237_data_contract_patch.sql
 5. ✅ Écarts de la section 13 reportés ; P0-1 passé à ✅ dans la feuille de route ; la règle « aucun écran avant le rapport de P0-1 » est levée.
 6. Écrire `fr.json` (document 07, section 11) et le module de lecture (constantes de colonnes, `mapError`, fonctions pures de la section 5), en lisant les relevés d'un auteur ou d'une boutique par `price_reports_visible`.
 7. Restent sans patch : C4 (vue agrégée), C6 (vue publique des produits), C7 (table `events`) et les décisions n°3, 4, 5, 7 à 10 et 12. La connexion anonyme reste désactivée en production jusqu'à la décision n°12.
+
+---
+
+## 17. Écarts constatés à l'implémentation (3 octobre 2026)
+
+Ce que l'écriture du code a appris et que le reste du document ne dit pas encore. À reporter dans les sections concernées à la prochaine révision.
+
+1. **Types des lectures.** Une liste de colonnes construite à l'exécution (constantes de `colonnes.ts`) ne permet pas à TypeScript de déduire le type d'une ligne : chaque lecture convertit son résultat avec `as unknown as TypeLigne`. Les longueurs des listes sont vérifiées par `colonnes.test.ts`.
+2. **Next.js 16.** `proxy.ts` remplace `middleware` ; il est limité à `/agent`, `/boutique`, `/admin` et `/connexion`, rafraîchit le jeton et ne décide d'aucun accès. Le garde est dans le `layout.tsx` de chaque espace (`exigerRole`) : quand un espace aura plusieurs écrans, chaque page devra aussi appeler le garde. La protection réelle des données reste la RLS.
+3. **Accès (section 6.6 à 6.8).** `/agent` : agent, modérateur, administrateur ; `/admin` : modérateur, administrateur ; une connexion anonyme (`user.is_anonymous`) n'ouvre aucun espace. Les rôles sont lus dans `user_roles` (ses propres lignes). Retenu à l'implémentation, à confirmer.
+4. **Meilleur prix (section 5.2).** L'étiquette n'apparaît que s'il y a au moins deux lignes éligibles du même état et de la même configuration ; avec une seule boutique, elle serait trompeuse. Le document 05 ne tranche pas.
+5. **Fiche produit (section 6.3).** Le nom de la boutique n'est pas un lien (la page `/boutiques/[id]` n'existe pas encore) ; titre d'onglet générique ; pas encore de données structurées (`AggregateOffer`). `parametresAlerte` ne renvoie pas le stockage annoncé : la fiche le lit directement dans `reported_specs`.
+6. **Filtre par ville.** Une boutique sans quartier n'apparaît sous aucune ville (conforme à la section 5.1) : une boutique de test doit avoir un quartier. Le bouton WhatsApp exige une boutique contactable **et** un numéro visible.
+7. **Cache.** `REVALIDATE.pages` vaut 300 secondes ; en développement, supprimer `.next` pour voir un changement de données.
+8. **Environnements.** Variables publiques de type Config (jamais Secret) : Production vers la base de production, Preview vers la base de test.
+9. **Production actuelle.** Voir le risque 8 de la feuille de route : l'ancien schéma reste très ouvert hors `price_reports` (modification fermée le 3 octobre).
