@@ -28,7 +28,7 @@
 | 08 Collecte et modération | **v0.3** ✅ | `docs/` | Décision MVP ; note sur `price_reports_visible` ajoutée sous K4 ; §12 et §14 alignés sur P0-1 ✅ ; pilote et cadences à lire pour une seule personne (D1) |
 | 09 Contrat de données | **v0.4** ✅ | `docs/09-contrat-de-donnees-site-supabase.md` | Vérifié sur la base de test ; D3 ✅ confirmée |
 | 10 Plan de réalisation | v0.1 | racine | **Absorbé par ce document** (sections 4 et 5) ; à archiver |
-| 11 Charte visuelle | **v0.2** ✅ | `docs/` | Direction B retenue ; maquettes dans `docs/maquettes/` ; phase vendeurs à avancer (décision n°9) |
+| 11 Charte visuelle | **v0.3** ✅ | `docs/` | Direction B retenue ; maquettes dans `docs/maquettes/` ; offre aux boutiques décidée (section 2) |
 
 ### Scripts SQL : chaîne canonique (ordre d'exécution **obligatoire**)
 
@@ -117,7 +117,7 @@ Chaque décision n'apparaît **qu'une fois** ici. Numérotation propre à ce reg
 Contenu et tarifs du pack d'abonnement (01 n°2-4) · devis multi-boutiques (07 n°4) · mention « examiné par un modérateur » (07 n°5) · droit de réponse (05 §4.7) · table `events` (C7) · vue agrégée (C4).
 
 ### Déjà tranchées ✅ (ne plus rouvrir)
-Français seul en phase 1 · vouvoiement · « prix constaté en boutique » · codes de motif et d'erreur plutôt que lecture des phrases · seul le personnel crée une boutique · pas de « prix ancien » avant 45 jours · historique public des prix plus tard · contact ouvert à toutes les boutiques pendant le lancement · connexion agent par e-mail + code agent · **la base décide, le site affiche**. Retenu à l'implémentation, à confirmer : `/agent` pour agent, modérateur et administrateur ; `/admin` pour modérateur et administrateur (le porteur relève et modère, D1 et D2) ; une connexion anonyme n'ouvre aucun espace ; l'étiquette « Meilleur prix » n'apparaît qu'avec au moins deux lignes éligibles du même état et de la même configuration.
+Français seul en phase 1 · vouvoiement · « prix constaté en boutique » · codes de motif et d'erreur plutôt que lecture des phrases · seul le personnel crée une boutique · pas de « prix ancien » avant 45 jours · historique public des prix plus tard · contact ouvert à toutes les boutiques pendant le lancement · connexion agent par e-mail + code agent · **la base décide, le site affiche**. Retenu à l'implémentation, à confirmer : `/agent` pour agent, modérateur et administrateur ; `/admin` pour modérateur et administrateur (le porteur relève et modère, D1 et D2) ; une connexion anonyme n'ouvre aucun espace ; l'étiquette « Meilleur prix » n'apparaît qu'avec au moins deux lignes éligibles du même état et de la même configuration. **Offre aux boutiques (3 octobre 2026, document 11 section 2)** : « Boutique visible », 9 900 FCFA par mois sans engagement ; lancement gratuit de 60 jours, avec décompte à partir de l'ouverture publique (à confirmer) ; paiement hors du site, enregistré par l'administrateur.
 
 ---
 
@@ -163,7 +163,18 @@ La règle « aucun écran avant le rapport de P0-1 » est **levée** : le rappor
 ### Phases suivantes (un plan par phase, écrit après mesure de la précédente)
 - **Phase 2** : composants et PC complets, règles anti-arnaque supplémentaires selon les fraudes constatées.
 - **Phase 3** : builder (7 règles de compatibilité testées, total par boutique ou panier le moins cher, sauvegarde et partage, devis WhatsApp).
-- **Phase 4** : boutiques abonnées (espace, statistiques, `events`, fin du lancement, droit de réponse) ; pack et tarifs à décider avant.
+- **Phase 4** : boutiques abonnées (statistiques détaillées, droit de réponse ; espace boutique, comptage `events`, écran d'abonnement et fin du lancement sont avancés dans les lots V1 à V4 ci-dessous) ; offre et tarif décidés le 3 octobre 2026 (document 11, section 2).
+
+### Lots vendeurs (avancés le 3 octobre 2026)
+
+Ils s'ajoutent à la phase 1 sans toucher au chemin critique (P1-1, P1-2). La chaîne 1→9 ne se rejoue qu'une fois en production (D6) : ces lots doivent donc être prêts avant P1-5.
+
+| Lot | Contenu | Dépend de |
+|---|---|---|
+| V1 | Comptage des vues de fiche et des clics sur le bouton WhatsApp, par boutique, sans donnée personnelle (table `events`) ; à accorder avec D12 (outil de mesure) | P1-3, D12 |
+| V2 | Espace `/boutique` en lecture seule : informations de la boutique, état de l'abonnement, ses prix relevés, ses chiffres du mois | V1, P0-6, P1-2 |
+| V3 | Écran administrateur pour enregistrer ou arrêter un abonnement (remplace l'éditeur SQL) ; le paiement reste hors du site | V2 |
+| V4 | Fin du lancement : date ou seuil fixé au go/no-go, puis contact réservé aux abonnés | V1 à V3, P1-6 |
 
 ---
 
@@ -240,4 +251,4 @@ Une ligne par lot terminé : à mettre à jour à la fin de chaque lot (pas à c
 | 3 oct. 2026 | `5796e96` | Charte appliquée à la connexion et à la déconnexion (branche `p0-6-front`) |
 | 3 oct. 2026 | `0502c35` | Mention neutre pour une boutique non contactable, clé `contact.unavailable` (branche `p0-6-front`) |
 
-**À venir** : reste de la charte (bouton « Signaler », icône WhatsApp ; l'accueil, `/agent` et `/admin` suivront leur réécriture), puis formulaire agent (P1-1) et modération (P1-2). **Décision du 3 octobre 2026** : la phase vendeurs (espace boutique, suivi d'abonnement) est avancée, car les vendeurs sont la source de revenus prioritaire (document 11, section 2) ; son placement exact dans les phases reste à fixer.
+**À venir** : reste de la charte (bouton « Signaler », icône WhatsApp ; l'accueil, `/agent` et `/admin` suivront leur réécriture), puis formulaire agent (P1-1) et modération (P1-2). **Décision du 3 octobre 2026** : la phase vendeurs (espace boutique, suivi d'abonnement) est avancée, car les vendeurs sont la source de revenus prioritaire (document 11, section 2) ; lots V1 à V4 ajoutés à la section 4, en parallèle du pilote ; offre et tarif décidés (document 11, section 2).
