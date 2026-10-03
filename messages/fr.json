@@ -142,5 +142,17 @@
     "denied_title": "Accès refusé",
     "denied_text": "Votre compte n'a pas accès à cet espace. Connectez-vous avec un compte autorisé.",
     "logout": "Se déconnecter"
+  },
+  "list": {
+    "title": "Portables",
+    "all_cities": "Toutes les villes",
+    "all_conditions": "Tous les états",
+    "empty": "Aucun produit à afficher.",
+    "previous": "Page précédente",
+    "next": "Page suivante"
+  },
+  "product": {
+    "from": "À partir de {price}",
+    "no_price": "Pas de prix récent"
   }
 }
