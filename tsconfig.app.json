@@ -6,6 +6,7 @@
     "src/lib/**/*.ts",
     "src/app/layout.tsx",
     "src/app/robots.ts",
+    "src/proxy.ts",
     "src/app/diagnostic/**/*.tsx"
   ]
 }
