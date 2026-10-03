@@ -34,9 +34,9 @@ export function FormulaireConnexion({ suite }: { suite: string }) {
   }
 
   return (
-    <form onSubmit={envoyer} className="space-y-4">
+    <form onSubmit={envoyer} className="carte space-y-4">
       <div>
-        <label htmlFor="email" className="block text-sm font-bold mb-1">
+        <label htmlFor="email" className="block text-sm font-medium mb-1">
           {message('login.email')}
         </label>
         <input
@@ -46,11 +46,11 @@ export function FormulaireConnexion({ suite }: { suite: string }) {
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full h-[48px] px-4 border"
+          className="w-full"
         />
       </div>
       <div>
-        <label htmlFor="mot-de-passe" className="block text-sm font-bold mb-1">
+        <label htmlFor="mot-de-passe" className="block text-sm font-medium mb-1">
           {message('login.password')}
         </label>
         <input
@@ -60,18 +60,18 @@ export function FormulaireConnexion({ suite }: { suite: string }) {
           required
           value={motDePasse}
           onChange={(e) => setMotDePasse(e.target.value)}
-          className="w-full h-[48px] px-4 border"
+          className="w-full"
         />
       </div>
       {erreur && (
-        <p role="alert" className="text-sm text-red-700">
+        <p role="alert" className="text-sm text-erreur">
           {erreur}
         </p>
       )}
       <button
         type="submit"
         disabled={envoi}
-        className="w-full h-[52px] bg-black text-white font-bold disabled:bg-gray-400"
+        className="bouton-principal w-full disabled:opacity-60"
       >
         {envoi ? message('login.submitting') : message('login.submit')}
       </button>

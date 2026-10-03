@@ -13,7 +13,7 @@ export function BoutonDeconnexion() {
   }
 
   return (
-    <button type="button" onClick={sortir} className="underline text-sm">
+    <button type="button" onClick={sortir} className="bouton-secondaire">
       {message('login.logout')}
     </button>
   )
