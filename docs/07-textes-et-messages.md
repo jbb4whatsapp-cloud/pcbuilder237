@@ -1,7 +1,7 @@
 # Textes et messages — PC Builder 237
 
-> **Statut** : brouillon v0.3 — 2 octobre 2026 (décisions 1, 2 et 3 intégrées : vouvoiement, codes de motif, « prix constaté en boutique »)
-> **Historique** : v0.3 — documents 01, 02 et 05 alignés sur la section 3.0 ; messages `PB032` et « relevé déjà envoyé » ajoutés (7.2, 7.3) ; motif de l'agent relu par `price_reports_visible` (section 6) ; décisions 6, 9 et 10 mises à jour ; « suite proposée » remplacée. Statuts de vérification passés de 🧪 à 🧫 après P0-1 (base de test).
+> **Statut** : brouillon v0.4 — 3 octobre 2026 (décisions 1, 2 et 3 intégrées : vouvoiement, codes de motif, « prix constaté en boutique » ; `messages/fr.json` écrit)
+> **Historique** : v0.4 — 3 octobre 2026 : `messages/fr.json` écrit (libellés, alerte, WhatsApp, états, signalement, erreurs) et relié à `mapError` par un test ; textes ajoutés hors de ce document : voir la section 11. v0.3 — documents 01, 02 et 05 alignés sur la section 3.0 ; messages `PB032` et « relevé déjà envoyé » ajoutés (7.2, 7.3) ; motif de l'agent relu par `price_reports_visible` (section 6) ; décisions 6, 9 et 10 mises à jour ; « suite proposée » remplacée. Statuts de vérification passés de 🧪 à 🧫 après P0-1 (base de test).
 > **Légende** : ✅ décidé par le porteur du projet · 🛠 déjà en place dans le schéma, les patchs ou les documents · 🧫 vérifié sur le projet Supabase de test · ❓ proposition à valider
 
 Ce document fixe **les mots** du produit : libellés, alertes, messages d'erreur, messages WhatsApp pré-remplis, textes de modération et pages de confiance. Il suit le document 05 (pages, composants, états) et lit les valeurs réelles de la base dans le schéma SQL v1 et les patchs 🛠.
@@ -352,6 +352,9 @@ Décision : l'interface choisit le message d'après le **code d'erreur** (`error
 | `23514` + `price_reports_needs_proof` | contrainte « au moins une preuve » | « Ajoutez au moins une photo de preuve. » |
 | `23514` + contrainte de `price_fcfa` | prix hors bornes | « Le prix doit être un nombre supérieur à zéro. » |
 | `23514` + contrainte des signalements | motif de 5 à 1 000 caractères | voir section 8 |
+| `23514` + `flags_has_target` | signalement sans boutique ni relevé visé | « Indiquez la boutique ou le prix concerné par votre signalement. » ❓ |
+| `23514` + contrainte de `warranty_months` | garantie hors de 0 à 60 mois | « La garantie doit être comprise entre 0 et 60 mois. » ❓ |
+| `23514` + `shops_phone_format` | numéro mal formé | « Le numéro doit commencer par +237, suivi de 9 chiffres commençant par 2 ou 6. » ❓ |
 | `23505` + `products_unique` | doublon de produit | « Ce produit existe déjà dans le catalogue. » (fiche refusée : « Un produit de ce nom a déjà été refusé. Contactez le personnel. », document 03, décision n°8) |
 | `42501` | refus par la sécurité de la base (RLS, droits de colonne) | « Cette action n'est pas autorisée pour votre compte. » |
 | autre | erreur inconnue | « Une erreur est survenue. Réessayez ; si elle persiste, contactez-nous. » (le détail va au journal, pas à l'écran) |
@@ -480,7 +483,7 @@ Le document 05 (section 6) recommande de ranger les textes dans des fichiers de 
 - Les **libellés de la section 3** sont indexés par la valeur de la base (`condition.new`, `check_level.suspect`).
 - Les **motifs d'alerte** (section 4.2) sont indexés par le code de motif si l'option B de la section 4.4 est retenue.
 
-Je peux écrire ce fichier `fr.json` à partir des sections 3 à 9 quand les décisions de la section 12 sont prises.
+**État au 3 octobre 2026** : `messages/fr.json` est écrit (sections 3, 4, 5.2, 7 et 8 ; les formulaires, notes de modération et pages de confiance suivront avec leurs écrans). Un test (`src/lib/db/erreurs.cles.test.ts`) vérifie que chaque clé renvoyée par `mapError` existe. Textes ajoutés hors de ce document, à valider ❓ : `error.warranty_invalid`, `error.flag_reason_invalid`, `error.flag_target_missing`, `error.phone_invalid` ; `badge.best_price` (« Meilleur prix » et son infobulle) ; `contact.whatsapp` ; `product.seen`, `product.back` ; `stock.out_last` ; les libellés de connexion (`login.*`). Le message WhatsApp est assemblé par morceaux (`whatsapp.config`, `whatsapp.warranty`, `whatsapp.battery`, deux questions).
 
 ---
 
@@ -503,4 +506,4 @@ Je peux écrire ce fichier `fr.json` à partir des sections 3 à 9 quand les dé
 
 ## 13. Suite proposée
 
-Voir `00-ROADMAP-MAITRE.md` (sections 4 et 7). Le fichier `fr.json` et le module de lecture relèvent du lot P0-4. Les patchs « codes de motif » et « adresse et horaires » sont exécutés dans la chaîne 1→9 sur la base de test (P0-1 ✅). Restent à valider les textes marqués ❓.
+Voir `00-ROADMAP-MAITRE.md` (sections 4 et 7). Le fichier `fr.json` et le module de lecture sont faits (lot P0-4 terminé le 3 octobre 2026). Les patchs « codes de motif » et « adresse et horaires » sont exécutés dans la chaîne 1→9 sur la base de test (P0-1 ✅). Restent à valider les textes marqués ❓.
