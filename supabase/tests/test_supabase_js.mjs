@@ -18,7 +18,7 @@ import './garde-fou.mjs'
 // LANCEMENT (variables d'environnement, jamais de clé secrète ici ;
 //            fichier .env.test.local, ignoré par git)
 //   TEST_SUPABASE_URL=https://xxxx.supabase.co
-//   SUPABASE_PUBLISHABLE_KEY=...            (clé publique)
+//   TEST_SUPABASE_PUBLISHABLE_KEY=...            (clé publique)
 //   AGENT_EMAIL=... AGENT_PASSWORD=...
 //   MOD_EMAIL=...   MOD_PASSWORD=...
 //   OWNER_EMAIL=... OWNER_PASSWORD=...      (propriétaire abonné de SHOP_ID)
