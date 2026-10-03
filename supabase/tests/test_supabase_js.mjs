@@ -1,3 +1,4 @@
+import './garde-fou.mjs'
 // =====================================================================
 // PC Builder 237 : vérifications côté client (supabase-js), BASE DE TEST UNIQUEMENT
 // Complète pcbuilder237_test_supabase.sql (qui ne passe pas par l'API).
@@ -16,7 +17,7 @@
 //
 // LANCEMENT (variables d'environnement, jamais de clé secrète ici ;
 //            fichier .env.test.local, ignoré par git)
-//   SUPABASE_URL=https://xxxx.supabase.co
+//   TEST_SUPABASE_URL=https://xxxx.supabase.co
 //   SUPABASE_PUBLISHABLE_KEY=...            (clé publique)
 //   AGENT_EMAIL=... AGENT_PASSWORD=...
 //   MOD_EMAIL=...   MOD_PASSWORD=...
@@ -33,7 +34,7 @@ import { createClient } from '@supabase/supabase-js';
 import { randomUUID } from 'node:crypto';
 
 const need = (k) => { const v = process.env[k]; if (!v) { console.error(`Variable manquante : ${k}`); process.exit(2); } return v; };
-const URL = need('SUPABASE_URL'), KEY = need('SUPABASE_PUBLISHABLE_KEY');
+const URL = need('TEST_SUPABASE_URL'), KEY = need('TEST_SUPABASE_PUBLISHABLE_KEY');
 const AGENT = { email: need('AGENT_EMAIL'), password: need('AGENT_PASSWORD') };
 const MOD = { email: need('MOD_EMAIL'), password: need('MOD_PASSWORD') };
 const OWNER = { email: need('OWNER_EMAIL'), password: need('OWNER_PASSWORD') };
