@@ -28,6 +28,7 @@
 | 08 Collecte et modération | **v0.3** ✅ | `docs/` | Décision MVP ; note sur `price_reports_visible` ajoutée sous K4 ; §12 et §14 alignés sur P0-1 ✅ ; pilote et cadences à lire pour une seule personne (D1) |
 | 09 Contrat de données | **v0.4** ✅ | `docs/09-contrat-de-donnees-site-supabase.md` | Vérifié sur la base de test ; D3 ✅ confirmée |
 | 10 Plan de réalisation | v0.1 | racine | **Absorbé par ce document** (sections 4 et 5) ; à archiver |
+| 11 Charte visuelle | **v0.1** ✅ | `docs/` | Direction B retenue ; maquettes dans `docs/maquettes/` |
 
 ### Scripts SQL : chaîne canonique (ordre d'exécution **obligatoire**)
 
@@ -234,4 +235,4 @@ Une ligne par lot terminé : à mettre à jour à la fin de chaque lot (pas à c
 | 3 oct. 2026 | `483a0ca` | P1-3 (I) : liste publique des portables, filtres ville et état |
 | 3 oct. 2026 | `a057f37` | P1-3 (J) : fiche produit, alerte neutre, meilleur prix, WhatsApp |
 
-**À venir** : choix du visuel (maquettes), puis formulaire agent (P1-1) et modération (P1-2).
+**À venir** : application de la charte visuelle (document 11, direction B) à `/produits` et à la fiche, puis formulaire agent (P1-1) et modération (P1-2). Décision à prendre : avancer la phase vendeurs (document 11, section 2) ?
