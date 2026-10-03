@@ -105,16 +105,17 @@ Chaque décision n'apparaît **qu'une fois** ici. Numérotation propre à ce reg
 | D11 | Durées de cache et invalidation après modération | 09 n°5 | P1-3 |
 | D12 | Mesure d'usage : outil externe en phase 1 | 09 n°3 | P1-4 |
 | D13 | Ville dans l'URL ; affichage RAM/stockage ; texte de carte sans prix ; vue publique des produits (C6) | 09 n°7-10 | P1-3 |
-| D14 | Durée de la période de lancement ; numéro WhatsApp du porteur pour les devis | 01 n°6 · 04 n°6 · 05 §10 | P1-4 |
+| D14 | Durée de la période de lancement : **60 jours retenus le 3 octobre 2026** (départ du décompte à fixer : ouverture publique ou activation de chaque boutique ❓) ; numéro WhatsApp du porteur pour les devis ❓ | 01 n°6 · 04 n°6 · 05 §10 | P1-4 |
 | D15 | Seuils de lancement ; Douala en retard : retarder tout ou ouvrir Yaoundé seul | 04 n°2 · 08 n°4, 5 | P1-6 |
 | D16 | Région Supabase de production | 03 n°5 | P1-5 |
 | D17 | Preuves photo publiques (suppose le retrait EXIF) ; unicité d'un nom rejeté | 03 n°2, 8 | P1-1 / P1-2 |
 | D18 | Rémunération (sans objet tant que le porteur relève lui-même), contrôle par échantillon (10 %), validité du badge (6 mois), accord des boutiques relu par un juriste | 08 n°2, 6, 8, 9 · 07 n°8 | Pilote |
 | **D19** ❓ | **Séparation relevé / modération** : le porteur fait les deux (D1, D2), donc la règle « une personne ne relève pas et ne modère pas le même relevé » (08 §3) ne s'applique pas. Qui exerce le second regard (échantillon 10 %) ? | 08 §3 | Pilote |
 | D20 | Montrer le motif technique (`check_reason`) à l'agent auteur du relevé (proposé : oui) | 07 n°7 | P1-1 |
+| **D21** ✅ | **Offre aux boutiques « Boutique visible » : 9 900 FCFA par mois, sans engagement** ; paiement hors du site, enregistré par l'administrateur ; jamais d'effet sur le tri ni sur le badge « Boutique vérifiée » | doc 11 §2 · 01 n°2-4 | Tranchée le 3 octobre 2026 ; lots V1 à V4 |
 
 ### Phases 2 à 4 (ne pas traiter maintenant)
-Contenu et tarifs du pack d'abonnement (01 n°2-4) · devis multi-boutiques (07 n°4) · mention « examiné par un modérateur » (07 n°5) · droit de réponse (05 §4.7) · table `events` (C7) · vue agrégée (C4).
+devis multi-boutiques (07 n°4) · mention « examiné par un modérateur » (07 n°5) · droit de réponse (05 §4.7) · vue agrégée (C4). **Avancés le 3 octobre 2026** : contenu et tarif de l'offre aux boutiques (D21) et table `events` (C7, lot V1). À accorder avec D12 (mesure d'usage), qui prévoit un outil externe.
 
 ### Déjà tranchées ✅ (ne plus rouvrir)
 Français seul en phase 1 · vouvoiement · « prix constaté en boutique » · codes de motif et d'erreur plutôt que lecture des phrases · seul le personnel crée une boutique · pas de « prix ancien » avant 45 jours · historique public des prix plus tard · contact ouvert à toutes les boutiques pendant le lancement · connexion agent par e-mail + code agent · **la base décide, le site affiche**. Retenu à l'implémentation, à confirmer : `/agent` pour agent, modérateur et administrateur ; `/admin` pour modérateur et administrateur (le porteur relève et modère, D1 et D2) ; une connexion anonyme n'ouvre aucun espace ; l'étiquette « Meilleur prix » n'apparaît qu'avec au moins deux lignes éligibles du même état et de la même configuration. **Offre aux boutiques (3 octobre 2026, document 11 section 2)** : « Boutique visible », 9 900 FCFA par mois sans engagement ; lancement gratuit de 60 jours, avec décompte à partir de l'ouverture publique (à confirmer) ; paiement hors du site, enregistré par l'administrateur.
@@ -250,5 +251,6 @@ Une ligne par lot terminé : à mettre à jour à la fin de chaque lot (pas à c
 | 3 oct. 2026 | `8301de8` | Charte B appliquée : variables de style, composants, en-tête, `/produits` et fiche produit (branche `p0-6-front`) |
 | 3 oct. 2026 | `5796e96` | Charte appliquée à la connexion et à la déconnexion (branche `p0-6-front`) |
 | 3 oct. 2026 | `0502c35` | Mention neutre pour une boutique non contactable, clé `contact.unavailable` (branche `p0-6-front`) |
+| 3 oct. 2026 | `e4f7340` | Offre aux boutiques (9 900 FCFA par mois, lancement de 60 jours), lots vendeurs V1 à V4, charte v0.3 |
 
 **À venir** : reste de la charte (bouton « Signaler », icône WhatsApp ; l'accueil, `/agent` et `/admin` suivront leur réécriture), puis formulaire agent (P1-1) et modération (P1-2). **Décision du 3 octobre 2026** : la phase vendeurs (espace boutique, suivi d'abonnement) est avancée, car les vendeurs sont la source de revenus prioritaire (document 11, section 2) ; lots V1 à V4 ajoutés à la section 4, en parallèle du pilote ; offre et tarif décidés (document 11, section 2).
