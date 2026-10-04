@@ -49,7 +49,7 @@ const code = (r) => (r.error ? r.error.code : 'aucune erreur');
 const specs = { ram_gb: 16, storage_gb: 256 };
 const newReport = (uid, over = {}, ref = randomUUID()) => ({
   product_id: PRODUCT_ID, shop_id: SHOP_ID, condition: 'used', price_fcfa: 200000 + Math.floor(Math.random() * 1000),
-  reported_specs: specs, proof_paths: [`${uid}/${Date.now()}/test.jpg`], client_ref: ref, ...over,
+  reported_specs: specs, proof_paths: [`${uid}/${Date.now()}/test.jpg`, `${uid}/${Date.now()}/test2.jpg`], client_ref: ref, ...over,
 });
 
 async function main() {
