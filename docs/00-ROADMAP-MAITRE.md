@@ -1,11 +1,11 @@
 # ROADMAP MAÎTRE — PC Builder 237
 
 > **Statut** : v1.6 (état du code après P0-4, P0-5, P1-1 terminé, P0-6 en cours et P1-3 entamé) — 4 octobre 2026 (document 07 en v0.4, document 09 en v0.5 ; production partiellement durcie, voir la section 5). Document de pilotage unique : il **n'invente aucune règle**, il range, tranche les conflits de version et ordonne le travail. En cas de doute sur une règle, le document 01 à 09 cité fait foi.
-> **Historique** : v1.2 (2 octobre 2026) : D1 et D2 tranchées. v1.3 (2 octobre 2026) : chaîne 1→9 et scripts de test exécutés sur Supabase test, règle « aucun écran avant P0-1 » levée, sections 1, 2, 5 et 7 réécrites. v1.3 révisée (2 octobre 2026) : commit de P0-1 confirmé (`9e03d45`, poussé sur `origin/main`), arborescence réelle du dépôt reportée (scripts 01 à 09 déjà numérotés dans `supabase/sql/`), état réel des documents 07 et 08 relu. v1.5 (3 octobre 2026) : P0-4 et P0-5 terminés, P0-6 en cours sur la branche `p0-6-front`, P1-3 entamé (liste et fiche produit) ; risques 8 à 11 ajoutés ; règles d'accès retenues ; section 8 « Journal » ajoutée. v1.6 (4 octobre 2026) : P1-1 terminé (formulaire agent testé sur PC et sur téléphone), risques 12 à 15 ajoutés, journal complété.
+> **Historique** : v1.2 (2 octobre 2026) : D1 et D2 tranchées. v1.3 (2 octobre 2026) : chaîne 1→9 et scripts de test exécutés sur Supabase test, règle « aucun écran avant P0-1 » levée, sections 1, 2, 5 et 7 réécrites. v1.3 révisée (2 octobre 2026) : commit de P0-1 confirmé (`9e03d45`, poussé sur `origin/main`), arborescence réelle du dépôt reportée (scripts 01 à 09 déjà numérotés dans `supabase/sql/`), état réel des documents 07 et 08 relu. v1.5 (3 octobre 2026) : P0-4 et P0-5 terminés, P0-6 en cours sur la branche `p0-6-front`, P1-3 entamé (liste et fiche produit) ; risques 8 à 11 ajoutés ; règles d'accès retenues ; section 8 « Journal » ajoutée. v1.6 (4 octobre 2026) : P1-1 terminé (formulaire agent testé sur PC et sur téléphone), risques 12 à 15 ajoutés, journal complété. Patch 08b (D4) intégré à la chaîne, 73 PASS.
 > **Légende** : ✅ décidé · 🛠 écrit · 🧪 testé sur PostgreSQL local seulement · 🧫 vérifié sur le projet Supabase de test · 🔎 à vérifier (test ou production) · ❓ à décider · ⚠ incohérence à corriger · ⏳ reste à faire
 
 **Ce qui est vrai aujourd'hui** :
-- La chaîne complète 1→9 a été rejouée sur une base Supabase de test vide. Le script SQL (71 PASS) et le script supabase-js (31 PASS) ont réussi 🧫. La base de test a été nettoyée (relevés, signalements, comptes anonymes et photos de test à 0).
+- La chaîne 1→9 a été rejouée sur une base Supabase de test vide (2 octobre) ; le patch 08b (D4, deux preuves photo) s'y est ajouté ensuite, entre le 08 et le 09. Le script SQL donne 73 PASS (71 avant le patch 08b) et le script supabase-js 31 PASS 🧫 (vérifiés le 4 octobre 2026). La base de test a été nettoyée (relevés, signalements, comptes anonymes et photos de test à 0).
 - **Rien n'est en production.** Le site actuel reste inutilisable avec le nouveau schéma.
 - Pour le MVP, **le porteur du projet relève les prix et modère** (Yaoundé d'abord, Douala ensuite).
 - « Vérifié » signifie désormais « vérifié sur Supabase de test » (🧫). Plusieurs points restent 🔎 (voir section 5, risque 1).
@@ -42,8 +42,9 @@
 | 6 | `supabase/sql/06_hide_address_patch.sql` | dépôt | unique |
 | 7 | `supabase/sql/07_reason_codes_patch.sql` | dépôt | ✅ version corrigée confirmée (les quatre `array_append` aux lignes 165, 173, 182 et 199). La version défectueuse du zip 07 ne doit plus servir |
 | 8 | `supabase/sql/08_config_hash_patch.sql` | dépôt | unique |
-| 9 | `supabase/sql/09_data_contract_patch.sql` | dépôt | **toujours le dernier** ; à rejouer après tout rejeu d'un patch 3 à 8 (rejouer le 5 ou le 6 retire `city_id` de `shops_public`) |
-| — | `supabase/tests/test_supabase.sql` | dépôt | à lancer après le 9 ; s'annule tout seul, le rapport est dans le message d'erreur ; **71 PASS** 🧫 |
+| 8b | `supabase/sql/08b_two_proofs_patch.sql` | dépôt | D4 : deux preuves photo (contrainte `price_reports_needs_two_proofs`) ; rejouable ; à exécuter après le 08 et avant le 09 |
+| 9 | `supabase/sql/09_data_contract_patch.sql` | dépôt | **toujours le dernier** ; à rejouer après tout rejeu d'un patch 3 à 8b (rejouer le 5 ou le 6 retire `city_id` de `shops_public`) |
+| — | `supabase/tests/test_supabase.sql` | dépôt | à lancer après le 9 ; s'annule tout seul, le rapport est dans le message d'erreur ; **73 PASS** 🧫 (71 avant le patch 08b) |
 | — | `supabase/tests/test_supabase_js.mjs` | dépôt | à lancer après le script SQL ; passe par l'API (clé publique, jetons) ; **31 PASS** 🧫 ; exige `.env.test.local` (projet de TEST uniquement) et Node 18.17 ou plus |
 | — | catalogue de départ (`supabase/seed/`) | dépôt | après le 4 ; fiches **inactives** tant que non vérifiées |
 
@@ -90,7 +91,7 @@ Chaque décision n'apparaît **qu'une fois** ici. Numérotation propre à ce reg
 | **D1** ✅ | **Qui relève les prix : le porteur du projet, Yaoundé d'abord, Douala ensuite** (phase MVP) | 01 n°1 · 04 n°3 · 08 n°1 | Tranchée le 2 octobre 2026 |
 | **D2** ✅ | **Qui modère : le porteur du projet** (phase MVP). Reste ❓ : le délai (24 h ouvrées proposé) | 04 n°4 · 08 n°3 | Tranchée ; délai avant le pilote |
 | **D3** ✅ | Patch « contrat de données » confirmé tel quel le 2 octobre 2026 : `city_id` dans les vues, fermeture de `check_reason` et de la lecture directe de `price_reports` (lecture par `price_reports_visible`), `client_ref`, note de rejet obligatoire, signalement forcé `open`. Tests au vert 🧫 | 09 n°1, 2, 6, 11 | Tranchée |
-| **D4** ✅ | Deux preuves photo pour occasion et reconditionné, imposées aussi par la base : **oui (4 octobre 2026)** ; patch SQL à écrire | 08 n°7 | P1-1 |
+| **D4** ✅ | Deux preuves photo pour occasion et reconditionné, imposées aussi par la base : **oui (4 octobre 2026)** ; patch SQL `08b_two_proofs_patch.sql` écrit et vérifié sur la base de test (73 PASS, 4 octobre 2026), à rejouer en production (P1-5) | 08 n°7 | P1-1 |
 | **D5** ✅ | Processeur, en deux temps (4 octobre 2026) : **champ « lu sur la machine / sur l'étiquette » dans le formulaire agent (P1-1)** ; règle de contrôle (`cpu_options`) **après le pilote**, si les relevés montrent des écarts réels | 08 n°10 | P1-1 |
 | **D6** ✅ | Patchs gardés rejouables pendant la phase 1 (chaîne 1→9 rejouée une seule fois en production, P1-5) ; migrations Supabase après le go/no-go | 03, 09 | Tranchée le 2 octobre 2026 |
 | **D7** ✅ | Garantie : **trois réponses explicites** (« Aucune », N mois, « Non précisée par la boutique »), jamais vide par oubli (4 octobre 2026) | 02 §10.5 · 07 n°6 | P1-1 |
@@ -156,7 +157,7 @@ La règle « aucun écran avant le rapport de P0-1 » est **levée** : le rappor
 | **Pilote Mokolo** | Collecte réelle (doc 08 §10) avec **catalogue vérifié** | — | P1-2, D1 ✅, D2 ✅, D8 |
 | P1-3 | Lecture publique : ville, `/produits`, `/produits/[id]`, `/boutiques/[id]` ; tri sans effet de l'abonnement ; client public sans cookies ; filtre `city_id` | L | P0-4 ; **avancé** sur `p0-6-front` : liste `/produits` (`483a0ca`) et fiche `/produits/[id]` (`a057f37`) ; restent `/boutiques/[id]` et l'accueil |
 | P1-4 | Accueil, signalement (limite côté serveur), pages de confiance, partage WhatsApp, mesure d'usage | M | P1-3, D9, D10, D12, D14 |
-| P1-5 | Production : chaîne 1→9, **puis script SQL et script supabase-js sur la production** (retester R10 et R11), sauvegardes **avec restauration testée**, administrateur et agents réels, connexion anonyme désactivée sauf décision D10, aucune fiche activée sans vérification | M | P1-4, D10, D16 |
+| P1-5 | Production : chaîne 1→9 (08b compris), **puis script SQL et script supabase-js sur la production** (retester R10 et R11), sauvegardes **avec restauration testée**, administrateur et agents réels, connexion anonyme désactivée sauf décision D10, aucune fiche activée sans vérification | M | P1-4, D10, D16 |
 | P1-6 | Répétition générale sur téléphone ; seuils par ville (doc 08 §8) ; confidentialité en ligne | S | D15 |
 
 **Sortie phase 1 (go/no-go)** : seuils de couverture atteints (ou ouverture d'une seule ville décidée) ; aucun prix de plus de 45 jours affiché ; parcours testé sur téléphone ; sauvegardes et confidentialité en place.
