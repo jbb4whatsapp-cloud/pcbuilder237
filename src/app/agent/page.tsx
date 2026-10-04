@@ -1,10 +1,10 @@
 "use client"
 
-import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
+import { useCallback, useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import { getBrowserClient } from '../../lib/db/browser'
 import { SELECT } from '../../lib/db/colonnes'
 import { envoyerReleve, MAX_PHOTOS, type Dependances, type ResultatEnvoi } from '../../lib/agent/envoi'
-import { chargerListes, nouveauClientRef, TABLES, type OptionListe } from '../../lib/agent/listes'
+import { chargerListes, nouveauClientRef, type OptionListe } from '../../lib/agent/listes'
 import { compresserPhoto } from '../../lib/agent/photo'
 import {
   photosRequises,
@@ -26,10 +26,13 @@ const T = {
   choisir: 'Choisir',
   chargement: 'Chargement des listes…',
   chargementEchec: 'Impossible de charger les listes. Rechargez la page.',
+  corriger: 'Certains champs sont à corriger : ils sont signalés en rouge.',
+  fermer: 'Fermer',
 }
 
 const GARANTIES: GarantieChoix[] = ['none', 'months', 'unspecified']
 const SOURCES = ['machine', 'label'] as const
+const DUREE_CONFIRMATION_MS = 6000
 
 const SAISIE_VIDE: Saisie = {
   productId: '',
@@ -52,6 +55,10 @@ interface PhotoPrete {
   url: string
 }
 type Phase = 'repos' | 'photos' | 'releve'
+interface Notif {
+  type: 'succes' | 'erreur'
+  texte: string
+}
 
 const champ: CSSProperties = {
   display: 'block',
@@ -69,6 +76,65 @@ function versErreurLegere(e: { message: string; code?: string; statusCode?: stri
   const n = Number(e.statusCode)
   if (e.statusCode !== undefined && Number.isFinite(n)) sortie.statusCode = n
   return sortie as unknown as ErreurLegere
+}
+
+/**
+ * Bande fixe en haut de l'écran : visible sans défiler.
+ * Confirmation : disparaît seule. Erreur : reste jusqu'à la fermeture ou au prochain envoi.
+ */
+function Snackbar({ notif, onClose }: { notif: Notif | null; onClose: () => void }) {
+  useEffect(() => {
+    if (!notif || notif.type !== 'succes') return
+    const minuteur = setTimeout(onClose, DUREE_CONFIRMATION_MS)
+    return () => clearTimeout(minuteur)
+  }, [notif, onClose])
+
+  if (!notif) return null
+  const ok = notif.type === 'succes'
+  return (
+    <div
+      role={ok ? 'status' : 'alert'}
+      aria-live={ok ? 'polite' : 'assertive'}
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        zIndex: 1000,
+        display: 'flex',
+        justifyContent: 'center',
+        padding: 'calc(env(safe-area-inset-top, 0px) + 8px) 8px 0',
+        pointerEvents: 'none',
+      }}
+    >
+      <div
+        style={{
+          pointerEvents: 'auto',
+          width: '100%',
+          maxWidth: 480,
+          boxSizing: 'border-box',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 12,
+          padding: '12px 16px',
+          borderRadius: 8,
+          background: ok ? '#1b5e20' : '#b00020',
+          color: '#ffffff',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+        }}
+      >
+        <span style={{ flex: 1, fontWeight: 600 }}>{notif.texte}</span>
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label={T.fermer}
+          style={{ background: 'transparent', color: '#ffffff', border: '1px solid #ffffff', borderRadius: 6, padding: '6px 10px', cursor: 'pointer' }}
+        >
+          {T.fermer}
+        </button>
+      </div>
+    </div>
+  )
 }
 
 function Champ(props: { id: string; label: string; aide?: string; erreur?: CodeErreur | 'photos'; children: ReactNode }) {
@@ -97,17 +163,21 @@ export default function PageAgent() {
   const [photos, setPhotos] = useState<PhotoPrete[]>([])
   const [clientRef, setClientRef] = useState(() => nouveauClientRef())
   const [tentative, setTentative] = useState(false)
+  const [essais, setEssais] = useState(0) // compte les envois refusés par la validation
 
   const [compression, setCompression] = useState(false)
-  const [photoIllisible, setPhotoIllisible] = useState(false)
   const [phase, setPhase] = useState<Phase>('repos')
   const [progression, setProgression] = useState({ fait: 0, total: 0 })
-  const [resultat, setResultat] = useState<Extract<ResultatEnvoi, { ok: true }> | null>(null)
+  const [notif, setNotif] = useState<Notif | null>(null)
   const [echec, setEchec] = useState<{ detail: string } | null>(null)
 
+  const formulaire = useRef<HTMLFormElement>(null)
   const entreePhoto = useRef<HTMLInputElement>(null)
   const photosRef = useRef<PhotoPrete[]>([])
   photosRef.current = photos
+
+  const fermerNotif = useCallback(() => setNotif(null), [])
+  const notifier = (type: Notif['type'], texte: string) => setNotif({ type, texte })
 
   useEffect(() => {
     let actif = true
@@ -120,6 +190,12 @@ export default function PageAgent() {
     }
   }, [])
 
+  // Après un envoi refusé par la validation : on amène la première erreur à l'écran.
+  useEffect(() => {
+    if (essais === 0) return
+    formulaire.current?.querySelector('[role="alert"]')?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  }, [essais])
+
   const erreurs = tentative ? validerSaisie(saisie) : {}
   const requises = photosRequises(saisie.condition)
   const photosManquantes = tentative && photos.length < requises
@@ -129,19 +205,16 @@ export default function PageAgent() {
 
   function maj<K extends keyof Saisie>(cle: K, valeur: Saisie[K]) {
     setSaisie((s) => ({ ...s, [cle]: valeur }))
-    setResultat(null)
   }
 
   async function ajouterPhoto(fichier: File | undefined) {
     if (!fichier || photos.length >= MAX_PHOTOS) return
-    setPhotoIllisible(false)
     setCompression(true)
     try {
       const blob = await compresserPhoto(fichier)
       setPhotos((liste) => [...liste, { id: nouveauClientRef(), blob, url: URL.createObjectURL(blob) }])
-      setResultat(null)
     } catch {
-      setPhotoIllisible(true)
+      notifier('erreur', message('agent_form.error.photo_illisible'))
     } finally {
       setCompression(false)
     }
@@ -172,10 +245,16 @@ export default function PageAgent() {
   }
 
   async function envoyer() {
+    setNotif(null)
     setTentative(true)
-    setResultat(null)
-    if (Object.keys(validerSaisie(saisie)).length > 0) return
-    if (photos.length < photosRequises(saisie.condition)) return
+
+    const saisieInvalide = Object.keys(validerSaisie(saisie)).length > 0
+    const photosKo = photos.length < photosRequises(saisie.condition)
+    if (saisieInvalide || photosKo) {
+      setEssais((n) => n + 1)
+      notifier('erreur', saisieInvalide ? T.corriger : message('agent_form.error.photos_manquantes'))
+      return
+    }
 
     setEchec(null)
     setPhase('photos')
@@ -205,6 +284,7 @@ export default function PageAgent() {
 
     if (!r.ok) {
       setEchec({ detail: r.erreur?.message ?? '' })
+      notifier('erreur', message('agent_form.status.interrupted'))
       return
     }
     // Succès : on garde la boutique (l'agent relève plusieurs produits au même endroit),
@@ -214,33 +294,30 @@ export default function PageAgent() {
     setSaisie({ ...SAISIE_VIDE, shopId: saisie.shopId })
     setClientRef(nouveauClientRef())
     setTentative(false)
-    setResultat(r)
+    notifier(
+      'succes',
+      r.dejaEnvoye
+        ? message('agent_form.status.already_sent')
+        : [message('agent_form.status.sent'), r.statut ? message(`agent_form.status.${r.statut}`) : '']
+            .filter(Boolean)
+            .join(' ')
+    )
   }
 
   const f = (cle: string) => `agent_form.${cle}`
 
   return (
     <main style={{ maxWidth: 480, margin: '0 auto', padding: 16 }}>
+      <Snackbar notif={notif} onClose={fermerNotif} />
+
       <h1>{message(f('title'))}</h1>
 
       {listesEchec && <p role="alert">{T.chargementEchec}</p>}
       {!listes && !listesEchec && <p>{T.chargement}</p>}
 
-      {resultat && (
-        <div role="status" style={{ padding: 12, marginBottom: 20, border: '1px solid #2e7d32' }}>
-          {resultat.dejaEnvoye ? (
-            <strong>{message(f('status.already_sent'))}</strong>
-          ) : (
-            <>
-              <strong>{message(f('status.sent'))}</strong>{' '}
-              {resultat.statut && message(f(`status.${resultat.statut}`))}
-            </>
-          )}
-        </div>
-      )}
-
       {listes && (
         <form
+          ref={formulaire}
           noValidate
           onSubmit={(e) => {
             e.preventDefault()
@@ -379,9 +456,6 @@ export default function PageAgent() {
               {message(f('action.add_photo'))}
             </button>
             {compression && <small role="status" style={{ display: 'block', marginTop: 4 }}>{message(f('status.compressing'))}</small>}
-            {photoIllisible && (
-              <small role="alert" style={{ display: 'block', marginTop: 4, color: '#b00020' }}>{message(f('error.photo_illisible'))}</small>
-            )}
           </Champ>
 
           {phase !== 'repos' && (
