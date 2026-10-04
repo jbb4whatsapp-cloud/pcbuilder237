@@ -11,7 +11,7 @@ Ce document dit, **page par page**, ce que le site lit dans Supabase, ce qu'il y
 
 **Lus** : documents 01 à 08 (dernières versions), `pcbuilder237_schema.sql` (v1), et les patchs « agents », « propriétaire de boutique », « produits », « lancement », « adresse et horaires », « codes de motif » (version corrigée), `config_hash`, le catalogue de départ, ainsi que `pcbuilder237_data_contract_patch.sql`, écrit à partir de la version 0.2 de ce document. **Tous les fichiers sont disponibles** : les noms de tables, colonnes, politiques et fonctions de ce document sont relus dans ces fichiers (🛠).
 
-**Exécuté sur le projet Supabase de test.** La chaîne complète (schéma, agents, propriétaire, produits, lancement, adresse et horaires, codes de motif corrigé, `config_hash`, contrat de données) a été rejouée sur une base de test vide. Le script SQL (71 PASS) et le script supabase-js (31 PASS) ont ensuite réussi. Les rôles du script SQL sont simulés dans l'éditeur (`set local role`) ; seul le script supabase-js passe par l'API (clé publique, jeton, PostgREST). **Rien n'est en production.**
+**Exécuté sur le projet Supabase de test.** La chaîne complète (schéma, agents, propriétaire, produits, lancement, adresse et horaires, codes de motif corrigé, `config_hash`, contrat de données) a été rejouée sur une base de test vide. Le script SQL (71 PASS) et le script supabase-js (31 PASS) ont ensuite réussi. Depuis le patch 08b (4 octobre 2026), le script SQL donne 73 PASS. Les rôles du script SQL sont simulés dans l'éditeur (`set local role`) ; seul le script supabase-js passe par l'API (clé publique, jeton, PostgREST). **Rien n'est en production.**
 
 **Reste 🔎**, parce que les deux scripts ne le couvrent pas :
 
