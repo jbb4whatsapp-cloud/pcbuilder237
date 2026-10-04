@@ -57,11 +57,11 @@ Tous les scripts sont déjà rangés et numérotés dans `supabase/` (section 6)
 |---|---|---|---|---|
 | 1 | 02 §10 point 4 | Barré « déjà corrigé » : faux | Remis « à faire », puis fait par le patch 8 | ✅ sur la base de test ; ⏳ production (P1-5) |
 | 2 | 04 phase 0 | Ne citait que 4 patchs | Chaîne de 9 scripts | ✅ fait (04 v0.4) |
-| 3 | 01 §7, 05 §2.3 vs 08 §5.3 | « Au moins une photo » vs « deux » ; la base n'en impose qu'une | Trancher D4 | ✅ renvoi à D4 posé ; **D4 reste ❓** |
+| 3 | 01 §7, 05 §2.3 vs 08 §5.3 | « Au moins une photo » vs « deux » ; la base n'en impose qu'une | Trancher D4 | ✅ renvoi à D4 posé ; **D4 tranchée le 4 octobre 2026 ✅** |
 | 4 | 01, 02, 04, 05 | « relevé par un agent » | « Constaté par un agent » (07 §3.0) | ✅ fait |
 | 5 | 06 §9 n°7 | `config_hash` « à corriger » | Résolu, renuméroté | ✅ fait (06 v0.3) |
 | 6 | 07 §12 n°9 | Retrait de `check_reason` encore ❓ | Fait dans le patch 9 | ✅ fait (07 v0.3) ; 🧫 vérifié |
-| 7 | 02 §10.5, 04, 07 n°6 | Garantie : trois positions | D7 | ✅ alignés ; **D7 reste ❓** |
+| 7 | 02 §10.5, 04, 07 n°6 | Garantie : trois positions | D7 | ✅ alignés ; **D7 tranchée le 4 octobre 2026 ✅** |
 | 8 | 03 §3 | Liste d'objets incomplète | Compléter | ✅ fait (03 v0.3) |
 | 9 | 03 §4.2 règle 5 | « Jamais modifié » faux pour le personnel | Préciser | ✅ fait (03 v0.3) |
 | 10 | 01 §5 | Hors périmètre v1 « ❓ proposé » vs ✅ | Passer en ✅ | ✅ fait (01 v0.3) |
@@ -90,10 +90,10 @@ Chaque décision n'apparaît **qu'une fois** ici. Numérotation propre à ce reg
 | **D1** ✅ | **Qui relève les prix : le porteur du projet, Yaoundé d'abord, Douala ensuite** (phase MVP) | 01 n°1 · 04 n°3 · 08 n°1 | Tranchée le 2 octobre 2026 |
 | **D2** ✅ | **Qui modère : le porteur du projet** (phase MVP). Reste ❓ : le délai (24 h ouvrées proposé) | 04 n°4 · 08 n°3 | Tranchée ; délai avant le pilote |
 | **D3** ✅ | Patch « contrat de données » confirmé tel quel le 2 octobre 2026 : `city_id` dans les vues, fermeture de `check_reason` et de la lecture directe de `price_reports` (lecture par `price_reports_visible`), `client_ref`, note de rejet obligatoire, signalement forcé `open`. Tests au vert 🧫 | 09 n°1, 2, 6, 11 | Tranchée |
-| **D4** | Deux preuves photo pour occasion et reconditionné, imposées aussi par la base ? | 08 n°7 | P1-1 |
-| **D5** | Règle de contrôle du processeur (`cpu_options`) et champ « lu sur la machine / sur l'étiquette » | 08 n°10 | P1-1 |
+| **D4** ✅ | Deux preuves photo pour occasion et reconditionné, imposées aussi par la base : **oui (4 octobre 2026)** ; patch SQL à écrire | 08 n°7 | P1-1 |
+| **D5** ✅ | Processeur, en deux temps (4 octobre 2026) : **champ « lu sur la machine / sur l'étiquette » dans le formulaire agent (P1-1)** ; règle de contrôle (`cpu_options`) **après le pilote**, si les relevés montrent des écarts réels | 08 n°10 | P1-1 |
 | **D6** ✅ | Patchs gardés rejouables pendant la phase 1 (chaîne 1→9 rejouée une seule fois en production, P1-5) ; migrations Supabase après le go/no-go | 03, 09 | Tranchée le 2 octobre 2026 |
-| **D7** | Garantie : obligatoire hors neuf, ou « non précisée » affichée ? | 02 §10.5 · 07 n°6 | P1-1 |
+| **D7** ✅ | Garantie : **trois réponses explicites** (« Aucune », N mois, « Non précisée par la boutique »), jamais vide par oubli (4 octobre 2026) | 02 §10.5 · 07 n°6 | P1-1 |
 | **D8** | Qui vérifie les fiches constructeur (responsable catalogue) ; liste réelle des modèles ; stockage annoncé = disque principal | 06 n°1-4, 6 | Activation du catalogue (avant pilote) |
 
 ### Phase 1, avant l'écran concerné
