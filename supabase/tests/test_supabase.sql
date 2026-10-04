@@ -141,15 +141,15 @@ begin
   v_out := v_out || pg_temp.t('agent1 : relevé conforme boutique A (avec client_ref)', 'authenticated', v_agent1,
     format($q$insert into public.price_reports (product_id, shop_id, condition, price_fcfa, reported_specs, proof_paths, client_ref)
               values (%L, %L, 'used', 200000, '{"ram_gb":16,"storage_gb":256}', %L, %L)$q$,
-           v_prod, v_shopA, array[v_agent1::text || '/1/a.jpg'], v_ref1), 'OK=1', 'x') || E'\n';
+           v_prod, v_shopA, array[v_agent1::text || '/1/a.jpg', v_agent1::text || '/1/b.jpg'], v_ref1), 'OK=1', 'x') || E'\n';
   v_out := v_out || pg_temp.t('agent1 : relevé RAM hors liste boutique B (doit passer en attente)', 'authenticated', v_agent1,
     format($q$insert into public.price_reports (product_id, shop_id, condition, price_fcfa, reported_specs, proof_paths)
               values (%L, %L, 'used', 210000, '{"ram_gb":10,"storage_gb":256}', %L)$q$,
-           v_prod, v_shopB, array[v_agent1::text || '/2/a.jpg']), 'OK=1', 'x') || E'\n';
+           v_prod, v_shopB, array[v_agent1::text || '/2/a.jpg', v_agent1::text || '/2/b.jpg']), 'OK=1', 'x') || E'\n';
   v_out := v_out || pg_temp.t('agent1 : relevé conforme boutique B', 'authenticated', v_agent1,
     format($q$insert into public.price_reports (product_id, shop_id, condition, price_fcfa, reported_specs, proof_paths)
               values (%L, %L, 'used', 195000, '{"ram_gb":16,"storage_gb":256}', %L)$q$,
-           v_prod, v_shopB, array[v_agent1::text || '/3/a.jpg']), 'OK=1', 'x') || E'\n';
+           v_prod, v_shopB, array[v_agent1::text || '/3/a.jpg', v_agent1::text || '/3/b.jpg']), 'OK=1', 'x') || E'\n';
 
   v_out := v_out || pg_temp.v('état du relevé hors liste = pending, suspect, ram_not_allowed',
     format($q$select status::text || ',' || check_level::text || ',' || check_codes::text
@@ -216,6 +216,14 @@ begin
     format($q$insert into public.price_reports (product_id, shop_id, condition, price_fcfa, reported_specs, proof_paths)
               values (%L, %L, 'new', 100000, '{"ram_gb":16}', %L)$q$,
            v_prod, v_shopA, array[v_anon::text || '/1/a.jpg']), 'ERR PB030', 'x') || E'\n';
+  v_out := v_out || pg_temp.t('agent1 : occasion avec une seule photo refusée (23514, deux preuves exigées)', 'authenticated', v_agent1,
+    format($q$insert into public.price_reports (product_id, shop_id, condition, price_fcfa, reported_specs, proof_paths)
+              values (%L, %L, 'used', 190000, '{"ram_gb":16,"storage_gb":256}', %L)$q$,
+           v_prod, v_shopA, array[v_agent1::text || '/8/a.jpg']), 'ERR 23514', 'x') || E'\n';
+  v_out := v_out || pg_temp.t('agent1 : reconditionné avec une seule photo refusé (23514)', 'authenticated', v_agent1,
+    format($q$insert into public.price_reports (product_id, shop_id, condition, price_fcfa, reported_specs, proof_paths)
+              values (%L, %L, 'refurbished', 191000, '{"ram_gb":16,"storage_gb":256}', %L)$q$,
+           v_prod, v_shopA, array[v_agent1::text || '/9/a.jpg']), 'ERR 23514', 'x') || E'\n';
 
   -- -------------------------------------------------------------------
   -- 7. C5 : clé d'idempotence
@@ -224,15 +232,15 @@ begin
   v_out := v_out || pg_temp.t('agent1 : même client_ref renvoyé = doublon 23505', 'authenticated', v_agent1,
     format($q$insert into public.price_reports (product_id, shop_id, condition, price_fcfa, reported_specs, proof_paths, client_ref)
               values (%L, %L, 'used', 200000, '{"ram_gb":16,"storage_gb":256}', %L, %L)$q$,
-           v_prod, v_shopA, array[v_agent1::text || '/1/a.jpg'], v_ref1), 'ERR 23505', 'x') || E'\n';
+           v_prod, v_shopA, array[v_agent1::text || '/1/a.jpg', v_agent1::text || '/1/b.jpg'], v_ref1), 'ERR 23505', 'x') || E'\n';
   v_out := v_out || pg_temp.t('agent1 : autre client_ref accepté', 'authenticated', v_agent1,
     format($q$insert into public.price_reports (product_id, shop_id, condition, price_fcfa, reported_specs, proof_paths, client_ref)
               values (%L, %L, 'used', 201000, '{"ram_gb":16,"storage_gb":256}', %L, %L)$q$,
-           v_prod, v_shopA, array[v_agent1::text || '/4/a.jpg'], v_ref2), 'OK=1', 'x') || E'\n';
+           v_prod, v_shopA, array[v_agent1::text || '/4/a.jpg', v_agent1::text || '/4/b.jpg'], v_ref2), 'OK=1', 'x') || E'\n';
   v_out := v_out || pg_temp.t('agent2 : le même client_ref qu''un autre auteur est accepté (unicité par auteur)', 'authenticated', v_agent2,
     format($q$insert into public.price_reports (product_id, shop_id, condition, price_fcfa, reported_specs, proof_paths, client_ref)
               values (%L, %L, 'used', 202000, '{"ram_gb":16,"storage_gb":256}', %L, %L)$q$,
-           v_prod, v_shopA, array[v_agent2::text || '/1/a.jpg'], v_ref1), 'OK=1', 'x') || E'\n';
+           v_prod, v_shopA, array[v_agent2::text || '/1/a.jpg', v_agent2::text || '/1/b.jpg'], v_ref1), 'OK=1', 'x') || E'\n';
 
   -- -------------------------------------------------------------------
   -- 8. C8 : note obligatoire au rejet
@@ -260,7 +268,7 @@ begin
   v_out := v_out || pg_temp.t('agent1 : relevé suspect sur la boutique A (avec client_ref)', 'authenticated', v_agent1,
     format($q$insert into public.price_reports (product_id, shop_id, condition, price_fcfa, reported_specs, proof_paths, client_ref)
               values (%L, %L, 'used', 205000, '{"ram_gb":10,"storage_gb":256}', %L, %L)$q$,
-           v_prod, v_shopA, array[v_agent1::text || '/7/a.jpg'], v_ref3), 'OK=1', 'x') || E'\n';
+           v_prod, v_shopA, array[v_agent1::text || '/7/a.jpg', v_agent1::text || '/7/b.jpg'], v_ref3), 'OK=1', 'x') || E'\n';
   v_out := v_out || pg_temp.t('modérateur : rejette ce relevé avec une note', 'authenticated', v_mod,
     format($q$update public.price_reports set status = 'rejected', review_note = 'Photo illisible'
               where product_id = %L and price_fcfa = 205000$q$, v_prod), 'OK=1', 'x') || E'\n';
@@ -295,7 +303,7 @@ begin
   v_out := v_out || pg_temp.t('propriétaire abonné : insère un relevé conforme sur sa boutique', 'authenticated', v_owner,
     format($q$insert into public.price_reports (product_id, shop_id, condition, price_fcfa, reported_specs, proof_paths)
               values (%L, %L, 'used', 199000, '{"ram_gb":16,"storage_gb":256}', %L)$q$,
-           v_prod, v_shopA, array[v_owner::text || '/1/a.jpg']), 'OK=1', 'x') || E'\n';
+           v_prod, v_shopA, array[v_owner::text || '/1/a.jpg', v_owner::text || '/1/b.jpg']), 'OK=1', 'x') || E'\n';
   v_out := v_out || pg_temp.v('ce relevé conforme est enregistré pending, source shop (jamais publié sans modération)',
     format($q$select status::text || ',' || source::text from public.price_reports
               where product_id = %L and price_fcfa = 199000$q$, v_prod),
@@ -303,7 +311,7 @@ begin
   v_out := v_out || pg_temp.t('propriétaire : envoie status published et source agent', 'authenticated', v_owner,
     format($q$insert into public.price_reports (product_id, shop_id, condition, price_fcfa, reported_specs, proof_paths, status, source)
               values (%L, %L, 'used', 198000, '{"ram_gb":16,"storage_gb":256}', %L, 'published', 'agent')$q$,
-           v_prod, v_shopA, array[v_owner::text || '/2/a.jpg']), 'OK=1', 'x') || E'\n';
+           v_prod, v_shopA, array[v_owner::text || '/2/a.jpg', v_owner::text || '/2/b.jpg']), 'OK=1', 'x') || E'\n';
   v_out := v_out || pg_temp.v('... les valeurs envoyées sont écrasées : pending, source shop',
     format($q$select status::text || ',' || source::text from public.price_reports
               where product_id = %L and price_fcfa = 198000$q$, v_prod),
