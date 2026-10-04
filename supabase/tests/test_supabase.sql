@@ -23,7 +23,7 @@
 -- ci-dessous par les leurs et supprimez le bloc « 1. Utilisateurs ». Dans ce
 -- cas les utilisateurs ne seront PAS annulés : les supprimer à la main ensuite.
 --
--- Exécuté sur le projet Supabase de TEST le 02 octobre 2026 : 71 PASS, 0 FAIL. Rejeu complet
+-- Exécuté sur le projet Supabase de TEST le 02 octobre 2026 : 71 PASS, 0 FAIL ; le 04 octobre 2026, après le patch 08b (deux preuves) : 73 PASS, 0 FAIL. Rejeu complet
 -- 01 à 09 sur une base de test vide, puis ce script : réussi.
 -- =====================================================================
 
