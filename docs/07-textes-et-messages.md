@@ -86,7 +86,7 @@ La garantie peut valoir `NULL` (non renseignée) ou `0` (aucune). Ce sont deux c
 | `reported_specs.storage_gb` | Disque principal : N Go |
 | `reported_specs.battery_health_pct` | Batterie : N % |
 
-Pour l'occasion et le reconditionné, la garantie « non précisée » est signalée en clair : c'est une information utile à l'acheteur. ❓ Si la garantie devient obligatoire hors neuf (document 02, section 10, point 5), ce libellé disparaît pour ces états.
+Pour l'occasion et le reconditionné, la garantie « non précisée » est signalée en clair : c'est une information utile à l'acheteur. ✅ Décision D7 (4 octobre 2026) : le formulaire exige une réponse explicite parmi « Aucune garantie », « Garantie N mois » et « Garantie non précisée ». Le libellé « Garantie non précisée » reste affiché en clair, mais il ne peut plus venir d'un oubli de l'agent.
 
 ### 3.4 Niveaux de contrôle (`check_level`) 🛠
 
@@ -295,11 +295,11 @@ Les clés sont celles de `reported_specs` 🛠. Le formulaire envoie des **nombr
 | `condition` | État | « Neuf, reconditionné ou occasion, tel que l'annonce la boutique. » |
 | `price_fcfa` | Prix (FCFA) | « Le prix demandé, sans négociation. » |
 | `in_stock` | En stock | « Cochez si la machine est là, devant vous. » |
-| `warranty_months` | Garantie (mois) | « 0 si la boutique ne donne aucune garantie. Laissez vide si elle ne l'a pas dit. » |
+| `warranty_months` | Garantie | « Choisissez : Aucune, un nombre de mois, ou Non précisée par la boutique. Ne laissez pas ce choix vide. » |
 | `ram_gb` | Mémoire (Go) | « La mémoire annoncée, ou celle que vous voyez dans les paramètres de la machine. » |
 | `storage_gb` | Disque principal (Go) | « La capacité du disque principal. Un second disque ne se note pas ici. » |
 | `battery_health_pct` | Batterie (%) | « Santé de la batterie si la boutique la donne. Facultatif. » |
-| `proof_paths` | Photos de preuve | « Au moins une photo : l'étiquette de prix, ou la machine avec son prix. Une photo de l'écran montrant la mémoire est idéale. » |
+| `proof_paths` | Photos de preuve | « Neuf : au moins une photo (l'étiquette de prix, ou la machine avec son prix). Occasion ou reconditionné : deux photos, l'étiquette de prix et l'écran de la machine montrant la mémoire et le stockage. » |
 
 Textes de contrôle avant envoi :
 
@@ -496,7 +496,7 @@ Le document 05 (section 6) recommande de ranger les textes dans des fichiers de 
 | 3 | Vocabulaire public : « prix constaté en boutique » ; « relevé » réservé à l'interface agent, modérateur et propriétaire (section 3.0) | ✅ décidé |
 | 4 | Devis d'un panier réparti sur plusieurs boutiques : un message par boutique plus un devis complet au contact du projet (proposé), ou autre ? Numéro du porteur du projet à fournir | ❓ |
 | 5 | Indiquer qu'un prix à alerte a été examiné par un modérateur ? Demande d'exposer une colonne dans la vue `current_prices` | ❓ |
-| 6 | Garantie « non précisée » : l'afficher en clair (proposé) ou la rendre obligatoire hors neuf (document 02, section 10, point 5) ? | ❓ renvoyée à la **décision D7** (registre `00-ROADMAP-MAITRE.md`) |
+| 6 | Garantie : afficher « non précisée » en clair, ou la rendre obligatoire hors neuf | ✅ Tranchée le 4 octobre 2026 (D7) : trois réponses explicites dans le formulaire, « non précisée » affichée en clair, jamais vide par oubli |
 | 7 | Les raisons techniques de mise en attente (`check_reason`) sont-elles montrées à l'agent auteur du relevé ? (proposé : oui, section 6) | ❓ |
 | 8 | Ton des pages de confiance et des conseils de sécurité : à relire avec les agents et un juriste pour les mentions légales | ❓ |
 | 9 | Retirer `check_reason` de la vue publique `current_prices` (il contient la médiane de prix) : l'agent et le personnel le lisent déjà dans `price_reports`. Recommandé ; la vue doit être recréée, donc à faire avec une autre modification de la vue | ✅ fait dans le patch contrat de données 🧫 (vérifié sur la base de test) |
