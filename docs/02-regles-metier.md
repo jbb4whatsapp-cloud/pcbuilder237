@@ -16,10 +16,10 @@ Un **relevé** est une observation de prix faite pour un produit, dans une bouti
 - 🛠 produit, boutique, **état** (`new`, `refurbished`, `used`), prix en FCFA, en stock ou non ;
 - 🛠 **garantie** en mois ;
 - 🛠 **configuration réellement annoncée** (RAM, stockage, batterie…) ;
-- 🛠 **au moins une preuve photo** (relevé impossible sans preuve) ;
+- 🛠 **au moins une preuve photo** (relevé impossible sans preuve) ; ✅ **deux** pour l'occasion et le reconditionné (D4, 4 octobre 2026, patch à écrire) ;
 - 🛠 auteur, date, statut de modération.
 - ❓ **origine** du relevé : « agent » ou « boutique ». Absente du schéma v1.
-- ❓ garantie obligatoire pour l'occasion et le reconditionné (facultative dans le schéma v1) : **décision D7 ouverte** (obligatoire, ou « non précisée » affichée en clair, document 07, décision n°6).
+- ✅ garantie : réponse explicite exigée par le formulaire (« Aucune », N mois, « Non précisée par la boutique », D7, 4 octobre 2026) ; la base garde déjà les trois états (0, N, inconnu), donc aucun changement de schéma.
 
 ### Cycle de vie
 1. Le relevé est créé avec le statut `pending`.
@@ -189,7 +189,7 @@ Chaque règle est une fonction pure qui reçoit la configuration et renvoie un r
 | 2 | Pas de table d'**abonnements** | `supabase/sql/03_shop_owner_patch.sql` | 🛠 écrit, 🧫 vérifié sur la base de test, 🔎 production |
 | 3 | Un relevé `ok` était publié automatiquement, même venant d'une boutique (la règle ✅ de la section 1 demande une validation) | `supabase/sql/03_shop_owner_patch.sql` : un relevé de boutique est toujours `pending` | 🛠 écrit, 🧫 vérifié sur la base de test, 🔎 production |
 | 4 | **`config_hash` calculé sur toute la configuration annoncée** (`md5(reported_specs::text)`) : la batterie compte, deux relevés presque identiques donnent deux lignes. ⚠ Une version précédente de ce document l'indiquait à tort comme « déjà corrigé » (document 08, section 12, écart 1) | `supabase/sql/08_config_hash_patch.sql` : empreinte limitée à `ram_gb`, `storage_gb`, `cpu` | **FAIT sur la base de test** : 🛠 patch écrit, 🧫 exécuté sur le projet Supabase de test (P0-1 ✅). Production à faire (P1-5) |
-| 5 | Garantie facultative, même pour l'occasion et le reconditionné | Aucun patch : **décision D7** | ❓ |
-| 6 | Règles anti-arnaque limitées à la RAM, au stockage et au prix | Partiel : `pcbuilder237_reason_codes_patch.sql` (version du zip « 08 ») pose les **codes de motif** pour ces trois règles ; la règle processeur reste à décider (**D5**) | 🛠 codes de motif écrits ; ❓ règle processeur |
+| 5 | Garantie facultative, même pour l'occasion et le reconditionné | Aucun patch : réponse explicite exigée par le formulaire (**D7**) | ✅ décidée le 4 octobre 2026 |
+| 6 | Règles anti-arnaque limitées à la RAM, au stockage et au prix | Partiel : `pcbuilder237_reason_codes_patch.sql` (version du zip « 08 ») pose les **codes de motif** pour ces trois règles ; la règle processeur est reportée après le pilote (**D5**, 4 octobre 2026) | 🛠 codes de motif écrits ; ⏳ règle processeur après le pilote |
 
 Rappel : ne jamais utiliser la version de `pcbuilder237_reason_codes_patch.sql` du zip « 07 » (défectueuse, document 08, section 12, écart 3).

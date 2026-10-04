@@ -101,7 +101,7 @@ Une ligne de prix = un produit dans une boutique, pour un état et une configura
 | État | Preuve conseillée | Imposé par le serveur ? |
 |---|---|---|
 | Neuf | Photo de l'étiquette de prix avec le produit | Au moins 1 photo 🛠 |
-| Occasion ou reconditionné | Étiquette de prix **et** capture de l'écran de la machine montrant mémoire et stockage | Au moins 1 photo 🛠 ; la deuxième n'est **pas** imposée (section 12, écart 5) |
+| Occasion ou reconditionné | Étiquette de prix **et** capture de l'écran de la machine montrant mémoire et stockage | ✅ Deux photos minimum, **imposées par la base** (D4, décidé le 4 octobre 2026) ; 🛠 patch à écrire (section 12, écart 5) |
 
 ### 5.4 Lire la configuration sur la machine 🔍
 Les intitulés varient selon la version et la langue du système : à confirmer sur de vraies machines avant la formation des agents.
@@ -115,7 +115,7 @@ Les intitulés varient selon la version et la langue du système : à confirmer 
 
 La commande `wmic memorychip`, utilisée sur l'ancienne page `/agent`, est **obsolète** : elle est absente des versions récentes de Windows 11. Alternative en PowerShell : `Get-CimInstance Win32_PhysicalMemory`.
 
-La machine n'est allumée **qu'avec l'accord de la boutique**. Si ce n'est pas possible, l'agent saisit la configuration annoncée sur l'étiquette et le dit dans la note ; le modérateur le voit comme une configuration non vérifiée sur la machine (section 12, écart 2 : le schéma n'a pas de champ pour le dire).
+La machine n'est allumée **qu'avec l'accord de la boutique**. Si ce n'est pas possible, l'agent saisit la configuration annoncée sur l'étiquette et choisit « lue sur l'étiquette » dans le champ prévu à cet effet (D5, décidé le 4 octobre 2026) ; le modérateur la voit comme une configuration non vérifiée sur la machine.
 
 ### 5.5 Saisie
 Les libellés et aides du formulaire sont dans le document 07, section 6. Points d'attention :
@@ -123,7 +123,7 @@ Les libellés et aides du formulaire sont dans le document 07, section 6. Points
 - **nombres** seulement (`16`, pas « 16 Go ») ; stockage = **disque principal** ;
 - **prix demandé, sans négociation** ;
 - une machine dans **deux configurations** (16 et 8 Go) = **deux relevés** ;
-- garantie : `0` si la boutique n'en donne aucune, vide si elle ne l'a pas dite ;
+- garantie : réponse explicite obligatoire (D7, décidé le 4 octobre 2026) : « Aucune » (`0`), « X mois », ou « Non précisée par la boutique » (enregistrée comme inconnue) ; jamais laissée vide par oubli ;
 - après l'envoi, lire le message : « publié » ou « envoyé pour vérification », et la raison technique en cas d'attente (document 07, section 6).
 
 ### 5.6 Après la tournée
@@ -302,10 +302,10 @@ Relevés en lisant l'ensemble, puis en exécutant la chaîne complète sur une b
 | # | Constat | Conséquence | Statut |
 |---|---|---|---|
 | 1 | `config_hash` valait `md5(reported_specs::text)` : toute la configuration annoncée comptait. Le document 02, section 10, point 4 affirmait le contraire (« déjà corrigé »), ce qui était faux. Test : deux relevés identiques sauf la batterie restaient **deux lignes** dans `current_prices` | Doublons de lignes ; règle de prix bas rarement déclenchée | 🛠 Corrigé par `pcbuilder237_config_hash_patch.sql` : l'empreinte ne porte que sur `ram_gb`, `storage_gb` et `cpu`. Les relevés existants sont recalculés. Après le patch, les deux relevés de test n'occupent plus qu'une ligne (le plus récent). Point 4 du document 02 : exécuté sur la base de test 🧫, production à faire (lot P1-5) |
-| 2 | Le processeur n'avait aucune clé définie dans `reported_specs` | Aucun contrôle possible | 🛠 La clé `cpu` est posée (texte, normalisé : « i5-8350U » et « I5 8350u » = même empreinte). Un relevé sans `cpu` forme un groupe à part. **Reste à décider** : la règle de contrôle (liste `cpu_options` dans la fiche produit, nouveau code de motif), et un champ pour distinguer « configuration lue sur la machine » de « lue sur l'étiquette » |
+| 2 | Le processeur n'avait aucune clé définie dans `reported_specs` | Aucun contrôle possible | 🛠 La clé `cpu` est posée (texte, normalisé : « i5-8350U » et « I5 8350u » = même empreinte). Un relevé sans `cpu` forme un groupe à part. **Décidé le 4 octobre 2026 (D5)** : champ « configuration lue sur la machine / sur l'étiquette » dans le formulaire agent (P1-1) ; règle de contrôle (`cpu_options`, nouveau code de motif) après le pilote, seulement si les relevés montrent des écarts réels |
 | 3 | **Défaut dans le patch « codes de motif » d'origine** : `v_codes := v_codes \|\| 'code'` échoue (« malformed array literal »). Je l'ai constaté sur les quatre règles. Conséquence : tout relevé qui devait passer en attente (RAM au-dessus du maximum, RAM ou stockage hors liste, prix bas) aurait été **refusé avec une erreur** au lieu d'arriver chez le modérateur | La file d'attente serait restée vide et les agents n'auraient pas compris leurs erreurs | 🛠 Corrigé aux quatre endroits (`array_append`) dans une version corrigée de `pcbuilder237_reason_codes_patch.sql` et, au cas où l'ancienne version serait déjà exécutée, dans le patch `config_hash`. Les deux chemins aboutissent à la même fonction. Vérifié : RAM 64 Go → `impossible` / `ram_above_max` ; 10 Go → `suspect` / `ram_not_allowed` ; disque 300 Go → `suspect` / `storage_not_allowed` ; prix à 60 000 FCFA face à trois relevés autour de 190 000 → `suspect` / `price_low`, tous **en attente** |
 | 4 | Ordre des patchs | Voir la liste ci-dessous | ✅ Vérifié |
-| 5 | Le serveur n'exige qu'**une** photo, même pour l'occasion et le reconditionné, alors que la section 5.3 en demande deux | La preuve de configuration repose sur la discipline de l'agent | ❓ Décision n°7 |
+| 5 | Le serveur n'exige qu'**une** photo, même pour l'occasion et le reconditionné, alors que la section 5.3 en demande deux | La preuve de configuration repose sur la discipline de l'agent | ✅ Décision n°7 tranchée le 4 octobre 2026 (D4) : deux preuves imposées par la base ; 🛠 patch à écrire |
 
 **Ordre d'exécution vérifié** : schéma v1 → agents → propriétaire de boutique → produits → lancement → adresse et horaires → codes de motif (corrigé, version du zip « 08 ») → `config_hash` → contrat de données (document 09, **toujours le dernier**). Le catalogue de départ s'exécute après le patch produits. Rejouer l'un des patchs « propriétaire », « produits » ou « lancement » remet d'anciennes versions de fonctions : rejouer ensuite « codes de motif » (qui s'arrête de lui-même s'il détecte une version inconnue), puis `config_hash`.
 
@@ -325,10 +325,10 @@ Relevés en lisant l'ensemble, puis en exécutant la chaîne complète sur une b
 | 4 | Seuils de lancement de la section 8 | ❓ |
 | 5 | Si Douala est en retard : retarder tout ou ouvrir Yaoundé seul | ❓ |
 | 6 | Taux du contrôle par échantillon (10 % proposé) | ❓ |
-| 7 | Deux preuves obligatoires côté serveur pour l'occasion et le reconditionné | ❓ |
+| 7 | Deux preuves obligatoires côté serveur pour l'occasion et le reconditionné | ✅ D4, 4 octobre 2026 (patch à écrire) |
 | 8 | Durée de validité du badge « vérifiée » (6 mois proposé) | ❓ |
 | 9 | Texte de l'accord des boutiques pour photographier les prix, relu par un juriste | ❓ |
-| 10 | Règle de contrôle du processeur (`cpu_options`, nouveau code de motif) et champ « configuration lue sur la machine / sur l'étiquette » (section 12, écart 2) | ❓ |
+| 10 | Processeur (D5, 4 octobre 2026) en deux temps : **maintenant**, champ « configuration lue sur la machine / sur l'étiquette » dans le formulaire agent (P1-1), emplacement (`reported_specs` ou colonne) à fixer à l'écart 2 ; **après le pilote**, règle de contrôle (`cpu_options`, nouveau code de motif, nouveau texte au document 07) si les relevés montrent des écarts réels | ✅ (champ) / ❓ (règle) |
 
 ---
 
