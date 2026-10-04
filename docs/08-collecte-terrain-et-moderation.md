@@ -8,7 +8,7 @@ Ce document répond aux trois questions qui bloquent le lancement : **qui relèv
 
 **Toutes les valeurs chiffrées sont des hypothèses de travail**, à remplacer par les mesures de la collecte pilote (section 10). Aucune décision n'est prise à la place du porteur du projet : chaque point ouvert est repris dans la section 13.
 
-Sources : documents 01 à 07, schéma SQL v1 et patchs « produits », « lancement », « adresse et horaires », « codes de motif » et « catalogue de départ ». Tous les patchs ont maintenant été lus, et la chaîne complète a été exécutée sur une base PostgreSQL 16 **locale** avec des simulations de l'authentification et du stockage Supabase (section 12). Cette vérification locale a ensuite été complétée sur le projet Supabase de test (P0-1 ✅ : script SQL 71 PASS, script supabase-js 31 PASS ; document 09 v0.4). Rien n'est en production.
+Sources : documents 01 à 07, schéma SQL v1 et patchs « produits », « lancement », « adresse et horaires », « codes de motif » et « catalogue de départ ». Tous les patchs ont maintenant été lus, et la chaîne complète a été exécutée sur une base PostgreSQL 16 **locale** avec des simulations de l'authentification et du stockage Supabase (section 12). Cette vérification locale a ensuite été complétée sur le projet Supabase de test (P0-1 ✅ : script SQL 73 PASS depuis le patch 08b (71 avant), script supabase-js 31 PASS ; document 09 v0.4). Rien n'est en production.
 
 ---
 
@@ -101,7 +101,7 @@ Une ligne de prix = un produit dans une boutique, pour un état et une configura
 | État | Preuve conseillée | Imposé par le serveur ? |
 |---|---|---|
 | Neuf | Photo de l'étiquette de prix avec le produit | Au moins 1 photo 🛠 |
-| Occasion ou reconditionné | Étiquette de prix **et** capture de l'écran de la machine montrant mémoire et stockage | ✅ Deux photos minimum, **imposées par la base** (D4, décidé le 4 octobre 2026) ; 🛠 patch 08b écrit (section 12, écart 5) ; exécution sur la base de test à confirmer ❓ |
+| Occasion ou reconditionné | Étiquette de prix **et** capture de l'écran de la machine montrant mémoire et stockage | ✅ Deux photos minimum, **imposées par la base** (D4, décidé le 4 octobre 2026) ; 🧫 patch 08b exécuté sur la base de test le 4 octobre 2026 (73 PASS ; section 12, écart 5) |
 
 ### 5.4 Lire la configuration sur la machine 🔍
 Les intitulés varient selon la version et la langue du système : à confirmer sur de vraies machines avant la formation des agents.
@@ -305,7 +305,7 @@ Relevés en lisant l'ensemble, puis en exécutant la chaîne complète sur une b
 | 2 | Le processeur n'avait aucune clé définie dans `reported_specs` | Aucun contrôle possible | 🛠 La clé `cpu` est posée (texte, normalisé : « i5-8350U » et « I5 8350u » = même empreinte). Un relevé sans `cpu` forme un groupe à part. **Décidé le 4 octobre 2026 (D5)** : champ « configuration lue sur la machine / sur l'étiquette » dans le formulaire agent (P1-1) ; règle de contrôle (`cpu_options`, nouveau code de motif) après le pilote, seulement si les relevés montrent des écarts réels |
 | 3 | **Défaut dans le patch « codes de motif » d'origine** : `v_codes := v_codes \|\| 'code'` échoue (« malformed array literal »). Je l'ai constaté sur les quatre règles. Conséquence : tout relevé qui devait passer en attente (RAM au-dessus du maximum, RAM ou stockage hors liste, prix bas) aurait été **refusé avec une erreur** au lieu d'arriver chez le modérateur | La file d'attente serait restée vide et les agents n'auraient pas compris leurs erreurs | 🛠 Corrigé aux quatre endroits (`array_append`) dans une version corrigée de `pcbuilder237_reason_codes_patch.sql` et, au cas où l'ancienne version serait déjà exécutée, dans le patch `config_hash`. Les deux chemins aboutissent à la même fonction. Vérifié : RAM 64 Go → `impossible` / `ram_above_max` ; 10 Go → `suspect` / `ram_not_allowed` ; disque 300 Go → `suspect` / `storage_not_allowed` ; prix à 60 000 FCFA face à trois relevés autour de 190 000 → `suspect` / `price_low`, tous **en attente** |
 | 4 | Ordre des patchs | Voir la liste ci-dessous | ✅ Vérifié |
-| 5 | Le serveur n'exige qu'**une** photo, même pour l'occasion et le reconditionné, alors que la section 5.3 en demande deux | La preuve de configuration repose sur la discipline de l'agent | ✅ Décision n°7 tranchée le 4 octobre 2026 (D4) : deux preuves imposées par la base ; 🛠 patch `08b_two_proofs_patch.sql` écrit (contrainte `price_reports_needs_two_proofs`, après le patch 08 et avant le 09) ; exécution sur la base de test à confirmer ❓ |
+| 5 | Le serveur n'exige qu'**une** photo, même pour l'occasion et le reconditionné, alors que la section 5.3 en demande deux | La preuve de configuration repose sur la discipline de l'agent | ✅ Décision n°7 tranchée le 4 octobre 2026 (D4) : deux preuves imposées par la base ; 🛠 patch `08b_two_proofs_patch.sql` écrit et exécuté (contrainte `price_reports_needs_two_proofs`, après le patch 08 et avant le 09) 🧫 : les deux refus (`23514`) sont vérifiés par `test_supabase.sql`, 73 PASS le 4 octobre 2026 |
 
 **Ordre d'exécution vérifié** : schéma v1 → agents → propriétaire de boutique → produits → lancement → adresse et horaires → codes de motif (corrigé, version du zip « 08 ») → `config_hash` → deux preuves (08b) → contrat de données (document 09, **toujours le dernier**). Le catalogue de départ s'exécute après le patch produits. Rejouer l'un des patchs « propriétaire », « produits » ou « lancement » remet d'anciennes versions de fonctions : rejouer ensuite « codes de motif » (qui s'arrête de lui-même s'il détecte une version inconnue), puis `config_hash`.
 
@@ -325,7 +325,7 @@ Relevés en lisant l'ensemble, puis en exécutant la chaîne complète sur une b
 | 4 | Seuils de lancement de la section 8 | ❓ |
 | 5 | Si Douala est en retard : retarder tout ou ouvrir Yaoundé seul | ❓ |
 | 6 | Taux du contrôle par échantillon (10 % proposé) | ❓ |
-| 7 | Deux preuves obligatoires côté serveur pour l'occasion et le reconditionné | ✅ D4, 4 octobre 2026 (patch 08b écrit ; exécution sur la base de test à confirmer) |
+| 7 | Deux preuves obligatoires côté serveur pour l'occasion et le reconditionné | ✅ D4, 4 octobre 2026 (patch 08b exécuté sur la base de test 🧫, 73 PASS) |
 | 8 | Durée de validité du badge « vérifiée » (6 mois proposé) | ❓ |
 | 9 | Texte de l'accord des boutiques pour photographier les prix, relu par un juriste | ❓ |
 | 10 | Processeur (D5, 4 octobre 2026) en deux temps : **maintenant**, champ « configuration lue sur la machine / sur l'étiquette » dans le formulaire agent (P1-1), emplacement (`reported_specs` ou colonne) à fixer à l'écart 2 ; **après le pilote**, règle de contrôle (`cpu_options`, nouveau code de motif, nouveau texte au document 07) si les relevés montrent des écarts réels | ✅ (champ) / ❓ (règle) |
