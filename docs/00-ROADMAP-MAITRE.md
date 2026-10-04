@@ -1,7 +1,7 @@
 # ROADMAP MAÎTRE — PC Builder 237
 
 > **Statut** : v1.6 (état du code après P0-4, P0-5, P1-1 terminé, P0-6 en cours et P1-3 entamé) — 4 octobre 2026 (document 07 en v0.4, document 09 en v0.5 ; production partiellement durcie, voir la section 5). Document de pilotage unique : il **n'invente aucune règle**, il range, tranche les conflits de version et ordonne le travail. En cas de doute sur une règle, le document 01 à 09 cité fait foi.
-> **Historique** : v1.2 (2 octobre 2026) : D1 et D2 tranchées. v1.3 (2 octobre 2026) : chaîne 1→9 et scripts de test exécutés sur Supabase test, règle « aucun écran avant P0-1 » levée, sections 1, 2, 5 et 7 réécrites. v1.3 révisée (2 octobre 2026) : commit de P0-1 confirmé (`9e03d45`, poussé sur `origin/main`), arborescence réelle du dépôt reportée (scripts 01 à 09 déjà numérotés dans `supabase/sql/`), état réel des documents 07 et 08 relu. v1.5 (3 octobre 2026) : P0-4 et P0-5 terminés, P0-6 en cours sur la branche `p0-6-front`, P1-3 entamé (liste et fiche produit) ; risques 8 à 11 ajoutés ; règles d'accès retenues ; section 8 « Journal » ajoutée. v1.6 (4 octobre 2026) : P1-1 terminé (formulaire agent testé sur PC et sur téléphone), risques 12 à 15 ajoutés, journal complété. Patch 08b (D4) intégré à la chaîne, 73 PASS.
+> **Historique** : v1.2 (2 octobre 2026) : D1 et D2 tranchées. v1.3 (2 octobre 2026) : chaîne 1→9 et scripts de test exécutés sur Supabase test, règle « aucun écran avant P0-1 » levée, sections 1, 2, 5 et 7 réécrites. v1.3 révisée (2 octobre 2026) : commit de P0-1 confirmé (`9e03d45`, poussé sur `origin/main`), arborescence réelle du dépôt reportée (scripts 01 à 09 déjà numérotés dans `supabase/sql/`), état réel des documents 07 et 08 relu. v1.5 (3 octobre 2026) : P0-4 et P0-5 terminés, P0-6 en cours sur la branche `p0-6-front`, P1-3 entamé (liste et fiche produit) ; risques 8 à 11 ajoutés ; règles d'accès retenues ; section 8 « Journal » ajoutée. v1.6 (4 octobre 2026) : P1-1 terminé (formulaire agent testé sur PC et sur téléphone), risques 12 à 15 ajoutés, journal complété. Patch 08b (D4) intégré à la chaîne, 73 PASS. Versions des documents 07 (v0.4) et 09 (v0.5) corrigées dans le tableau de la section 1.
 > **Légende** : ✅ décidé · 🛠 écrit · 🧪 testé sur PostgreSQL local seulement · 🧫 vérifié sur le projet Supabase de test · 🔎 à vérifier (test ou production) · ❓ à décider · ⚠ incohérence à corriger · ⏳ reste à faire
 
 **Ce qui est vrai aujourd'hui** :
@@ -24,9 +24,9 @@
 | 04 Feuille de route | **v0.4** ✅ | `docs/` | Chaîne de 9 scripts, D1/D2 ; **ce document prime** pour l'ordre d'exécution |
 | 05 Pages et parcours | **v0.4** ✅ | `docs/` | Vocabulaire, renvois D4/D7 |
 | 06 Catalogue de départ | **v0.3** ✅ | `docs/` | `config_hash` résolu, décisions renumérotées |
-| 07 Textes et messages | **v0.3** ✅ | `docs/` | `PB032`, `23505`, décisions 6, 9, 10 ; message « relevé déjà envoyé » présent (§7.2) ; statuts alignés sur 🧫 |
+| 07 Textes et messages | **v0.4** ✅ | `docs/` | `PB032`, `23505`, décisions 6, 9, 10 ; message « relevé déjà envoyé » présent (§7.2) ; statuts alignés sur 🧫 |
 | 08 Collecte et modération | **v0.3** ✅ | `docs/` | Décision MVP ; note sur `price_reports_visible` ajoutée sous K4 ; §12 et §14 alignés sur P0-1 ✅ ; pilote et cadences à lire pour une seule personne (D1) |
-| 09 Contrat de données | **v0.4** ✅ | `docs/09-contrat-de-donnees-site-supabase.md` | Vérifié sur la base de test ; D3 ✅ confirmée |
+| 09 Contrat de données | **v0.5** ✅ | `docs/09-contrat-de-donnees-site-supabase.md` | Vérifié sur la base de test ; D3 ✅ confirmée |
 | 10 Plan de réalisation | v0.1 | racine | **Absorbé par ce document** (sections 4 et 5) ; à archiver |
 | 11 Charte visuelle | **v0.3** ✅ | `docs/` | Direction B retenue ; maquettes dans `docs/maquettes/` ; offre aux boutiques décidée (section 2) |
 

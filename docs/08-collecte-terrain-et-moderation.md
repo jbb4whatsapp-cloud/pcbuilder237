@@ -334,4 +334,4 @@ Relevés en lisant l'ensemble, puis en exécutant la chaîne complète sur une b
 
 ## 14. Suite proposée
 
-Voir `00-ROADMAP-MAITRE.md` (sections 4 et 7). La chaîne de 9 scripts est exécutée sur la base de test (P0-1 ✅) ; le document 09 est en v0.4. D3 ✅ confirmée ; prochaines étapes : P0-4 (socle du site), puis le pilote de collecte (lots P1-1 et P1-2).
+Voir `00-ROADMAP-MAITRE.md` (sections 4 et 7). La chaîne de 9 scripts est exécutée sur la base de test (P0-1 ✅) ; le patch 08b (deux preuves, D4) s'y est ajouté le 4 octobre (73 PASS) ; le document 09 est en v0.4. D3 ✅ confirmée ; prochaines étapes : P0-4 (socle du site), puis le pilote de collecte (lots P1-1 et P1-2).

@@ -17,7 +17,7 @@ Ce document décrit comment le produit décrit dans les documents 01 (vision) et
 | Base de données, authentification, stockage | Supabase (PostgreSQL, Auth, Storage) | 🛠 |
 | Langage | TypeScript | ❓ |
 | Tests de la logique métier | Vitest (fonctions pures de compatibilité et de prix) | ❓ |
-| Migrations | Phase 1 : patchs rejouables dans `supabase/sql/` (D6 ✅, chaîne 1→9 rejouée une seule fois en production, lot P1-5). Après le go/no-go : dossier `supabase/migrations/` appliqué avec la CLI Supabase | ✅ |
+| Migrations | Phase 1 : patchs rejouables dans `supabase/sql/` (D6 ✅, chaîne 1→9, 08b compris, rejouée une seule fois en production, lot P1-5). Après le go/no-go : dossier `supabase/migrations/` appliqué avec la CLI Supabase | ✅ |
 
 Deux projets Supabase : **test** et **production**. Chaque script SQL est d'abord exécuté sur le projet de test (c'est déjà la consigne en tête des scripts 🛠).
 

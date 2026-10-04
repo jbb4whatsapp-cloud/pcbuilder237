@@ -468,7 +468,7 @@ C1, C2, C3, C5, C8 et C9 sont écrits dans `pcbuilder237_data_contract_patch.sql
 
 À faire après l'exécution de la chaîne de patchs (ordre : schéma → agents → propriétaire → produits → lancement → adresse et horaires → codes de motif → `config_hash` → contrat de données).
 
-**Légende de cette section** : 🧫 réussi sur le projet Supabase de test, par le script SQL (71 PASS) ou par le script supabase-js (31 PASS) ; 🧪 réussi seulement sur PostgreSQL local ; 🔎 pas encore testé. Les rôles du script SQL sont simulés dans l'éditeur ; seul le script supabase-js passe par l'API.
+**Légende de cette section** : 🧫 réussi sur le projet Supabase de test, par le script SQL (73 PASS) ou par le script supabase-js (31 PASS) ; 🧪 réussi seulement sur PostgreSQL local ; 🔎 pas encore testé. Les rôles du script SQL sont simulés dans l'éditeur ; seul le script supabase-js passe par l'API.
 
 1. un visiteur anonyme lit `current_prices` sans erreur ; la vue n'a plus `check_reason` (`42703` si on le demande) et a `city_id` et `config_hash` 🧫 ;
 2. `select *` sur `shops` échoue pour `anon` ; `shops_public` répond 🧫 ;
