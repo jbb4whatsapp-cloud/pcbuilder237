@@ -135,7 +135,8 @@
     "pb025": "Cette demande a déjà été traitée.",
     "pb030": "Votre compte n'est pas autorisé à envoyer un relevé. Pour une boutique, un abonnement actif est nécessaire.",
     "pb031": "Le nom, le quartier, le statut et le badge de la boutique ne peuvent être modifiés que par le personnel.",
-    "pb032": "Ajoutez une note pour rejeter ce relevé."
+    "pb032": "Ajoutez une note pour rejeter ce relevé.",
+    "two_proofs_missing": "Pour une machine d'occasion ou reconditionnée, ajoutez deux photos : l'étiquette de prix et l'écran de la machine."
   },
   "login": {
     "title": "Connexion",
@@ -168,5 +169,77 @@
   },
   "disclaimer": {
     "prices": "Les prix affichés ont été constatés en boutique à la date indiquée. Ils peuvent avoir changé depuis. PC Builder 237 ne vend pas les produits : le prix final est celui de la boutique."
+  },
+  "agent_form": {
+    "title": "Relever un prix",
+    "field": {
+      "shop": "Boutique",
+      "product": "Produit",
+      "condition": "État",
+      "price": "Prix (FCFA)",
+      "in_stock": "En stock",
+      "warranty": "Garantie",
+      "warranty_months": "Nombre de mois",
+      "ram": "Mémoire (Go)",
+      "storage": "Disque principal (Go)",
+      "cpu": "Processeur",
+      "config_source": "Configuration lue",
+      "battery": "Batterie (%)",
+      "proofs": "Photos de preuve"
+    },
+    "help": {
+      "shop": "Choisissez la boutique où vous êtes. Elle n'est pas dans la liste ? Demandez son ajout.",
+      "product": "Cherchez le modèle exact. Il n'est pas dans la liste ? Prévenez un modérateur.",
+      "condition": "Neuf, reconditionné ou occasion, tel que l'annonce la boutique.",
+      "price": "Le prix demandé, sans négociation. Chiffres seulement.",
+      "in_stock": "Cochez si la machine est là, devant vous.",
+      "warranty": "Choisissez une réponse. Ne laissez pas ce choix vide.",
+      "ram": "La mémoire, en chiffres seulement (16, pas « 16 Go »).",
+      "storage": "La capacité du disque principal. Un second disque ne se note pas ici.",
+      "cpu": "Par exemple i5-8350U. Recopiez ce que vous lisez.",
+      "config_source": "« Sur la machine » si vous avez lu la mémoire et le stockage dans les paramètres. Sinon « Sur l'étiquette ».",
+      "battery": "Santé de la batterie si la boutique la donne. Facultatif.",
+      "proofs_new": "Au moins une photo : l'étiquette de prix, ou la machine avec son prix.",
+      "proofs_used": "Deux photos : l'étiquette de prix et l'écran de la machine montrant la mémoire et le stockage."
+    },
+    "warranty_choice": {
+      "none": "Aucune garantie",
+      "months": "Un nombre de mois",
+      "unspecified": "Non précisée par la boutique"
+    },
+    "config_choice": {
+      "machine": "Sur la machine",
+      "label": "Sur l'étiquette"
+    },
+    "action": {
+      "submit": "Envoyer le relevé",
+      "add_photo": "Ajouter une photo",
+      "remove_photo": "Retirer cette photo"
+    },
+    "status": {
+      "compressing": "Réduction des photos en cours…",
+      "uploading": "Envoi des photos…",
+      "saving": "Enregistrement du relevé…",
+      "sent": "Relevé envoyé.",
+      "published": "Il est visible par les acheteurs.",
+      "pending": "Il sera examiné par un modérateur.",
+      "already_sent": "Ce relevé a déjà été envoyé.",
+      "interrupted": "L'envoi a été interrompu. Votre relevé est conservé, vous pouvez le renvoyer."
+    },
+    "error": {
+      "produit_requis": "Choisissez un produit.",
+      "boutique_requise": "Choisissez une boutique.",
+      "etat_requis": "Choisissez l'état du produit.",
+      "prix_invalide": "Le prix doit être un nombre supérieur à zéro, en chiffres seulement.",
+      "garantie_requise": "Choisissez une réponse pour la garantie.",
+      "garantie_invalide": "Le nombre de mois doit être compris entre 1 et 60.",
+      "memoire_invalide": "La mémoire doit être un nombre, en chiffres seulement.",
+      "stockage_invalide": "Le stockage doit être un nombre, en chiffres seulement.",
+      "processeur_requis": "Indiquez le processeur.",
+      "source_config_requise": "Dites si la configuration a été lue sur la machine ou sur l'étiquette.",
+      "batterie_invalide": "La batterie doit être un nombre entre 1 et 100.",
+      "photos_manquantes": "Ajoutez toutes les photos demandées avant d'envoyer.",
+      "photo_illisible": "Une photo n'a pas pu être lue. Choisissez-en une autre."
+    }
   }
 }

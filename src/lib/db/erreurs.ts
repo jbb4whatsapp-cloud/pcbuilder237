@@ -20,6 +20,7 @@ export const CLE = {
   produitExiste: 'error.product_exists',
   releveDejaEnvoye: 'error.report_already_sent',
   preuveRequise: 'error.proof_required',
+  deuxPreuvesRequises: 'error.two_proofs_missing',
   prixInvalide: 'error.price_invalid',
   garantieInvalide: 'error.warranty_invalid',
   motifSignalement: 'error.flag_reason_invalid',
@@ -52,6 +53,7 @@ export function mapError(erreur: ErreurSupabase | null | undefined): string {
   }
   if (code === '23514') {
     return contrainte(texte, [
+      ['price_reports_needs_two_proofs', CLE.deuxPreuvesRequises],
       ['price_reports_needs_proof', CLE.preuveRequise],
       ['price_reports_price_fcfa_check', CLE.prixInvalide],
       ['price_reports_warranty_months_check', CLE.garantieInvalide],
