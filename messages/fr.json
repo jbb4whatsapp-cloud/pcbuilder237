@@ -241,5 +241,77 @@
       "photos_manquantes": "Ajoutez toutes les photos demandées avant d'envoyer.",
       "photo_illisible": "Une photo n'a pas pu être lue. Choisissez-en une autre."
     }
+  },
+  "moderation": {
+    "title": "Relevés en attente de vérification",
+    "pending_one": "1 relevé à examiner",
+    "pending_many": "{n} relevés à examiner",
+    "empty": "Aucun relevé en attente.",
+    "refresh": "Actualiser",
+    "loading": "Chargement des relevés…",
+    "load_failed": "Impossible de charger les relevés. Vérifiez votre connexion et réessayez.",
+    "label": {
+      "product": "Produit",
+      "shop": "Boutique",
+      "condition": "État",
+      "price": "Prix",
+      "stock": "Stock",
+      "warranty": "Garantie",
+      "ram": "Mémoire",
+      "storage": "Disque principal",
+      "cpu": "Processeur",
+      "battery": "Batterie",
+      "source": "Origine",
+      "reported_at": "Relevé le",
+      "level": "Contrôle automatique",
+      "reason": "Motif technique"
+    },
+    "in_stock": "En stock",
+    "out_stock": "Hors stock",
+    "warranty_none": "Aucune garantie",
+    "warranty_months": "{n} mois",
+    "warranty_unknown": "Non précisée",
+    "gb": "{n} Go",
+    "percent": "{n} %",
+    "source": {
+      "agent": "Relevé par un agent",
+      "shop": "Déclaré par la boutique"
+    },
+    "level": {
+      "ok": "Cohérent",
+      "suspect": "À vérifier (possible)",
+      "impossible": "Incohérent (impossible)"
+    },
+    "action": {
+      "publish": "Publier",
+      "reject": "Rejeter",
+      "confirm_reject": "Confirmer le rejet",
+      "cancel": "Annuler"
+    },
+    "reject": {
+      "help": "La note est obligatoire. L'auteur du relevé la verra : décrivez le problème, sans accuser personne.",
+      "models": "Modèle de note",
+      "choose": "Choisir un modèle",
+      "note": "Note de rejet"
+    },
+    "note_required": "Écrivez une note pour rejeter ce relevé.",
+    "note_models": {
+      "photo_unreadable": "Photo illisible. Renvoyez le relevé avec une photo nette de l'étiquette de prix.",
+      "photo_unrelated": "La photo ne montre pas le produit ou son prix.",
+      "config_incoherent": "Mémoire ou stockage incompatibles avec la fiche du modèle. Vérifiez la machine et renvoyez le relevé.",
+      "price_unrealistic": "Prix très éloigné des autres relevés. Vérifiez le prix et renvoyez le relevé.",
+      "duplicate": "Un relevé identique est déjà publié.",
+      "wrong_target": "Le produit ou la boutique ne correspond pas à la photo."
+    },
+    "done": {
+      "published": "Relevé publié. Il est visible par les acheteurs.",
+      "rejected": "Relevé rejeté. L'auteur verra votre note."
+    },
+    "already_handled": "Ce relevé a déjà été traité ou n'est plus visible.",
+    "photo": "Photo {n}",
+    "photo_unavailable": "Photo indisponible",
+    "photos_none": "Aucune photo",
+    "unknown_product": "Produit inconnu ({id})",
+    "unknown_shop": "Boutique inconnue ({id})"
   }
 }
