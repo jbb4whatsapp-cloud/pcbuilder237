@@ -265,5 +265,6 @@ Une ligne par lot terminé : à mettre à jour à la fin de chaque lot (pas à c
 | 4 oct. 2026 | `6416ea4` | P1-1 : erreurs et confirmations en bande fixe en haut de l'écran ; essais sur PC et sur téléphone validés |
 | 5 oct. 2026 | `f576e60` | P1-2a : page `/admin` (file des relevés en attente, publier, rejeter avec note et modèles de note, photos par liens temporaires), `releves.ts` et ses tests, bande de messages partagée (`Snackbar.tsx`), bloc `moderation` dans `fr.json` ; 132 tests Vitest |
 | 5 oct. 2026 | `a0b0714` | `tsconfig.app.json` couvre les pages agent et admin et les composants |
+| 5 oct. 2026 | `cf5d914` | La page agent utilise le composant `Snackbar` partagé (65 lignes de doublon retirées) |
 
 **À venir** : reste de la charte (bouton « Signaler », icône WhatsApp ; l'accueil, `/agent` et `/admin` suivront leur réécriture), puis signalements (P1-2b) et demandes de boutique (P1-2c) ; le formulaire agent (P1-1) est terminé (la charte B n'y est pas encore appliquée). **Décision du 3 octobre 2026** : la phase vendeurs (espace boutique, suivi d'abonnement) est avancée, car les vendeurs sont la source de revenus prioritaire (document 11, section 2) ; lots V1 à V4 ajoutés à la section 4, en parallèle du pilote ; offre et tarif décidés (document 11, section 2).
