@@ -1,6 +1,7 @@
 "use client"
 
 import { useCallback, useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
+import { Snackbar, type Notif } from '../../components/Snackbar'
 import { getBrowserClient } from '../../lib/db/browser'
 import { SELECT } from '../../lib/db/colonnes'
 import { envoyerReleve, MAX_PHOTOS, type Dependances, type ResultatEnvoi } from '../../lib/agent/envoi'
@@ -32,8 +33,6 @@ const T = {
 
 const GARANTIES: GarantieChoix[] = ['none', 'months', 'unspecified']
 const SOURCES = ['machine', 'label'] as const
-const DUREE_CONFIRMATION_MS = 6000
-
 const SAISIE_VIDE: Saisie = {
   productId: '',
   shopId: '',
@@ -55,10 +54,6 @@ interface PhotoPrete {
   url: string
 }
 type Phase = 'repos' | 'photos' | 'releve'
-interface Notif {
-  type: 'succes' | 'erreur'
-  texte: string
-}
 
 const champ: CSSProperties = {
   display: 'block',
@@ -76,65 +71,6 @@ function versErreurLegere(e: { message: string; code?: string; statusCode?: stri
   const n = Number(e.statusCode)
   if (e.statusCode !== undefined && Number.isFinite(n)) sortie.statusCode = n
   return sortie as unknown as ErreurLegere
-}
-
-/**
- * Bande fixe en haut de l'écran : visible sans défiler.
- * Confirmation : disparaît seule. Erreur : reste jusqu'à la fermeture ou au prochain envoi.
- */
-function Snackbar({ notif, onClose }: { notif: Notif | null; onClose: () => void }) {
-  useEffect(() => {
-    if (!notif || notif.type !== 'succes') return
-    const minuteur = setTimeout(onClose, DUREE_CONFIRMATION_MS)
-    return () => clearTimeout(minuteur)
-  }, [notif, onClose])
-
-  if (!notif) return null
-  const ok = notif.type === 'succes'
-  return (
-    <div
-      role={ok ? 'status' : 'alert'}
-      aria-live={ok ? 'polite' : 'assertive'}
-      style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        zIndex: 1000,
-        display: 'flex',
-        justifyContent: 'center',
-        padding: 'calc(env(safe-area-inset-top, 0px) + 8px) 8px 0',
-        pointerEvents: 'none',
-      }}
-    >
-      <div
-        style={{
-          pointerEvents: 'auto',
-          width: '100%',
-          maxWidth: 480,
-          boxSizing: 'border-box',
-          display: 'flex',
-          alignItems: 'center',
-          gap: 12,
-          padding: '12px 16px',
-          borderRadius: 8,
-          background: ok ? '#1b5e20' : '#b00020',
-          color: '#ffffff',
-          boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
-        }}
-      >
-        <span style={{ flex: 1, fontWeight: 600 }}>{notif.texte}</span>
-        <button
-          type="button"
-          onClick={onClose}
-          aria-label={T.fermer}
-          style={{ background: 'transparent', color: '#ffffff', border: '1px solid #ffffff', borderRadius: 6, padding: '6px 10px', cursor: 'pointer' }}
-        >
-          {T.fermer}
-        </button>
-      </div>
-    </div>
-  )
 }
 
 function Champ(props: { id: string; label: string; aide?: string; erreur?: CodeErreur | 'photos'; children: ReactNode }) {
