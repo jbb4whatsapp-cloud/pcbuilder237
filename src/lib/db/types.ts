@@ -148,3 +148,20 @@ export interface FlagRow {
   status: FlagStatus
   created_at: string
 }
+
+export type RequestStatus = 'open' | 'done' | 'rejected'
+
+/** Table shop_requests, colonnes de COLONNES.shopRequests. */
+export interface ShopRequestRow {
+  id: string
+  name: string
+  neighborhood_id: string | null
+  address: string | null
+  phone: string | null
+  note: string | null
+  status: RequestStatus
+  shop_id: string | null
+  handled_at: string | null
+  handled_note: string | null
+  created_at: string
+}

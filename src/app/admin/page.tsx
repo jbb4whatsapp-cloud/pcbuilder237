@@ -244,6 +244,7 @@ export default function PageModeration() {
 
       <h1>{t('title')}</h1>
       <p><Link href="/admin/signalements">{message('moderation_flags.link')}</Link></p>
+      <p><Link href="/admin/boutiques">{message('moderation_shops.link')}</Link></p>
 
       {echec && <p role="alert">{t('load_failed')}</p>}
       {chargement && !file && <p>{t('loading')}</p>}

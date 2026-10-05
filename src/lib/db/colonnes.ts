@@ -41,6 +41,11 @@ export const COLONNES = {
   ],
   // Signalements : jamais created_by (audit, risque R6).
   flags: ['id', 'shop_id', 'report_id', 'reason', 'status', 'created_at'],
+  // Demandes de boutique : jamais requested_by ni handled_by (audit).
+  shopRequests: [
+    'id', 'name', 'neighborhood_id', 'address', 'phone', 'note', 'status',
+    'shop_id', 'handled_at', 'handled_note', 'created_at',
+  ],
 } as const
 
 export const SELECT = {
@@ -54,4 +59,5 @@ export const SELECT = {
   reportInsertResult: joindre(COLONNES.reportInsertResult),
   reportsVisible: joindre(COLONNES.reportsVisible),
   flags: joindre(COLONNES.flags),
+  shopRequests: joindre(COLONNES.shopRequests),
 } as const

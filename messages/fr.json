@@ -349,5 +349,37 @@
       "reviewed": "Signalement marqué comme traité.",
       "dismissed": "Signalement écarté."
     }
+  },
+  "moderation_shops": {
+    "link": "Demandes de boutique",
+    "title": "Demandes d'ajout de boutique",
+    "open_one": "1 demande à examiner",
+    "open_many": "{n} demandes à examiner",
+    "empty": "Aucune demande en attente.",
+    "refresh": "Actualiser",
+    "loading": "Chargement des demandes…",
+    "load_failed": "Impossible de charger les demandes. Vérifiez votre connexion et réessayez.",
+    "label": {
+      "name": "Nom proposé",
+      "neighborhood": "Quartier",
+      "address": "Adresse",
+      "phone": "Téléphone",
+      "note": "Note de l'agent",
+      "sent_at": "Reçue le"
+    },
+    "not_given": "Non précisé",
+    "action": {
+      "create": "Créer la boutique"
+    },
+    "hint": "La boutique créée est ensuite à vérifier avant d'être contactable.",
+    "note_models": {
+      "duplicate": "Cette boutique existe déjà dans la liste.",
+      "unclear": "Informations insuffisantes pour identifier la boutique. Précisez le quartier et le téléphone, puis renvoyez la demande.",
+      "not_computer": "Cette boutique ne vend pas de matériel informatique."
+    },
+    "done": {
+      "created": "Boutique créée. La demande est traitée.",
+      "rejected": "Demande refusée. L'agent verra votre note."
+    }
   }
 }
