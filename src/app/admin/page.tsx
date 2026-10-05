@@ -1,6 +1,7 @@
 "use client"
 
 import { useCallback, useEffect, useState, type CSSProperties } from 'react'
+import Link from 'next/link'
 import { Snackbar, type Notif } from '../../components/Snackbar'
 import { chargerFile, decider, noteRejetValide, type Decision, type FileReleves } from '../../lib/admin/releves'
 import { getBrowserClient } from '../../lib/db/browser'
@@ -242,6 +243,7 @@ export default function PageModeration() {
       <Snackbar notif={notif} onClose={fermerNotif} />
 
       <h1>{t('title')}</h1>
+      <p><Link href="/admin/signalements">{message('moderation_flags.link')}</Link></p>
 
       {echec && <p role="alert">{t('load_failed')}</p>}
       {chargement && !file && <p>{t('loading')}</p>}

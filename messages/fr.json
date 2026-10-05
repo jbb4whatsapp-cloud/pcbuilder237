@@ -313,5 +313,41 @@
     "photos_none": "Aucune photo",
     "unknown_product": "Produit inconnu ({id})",
     "unknown_shop": "Boutique inconnue ({id})"
+  },
+  "moderation_flags": {
+    "link": "Signalements",
+    "back": "Retour aux relevés",
+    "title": "Signalements à examiner",
+    "open_one": "1 signalement à examiner",
+    "open_many": "{n} signalements à examiner",
+    "empty": "Aucun signalement en attente.",
+    "refresh": "Actualiser",
+    "loading": "Chargement des signalements…",
+    "load_failed": "Impossible de charger les signalements. Vérifiez votre connexion et réessayez.",
+    "label": {
+      "reason": "Motif du signalement",
+      "sent_at": "Reçu le",
+      "shop": "Boutique",
+      "price": "Prix concerné",
+      "condition": "État",
+      "report_status": "Statut du relevé"
+    },
+    "target_shop": "Signalement sur une boutique",
+    "target_report": "Signalement sur un prix",
+    "report_missing": "Relevé introuvable ou non visible.",
+    "report_status": {
+      "pending": "En attente",
+      "published": "Publié",
+      "rejected": "Rejeté"
+    },
+    "hint": "Si le prix signalé est faux, rejetez-le à part dans la page des relevés.",
+    "action": {
+      "reviewed": "Marquer comme traité",
+      "dismissed": "Écarter"
+    },
+    "done": {
+      "reviewed": "Signalement marqué comme traité.",
+      "dismissed": "Signalement écarté."
+    }
   }
 }

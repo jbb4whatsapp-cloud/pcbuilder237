@@ -136,3 +136,15 @@ export interface ReportVisibleRow {
   review_note: string | null
   client_ref: string | null
 }
+
+export type FlagStatus = 'open' | 'reviewed' | 'dismissed'
+
+/** Table flags, colonnes de COLONNES.flags (jamais created_by). */
+export interface FlagRow {
+  id: string
+  shop_id: string | null
+  report_id: string | null
+  reason: string
+  status: FlagStatus
+  created_at: string
+}
