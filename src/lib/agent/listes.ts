@@ -47,10 +47,14 @@ const parLibelle = (a: OptionListe, b: OptionListe) => a.libelle.localeCompare(b
 
 /** Lève une erreur si une lecture échoue (la page affiche alors un message et propose de recharger). */
 export async function chargerListes(
-  client: Client
+  client: Client,
+  options: { produitsActifs?: boolean } = {}
 ): Promise<{ produits: OptionListe[]; boutiques: OptionListe[] }> {
+  // Par défaut, seuls les produits actifs : le serveur refuse les autres (PB001), même pour le personnel
+  // qui peut les lire. La modération passe produitsActifs: false pour afficher les noms de toutes les fiches.
+  const requeteProduits = client.from(TABLES.produits).select(SELECT.products)
   const [p, b, q, v] = await Promise.all([
-    client.from(TABLES.produits).select(SELECT.products),
+    options.produitsActifs === false ? requeteProduits : requeteProduits.eq('is_active', true),
     client.from(TABLES.boutiques).select(SELECT.shopsPublic),
     client.from(TABLES.quartiers).select(SELECT.neighborhoods),
     client.from(TABLES.villes).select(SELECT.cities),

@@ -32,7 +32,7 @@ export function miseAJour(t: Traitement): { status: Traitement } {
 export async function chargerSignalements(client: Client): Promise<FileSignalements> {
   const [lecture, listes] = await Promise.all([
     client.from('flags').select(SELECT.flags).eq('status', 'open').order('created_at', { ascending: true }),
-    chargerListes(client),
+    chargerListes(client, { produitsActifs: false }),
   ])
   if (lecture.error) throw new Error(lecture.error.message)
   const signalements = (lecture.data ?? []) as unknown as FlagRow[]

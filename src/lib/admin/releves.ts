@@ -40,7 +40,7 @@ export async function chargerFile(client: Client): Promise<FileReleves> {
       .select(SELECT.reportsVisible)
       .eq('status', 'pending')
       .order('reported_at', { ascending: true }),
-    chargerListes(client),
+    chargerListes(client, { produitsActifs: false }),
   ])
   if (lecture.error) throw new Error(lecture.error.message)
   return {
