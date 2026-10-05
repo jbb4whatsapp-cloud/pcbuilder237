@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>PC Builder 237 — Comparateur de thèmes visuels</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ─────────────────────────────────────────────────────────────
+   COMPARATEUR DE THÈMES — PC Builder 237
+   4 thèmes : Marche Vert (officiel) · SaaS Indigo · Terre Cuite · Atelier Bleu
+   Tous respectent la charte V1 (pas de photos, pas de notes, pas d'escrow)
+   ───────────────────────────────────────────────────────────── */
+
+/* Variables par thème — appliquées via body.theme-* */
+
+/* Thème officiel : Marche Vert (direction B) */
+body.theme-marche {
+  --c-bg: #FAF7F2;
+  --c-surface: #FFFFFF;
+  --c-border: #E7E5E4;
+  --c-text: #1C1917;
+  --c-text-muted: #57534E;
+  --c-primary: #14532D;
+  --c-primary-action: #15803D;
+  --c-ocre: #FCD34D;
+  --c-alert-bg: #FFEDD5;
+  --c-alert-text: #7C2D12;
+  --c-success-bg: #DCFCE7;
+  --c-success-text: #14532D;
+  --c-neutral-bg: #E7E5E4;
+  --c-neutral-text: #292524;
+  --c-error: #B91C1C;
+}
+
+/* Thème 1 : SaaS Indigo (SaaS Clair) */
+body.theme-saas {
+  --c-bg: #FFFFFF;
+  --c-surface: #F8FAFC;
+  --c-border: #E2E8F0;
+  --c-text: #18181B;
+  --c-text-muted: #64748B;
+  --c-primary: #4F46E5;
+  --c-primary-action: #6366F1;
+  --c-ocre: #FCD34D;
+  --c-alert-bg: #FEF3C7;
+  --c-alert-text: #78350F;
+  --c-success-bg: #DCFCE7;
+  --c-success-text: #14532D;
+  --c-neutral-bg: #F1F5F9;
+  --c-neutral-text: #334155;
+  --c-error: #B91C1C;
+}
+
+/* Thème 2 : Terre Cuite (Africain moderne) */
+body.theme-terre {
+  --c-bg: #FAF7F2;
+  --c-surface: #FFFFFF;
+  --c-border: #E7E5E4;
+  --c-text: #1C1917;
+  --c-text-muted: #57534E;
+  --c-primary: #9A3412;
+  --c-primary-action: #C2410C;
+  --c-ocre: #FCD34D;
+  --c-alert-bg: #FFEDD5;
+  --c-alert-text: #7C2D12;
+  --c-success-bg: #DCFCE7;
+  --c-success-text: #14532D;
+  --c-neutral-bg: #E7E5E4;
+  --c-neutral-text: #292524;
+  --c-error: #B91C1C;
+}
+
+/* Thème 3 : Atelier Bleu (Productivité douce) */
+body.theme-atelier {
+  --c-bg: #FBF8F1;
+  --c-surface: #FFFFFF;
+  --c-border: #EAE6DA;
+  --c-text: #292524;
+  --c-text-muted: #6B6760;
+  --c-primary: #1E3A8A;
+  --c-primary-action: #3B5BDB;
+  --c-ocre: #FCD34D;
+  --c-alert-bg: #FEE2C5;
+  --c-alert-text: #7C2D12;
+  --c-success-bg: #DCFCE7;
+  --c-success-text: #14532D;
+  --c-neutral-bg: #EAE6DA;
+  --c-neutral-text: #44403C;
+  --c-error: #B91C1C;
+}
+
+/* ─── Page layout ─── */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #0F172A;
+  background: #0F172A;
+  transition: background-color 200ms ease;
+}
+
+body.theme-marche { background: #E5E5DC; }
+body.theme-saas { background: #F1F5F9; }
+body.theme-terre { background: #E5DDD2; }
+body.theme-atelier { background: #EFEADC; }
+
+.app {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 40px 30px;
+}
+
+/* ─── Page header ( comparateur ) ─── */
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 30px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #CBD5E1;
+}
+.app-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #0F172A;
+}
+.app-title .accent {
+  color: #06B6D4;
+}
+.app-subtitle {
+  font-size: 13px;
+  color: #64748B;
+  margin-top: 4px;
+}
+.app-meta {
+  text-align: right;
+  font-size: 12px;
+  color: #64748B;
+}
+
+/* ─── Switcher ─── */
+.switcher {
+  background: white;
+  border: 1px solid #CBD5E1;
+  border-radius: 12px;
+  padding: 18px 22px;
+  margin-bottom: 32px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+.switcher-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+  flex-shrink: 0;
+}
+.switcher-themes {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  flex: 1;
+}
+.theme-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid #CBD5E1;
+  background: white;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  color: #334155;
+  transition: all 150ms ease;
+}
+.theme-pill:hover {
+  border-color: #06B6D4;
+  background: #F8FAFC;
+}
+.theme-pill.active {
+  border: 2px solid #0F172A;
+  background: #F1F5F9;
+  font-weight: 600;
+}
+.theme-pill .swatch {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+.theme-pill .swatch-marche { background: linear-gradient(135deg, #14532D 0%, #15803D 100%); }
+.theme-pill .swatch-saas { background: linear-gradient(135deg, #4F46E5 0%, #6366F1 100%); }
+.theme-pill .swatch-terre { background: linear-gradient(135deg, #9A3412 0%, #C2410C 100%); }
+.theme-pill .swatch-atelier { background: linear-gradient(135deg, #1E3A8A 0%, #3B5BDB 100%); }
+
+/* ─── Miniatures gallery (4 thèmes côte à côte) ─── */
+.section-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1E293B;
+  margin: 30px 0 16px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.section-title .count {
+  color: #64748B;
+  font-weight: 500;
+  margin-left: 8px;
+}
+
+.miniatures {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+  margin-bottom: 40px;
+}
+
+.mini-card {
+  background: white;
+  border: 1px solid #CBD5E1;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 200ms ease;
+}
+.mini-card:hover {
+  border-color: #06B6D4;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+}
+.mini-card.active {
+  border: 2px solid #0F172A;
+}
+
+.mini-header {
+  padding: 14px 16px;
+  color: white;
+  font-weight: 600;
+  font-size: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.mini-header.marche { background: #14532D; }
+.mini-header.saas { background: #4F46E5; }
+.mini-header.terre { background: #9A3412; }
+.mini-header.atelier { background: #1E3A8A; }
+
+.mini-header .badge-v {
+  font-size: 10px;
+  background: rgba(255,255,255,0.2);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-weight: 500;
+}
+
+.mini-body {
+  padding: 14px 16px;
+  font-family: 'Inter', sans-serif;
+  background: white;
+}
+
+.mini-filters {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+.mini-pill {
+  padding: 4px 8px;
+  font-size: 10px;
+  border-radius: 4px;
+  background: #F1F5F9;
+  color: #64748B;
+  border: 1px solid #E2E8F0;
+}
+.mini-pill.active-marche { background: #14532D; color: white; border-color: #14532D; }
+.mini-pill.active-saas { background: #4F46E5; color: white; border-color: #4F46E5; }
+.mini-pill.active-terre { background: #9A3412; color: white; border-color: #9A3412; }
+.mini-pill.active-atelier { background: #1E3A8A; color: white; border-color: #1E3A8A; }
+
+.mini-product {
+  border: 1px solid #E2E8F0;
+  border-radius: 6px;
+  padding: 10px;
+  background: white;
+  margin-bottom: 8px;
+}
+.mini-product .brand {
+  font-size: 9px;
+  color: #64748B;
+  margin-bottom: 2px;
+}
+.mini-product .name {
+  font-size: 11px;
+  font-weight: 500;
+  color: #18181B;
+  margin-bottom: 6px;
+}
+.mini-product .price-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.mini-product .price {
+  font-size: 13px;
+  font-weight: 500;
+  color: #18181B;
+}
+.mini-product .best-price {
+  background: #FCD34D;
+  color: #18181B;
+  font-size: 8px;
+  padding: 2px 5px;
+  border-radius: 3px;
+  font-weight: 600;
+}
+
+.mini-meta {
+  font-size: 10px;
+  color: #64748B;
+  text-align: center;
+  padding: 6px 0;
+}
+
+/* ─── Grande maquette (preview du thème sélectionné) ─── */
+.preview-wrapper {
+  background: white;
+  border: 1px solid #CBD5E1;
+  border-radius: 12px;
+  overflow: hidden;
+}
+.preview-header-bar {
+  background: #0F172A;
+  color: white;
+  padding: 10px 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.preview-header-bar .dots {
+  display: flex;
+  gap: 6px;
+}
+.preview-header-bar .dots span {
+  width: 10px; height: 10px; border-radius: 50%;
+}
+.preview-header-bar .dots span:nth-child(1) { background: #EF4444; }
+.preview-header-bar .dots span:nth-child(2) { background: #F59E0B; }
+.preview-header-bar .dots span:nth-child(3) { background: #10B981; }
+.preview-header-bar .url {
+  font-family: 'SF Mono', monospace;
+  font-size: 11px;
+  color: #94A3B8;
+  margin-left: 10px;
+}
+.preview-header-bar .theme-name {
+  margin-left: auto;
+  font-size: 11px;
+  font-weight: 600;
+  color: #06B6D4;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.preview {
+  background: var(--c-bg);
+  padding: 30px 40px;
+  font-family: 'Inter', sans-serif;
+  color: var(--c-text);
+  min-height: 700px;
+  transition: background-color 200ms ease, color 200ms ease;
+}
+
+/* ─── Header du site (dans preview) ─── */
+.site-header {
+  background: var(--c-primary);
+  color: white;
+  padding: 14px 20px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+.site-header .brand-name {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+}
+.site-header .nav {
+  font-size: 13px;
+  font-weight: 500;
+  display: flex;
+  gap: 16px;
+}
+.site-header .nav a {
+  color: rgba(255,255,255,0.85);
+  text-decoration: none;
+}
+
+/* ─── H1 + accroche ─── */
+.site-h1 {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--c-text);
+  margin-bottom: 8px;
+}
+.site-accroche {
+  font-size: 14px;
+  color: var(--c-text-muted);
+  margin-bottom: 22px;
+}
+
+/* ─── Filtres ─── */
+.filters {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+.filter-pill {
+  padding: 8px 14px;
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: 4px;
+  font-size: 13px;
+  color: var(--c-text);
+  font-weight: 500;
+}
+.filter-pill.active {
+  background: var(--c-primary);
+  color: white;
+  border-color: var(--c-primary);
+}
+
+/* ─── Carte produit ─── */
+.product-card {
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 14px;
+}
+.product-card .info {
+  flex: 1;
+}
+.product-card .brand {
+  font-size: 12px;
+  color: var(--c-text-muted);
+  margin-bottom: 4px;
+}
+.product-card .name {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--c-text);
+  margin-bottom: 10px;
+}
+.product-card .price-line {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.product-card .price-from {
+  font-size: 13px;
+  color: var(--c-text-muted);
+}
+.product-card .price {
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--c-text);
+}
+.product-card .best-price-tag {
+  background: var(--c-ocre);
+  color: var(--c-text);
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 3px;
+  font-weight: 600;
+  margin-left: 8px;
+}
+.product-card .slot-photo-v2 {
+  width: 56px;
+  height: 56px;
+  background: var(--c-bg);
+  border: 1px dashed var(--c-border);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  color: var(--c-text-muted);
+  text-align: center;
+  flex-shrink: 0;
+}
+
+/* ─── Fiche vendeur (ligne de prix) ─── */
+.fiche-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--c-text);
+  margin: 28px 0 14px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--c-border);
+}
+
+.shop-row {
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: 8px;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 14px;
+}
+.shop-row .left { flex: 1; }
+.shop-row .shop-name {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--c-text);
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.shop-row .badge-verified {
+  background: var(--c-success-bg);
+  color: var(--c-success-text);
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-weight: 600;
+}
+.shop-row .badge-origin {
+  background: var(--c-neutral-bg);
+  color: var(--c-neutral-text);
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-weight: 500;
+  margin-left: 6px;
+}
+.shop-row .shop-meta {
+  font-size: 12px;
+  color: var(--c-text-muted);
+  margin-bottom: 8px;
+}
+.shop-row .specs {
+  font-size: 12px;
+  color: var(--c-text-muted);
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+.shop-row .price {
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--c-text);
+  margin-bottom: 12px;
+}
+.shop-row .actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.btn-whatsapp {
+  background: var(--c-primary-action);
+  color: white;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  cursor: pointer;
+  min-height: 36px;
+}
+.btn-whatsapp .wa-icon {
+  width: 14px; height: 14px;
+  background: white;
+  border-radius: 3px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  color: var(--c-primary-action);
+}
+.btn-signaler {
+  background: transparent;
+  color: var(--c-text);
+  border: 1px solid var(--c-border);
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  min-height: 36px;
+}
+
+/* ─── Ligne avec alerte (incohérence) ─── */
+.shop-row.with-alert {
+  border-left: 3px solid var(--c-alert-text);
+}
+.shop-row .alert-block {
+  background: var(--c-alert-bg);
+  color: var(--c-alert-text);
+  padding: 10px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  margin-top: 8px;
+  line-height: 1.5;
+}
+.shop-row .alert-block strong {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 4px;
+}
+
+/* ─── Ligne hors stock ─── */
+.shop-row.out-of-stock {
+  background: var(--c-neutral-bg);
+  opacity: 0.7;
+}
+.shop-row.out-of-stock .name,
+.shop-row.out-of-stock .shop-meta,
+.shop-row.out-of-stock .specs,
+.shop-row.out-of-stock .price {
+  color: var(--c-neutral-text);
+}
+.shop-row.out-of-stock .oos-tag {
+  font-size: 11px;
+  font-style: italic;
+  color: var(--c-text-muted);
+  margin-top: 6px;
+}
+
+/* ─── Slot V2 (note + photo) — grisé en V1 ─── */
+.slot-v2 {
+  display: inline-block;
+  font-size: 10px;
+  background: var(--c-neutral-bg);
+  color: var(--c-neutral-text);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-weight: 500;
+  border: 1px dashed var(--c-border);
+  margin-left: 8px;
+  opacity: 0.7;
+}
+
+/* ─── Footer info ─── */
+.preview-footer-info {
+  margin-top: 24px;
+  padding: 14px 16px;
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: 8px;
+  font-size: 11px;
+  color: var(--c-text-muted);
+  line-height: 1.6;
+}
+.preview-footer-info strong {
+  color: var(--c-text);
+  font-weight: 600;
+}
+
+/* ─── Comparaison table ─── */
+.comparison-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border: 1px solid #CBD5E1;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 30px;
+  font-size: 12px;
+}
+.comparison-table th, .comparison-table td {
+  padding: 10px 14px;
+  text-align: left;
+  border-bottom: 1px solid #E2E8F0;
+}
+.comparison-table th {
+  background: #F8FAFC;
+  color: #1E293B;
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.comparison-table tr:last-child td {
+  border-bottom: none;
+}
+.comparison-table .swatch-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.comparison-table .swatch {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  border: 1px solid #CBD5E1;
+}
+
+/* ─── Aide ─── */
+.help {
+  background: #FFFBEB;
+  border: 1px solid #FCD34D;
+  border-radius: 8px;
+  padding: 14px 18px;
+  font-size: 13px;
+  color: #78350F;
+  margin-bottom: 30px;
+}
+.help strong { color: #92400E; }
+
+/* ─── Footer ─── */
+.app-footer {
+  text-align: center;
+  padding: 30px 0 10px;
+  font-size: 12px;
+  color: #64748B;
+  border-top: 1px solid #CBD5E1;
+  margin-top: 40px;
+}
+
+@media (max-width: 1100px) {
+  .miniatures { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 700px) {
+  .miniatures { grid-template-columns: 1fr; }
+  .app-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .preview { padding: 20px; }
+}
+</style>
+</head>
+<body class="theme-marche">
+
+<div class="app">
+
+  <!-- App header -->
+  <header class="app-header">
+    <div>
+      <h1 class="app-title">Comparateur de thèmes visuels — <span class="accent">PC Builder 237</span></h1>
+      <div class="app-subtitle">Quatre habillages respectant la charte V1 · Choisissez un thème en haut, ou cliquez sur une miniature</div>
+    </div>
+    <div class="app-meta">
+      Document de référence : <code>themes_alternatifs_v1.md</code><br>
+      v0.1 · 3 octobre 2026 · Z.ai
+    </div>
+  </header>
+
+  <!-- Help banner -->
+  <div class="help">
+    <strong>Comment lire cette page :</strong> les 4 miniatures ci-dessous montrent les 4 thèmes côte à côte (carte produit + pastille de filtre + badge « Meilleur prix »). Cliquez sur une miniature — ou utilisez le sélecteur en haut — pour voir le thème s'appliquer en grand sur la maquette complète (en-tête, filtres, carte produit, fiche vendeur avec badges et boutons). Les <span class="slot-v2">🧩 V2</span> marquent les emplacements prévus pour les photos, notes et avis qui s'activeront en version 2 sans refonte graphique.
+  </div>
+
+  <!-- Switcher -->
+  <div class="switcher">
+    <span class="switcher-label">Thème appliqué :</span>
+    <div class="switcher-themes">
+      <div class="theme-pill active" data-theme="marche">
+        <span class="swatch swatch-marche"></span>
+        Marche Vert <span style="color:#64748B; font-weight:400; font-size:11px;">(officiel · direction B)</span>
+      </div>
+      <div class="theme-pill" data-theme="saas">
+        <span class="swatch swatch-saas"></span>
+        SaaS Indigo
+      </div>
+      <div class="theme-pill" data-theme="terre">
+        <span class="swatch swatch-terre"></span>
+        Terre Cuite
+      </div>
+      <div class="theme-pill" data-theme="atelier">
+        <span class="swatch swatch-atelier"></span>
+        Atelier Bleu
+      </div>
+    </div>
+  </div>
+
+  <!-- Miniatures gallery -->
+  <h2 class="section-title">Miniatures <span class="count">4 thèmes côte à côte · cliquez pour agrandir</span></h2>
+  <div class="miniatures">
+
+    <!-- Miniature Marche Vert -->
+    <div class="mini-card active" data-theme="marche" id="mini-marche">
+      <div class="mini-header marche">
+        Marche Vert <span class="badge-v">OFFICIEL</span>
+      </div>
+      <div class="mini-body">
+        <div class="mini-filters">
+          <div class="mini-pill active-marche">Yaoundé</div>
+          <div class="mini-pill">Tous états</div>
+        </div>
+        <div class="mini-product">
+          <div class="brand">Lenovo</div>
+          <div class="name">ThinkPad T480</div>
+          <div class="price-row">
+            <div><span style="font-size:9px; color:#64748B;">À partir de</span><br><span class="price">235 000 F</span></div>
+            <div class="best-price">Meilleur prix</div>
+          </div>
+        </div>
+        <div class="mini-meta">#14532D · #FAF7F2 · #FCD34D</div>
+      </div>
+    </div>
+
+    <!-- Miniature SaaS Indigo -->
+    <div class="mini-card" data-theme="saas" id="mini-saas">
+      <div class="mini-header saas">
+        SaaS Indigo <span class="badge-v">ALT. 1</span>
+      </div>
+      <div class="mini-body">
+        <div class="mini-filters">
+          <div class="mini-pill active-saas">Yaoundé</div>
+          <div class="mini-pill">Tous états</div>
+        </div>
+        <div class="mini-product">
+          <div class="brand">Lenovo</div>
+          <div class="name">ThinkPad T480</div>
+          <div class="price-row">
+            <div><span style="font-size:9px; color:#64748B;">À partir de</span><br><span class="price">235 000 F</span></div>
+            <div class="best-price">Meilleur prix</div>
+          </div>
+        </div>
+        <div class="mini-meta">#4F46E5 · #FFFFFF · #FCD34D</div>
+      </div>
+    </div>
+
+    <!-- Miniature Terre Cuite -->
+    <div class="mini-card" data-theme="terre" id="mini-terre">
+      <div class="mini-header terre">
+        Terre Cuite <span class="badge-v">ALT. 2</span>
+      </div>
+      <div class="mini-body">
+        <div class="mini-filters">
+          <div class="mini-pill active-terre">Yaoundé</div>
+          <div class="mini-pill">Tous états</div>
+        </div>
+        <div class="mini-product">
+          <div class="brand">Lenovo</div>
+          <div class="name">ThinkPad T480</div>
+          <div class="price-row">
+            <div><span style="font-size:9px; color:#64748B;">À partir de</span><br><span class="price">235 000 F</span></div>
+            <div class="best-price">Meilleur prix</div>
+          </div>
+        </div>
+        <div class="mini-meta">#9A3412 · #FAF7F2 · #FCD34D</div>
+      </div>
+    </div>
+
+    <!-- Miniature Atelier Bleu -->
+    <div class="mini-card" data-theme="atelier" id="mini-atelier">
+      <div class="mini-header atelier">
+        Atelier Bleu <span class="badge-v">ALT. 3</span>
+      </div>
+      <div class="mini-body">
+        <div class="mini-filters">
+          <div class="mini-pill active-atelier">Yaoundé</div>
+          <div class="mini-pill">Tous états</div>
+        </div>
+        <div class="mini-product">
+          <div class="brand">Lenovo</div>
+          <div class="name">ThinkPad T480</div>
+          <div class="price-row">
+            <div><span style="font-size:9px; color:#64748B;">À partir de</span><br><span class="price">235 000 F</span></div>
+            <div class="best-price">Meilleur prix</div>
+          </div>
+        </div>
+        <div class="mini-meta">#1E3A8A · #FBF8F1 · #FCD34D</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Grande preview -->
+  <h2 class="section-title">Maquette complète <span class="count" id="current-theme-label">Thème : Marche Vert</span></h2>
+  <div class="preview-wrapper">
+    <div class="preview-header-bar">
+      <div class="dots"><span></span><span></span><span></span></div>
+      <span class="url">pcbuilder237.vercel.app/produits</span>
+      <span class="theme-name" id="theme-name-tag">MARCHE VERT</span>
+    </div>
+    <div class="preview" id="preview">
+
+      <!-- En-tête du site -->
+      <div class="site-header">
+        <div class="brand-name">PC Builder 237</div>
+        <div class="nav">
+          <a href="#">Produits</a>
+          <a href="#">Comment ça marche</a>
+          <a href="#">Boutiques</a>
+          <a href="#">Connexion</a>
+        </div>
+      </div>
+
+      <!-- H1 + accroche -->
+      <div class="site-h1">Comparez les prix des PC à Yaoundé et Douala</div>
+      <div class="site-accroche">Prix constatés en boutique par des agents, avec preuves photo.</div>
+
+      <!-- Filtres -->
+      <div class="filters">
+        <div class="filter-pill active">Yaoundé</div>
+        <div class="filter-pill">Douala</div>
+        <div class="filter-pill">Tous états</div>
+        <div class="filter-pill">Neuf</div>
+        <div class="filter-pill">Occasion</div>
+      </div>
+
+      <!-- Carte produit (vue catalogue) -->
+      <div class="product-card">
+        <div class="slot-photo-v2">🧩<br>Photo V2</div>
+        <div class="info">
+          <div class="brand">Lenovo</div>
+          <div class="name">ThinkPad T480</div>
+          <div class="price-line">
+            <span class="price-from">À partir de</span>
+            <span class="price">235 000 FCFA</span>
+            <span class="best-price-tag">Meilleur prix</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="slot-photo-v2">🧩<br>Photo V2</div>
+        <div class="info">
+          <div class="brand">HP</div>
+          <div class="name">EliteBook 840 G5</div>
+          <div class="price-line">
+            <span class="price-from">À partir de</span>
+            <span class="price">210 000 FCFA</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Fiche produit (lignes de prix par boutique) -->
+      <div class="fiche-title">ThinkPad T480 — prix par boutique à Yaoundé</div>
+
+      <!-- Ligne 1 : meilleure boutique, vérifiée, meilleur prix -->
+      <div class="shop-row">
+        <div class="left">
+          <div class="shop-name">
+            Tech Market Mokolo
+            <span class="badge-verified">Boutique vérifiée</span>
+            <span class="badge-origin">Constaté par un agent</span>
+          </div>
+          <div class="shop-meta">Quartier Mokolo · Dernier constat le 28 sept. 2026</div>
+          <div class="specs">i5-8250U · 8 Go RAM · 256 Go SSD · Garantie 3 mois</div>
+          <div class="price">235 000 FCFA <span class="best-price-tag" style="font-size:11px;">Meilleur prix</span></div>
+          <div class="actions">
+            <button class="btn-whatsapp">
+              <span class="wa-icon">WA</span>
+              Contacter sur WhatsApp
+            </button>
+            <button class="btn-signaler">Signaler</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ligne 2 : boutique non vérifiée mais contactable -->
+      <div class="shop-row">
+        <div class="left">
+          <div class="shop-name">
+            PC Express Essos
+            <span class="badge-origin">Déclaré par la boutique</span>
+          </div>
+          <div class="shop-meta">Quartier Essos · Dernier constat le 28 sept. 2026</div>
+          <div class="specs">i5-8250U · 8 Go RAM · 256 Go SSD · Garantie 1 mois</div>
+          <div class="price">242 000 FCFA</div>
+          <div class="actions">
+            <button class="btn-whatsapp">
+              <span class="wa-icon">WA</span>
+              Contacter sur WhatsApp
+            </button>
+            <button class="btn-signaler">Signaler</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ligne 3 : boutique avec alerte d'incohérence -->
+      <div class="shop-row with-alert">
+        <div class="left">
+          <div class="shop-name">
+            Laptop Avenue Kennedy
+            <span class="badge-origin">Constaté par un agent</span>
+          </div>
+          <div class="shop-meta">Quartier Avenue Kennedy · Dernier constat le 28 sept. 2026</div>
+          <div class="specs">i5-8250U · 8 Go RAM · 256 Go SSD · Garantie 3 mois</div>
+          <div class="price">251 000 FCFA</div>
+          <div class="alert-block">
+            <strong>À vérifier</strong>
+            Prix 18 % au-dessus de la moyenne constatée pour ce modèle à Yaoundé. Vérifiez l'état et la configuration avant achat.
+          </div>
+          <div class="actions" style="margin-top:10px;">
+            <button class="btn-whatsapp">
+              <span class="wa-icon">WA</span>
+              Contacter sur WhatsApp
+            </button>
+            <button class="btn-signaler">Signaler</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ligne 4 : hors stock -->
+      <div class="shop-row out-of-stock">
+        <div class="left">
+          <div class="shop-name">
+            Digital Corner Bastos
+            <span class="badge-verified">Boutique vérifiée</span>
+          </div>
+          <div class="shop-meta">Quartier Bastos · Dernier constat le 28 sept. 2026</div>
+          <div class="specs">i5-8250U · 8 Go RAM · 256 Go SSD</div>
+          <div class="price" style="text-decoration:line-through;">228 000 FCFA</div>
+          <div class="oos-tag">Hors stock au dernier constat</div>
+        </div>
+      </div>
+
+      <!-- Slot V2 (note + photo) - mention discrete -->
+      <div class="preview-footer-info">
+        <strong>Emplacements V2 activables sans refonte graphique</strong><br>
+        Cette maquette respecte strictement la V1 (pas de photo, pas de note, pas d'avis, pas d'avatar vendeur). Les emplacements prévus pour ces éléments en version 2 sont marqués <span class="slot-v2">🧩 Photo V2</span> dans les cartes produits. Les notes et avis vendeurs apparaîtront à droite du nom de la boutique dans une pastille neutre, sans perturber la hiérarchie visuelle du prix.
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Comparaison synthétique -->
+  <h2 class="section-title">Comparaison synthétique <span class="count">4 thèmes</span></h2>
+  <table class="comparison-table">
+    <thead>
+      <tr>
+        <th>Critère</th>
+        <th>Marche Vert</th>
+        <th>SaaS Indigo</th>
+        <th>Terre Cuite</th>
+        <th>Atelier Bleu</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Fond de page</td>
+        <td><div class="swatch-cell"><span class="swatch" style="background:#FAF7F2"></span>#FAF7F2 crème</div></td>
+        <td><div class="swatch-cell"><span class="swatch" style="background:#FFFFFF"></span>#FFFFFF blanc</div></td>
+        <td><div class="swatch-cell"><span class="swatch" style="background:#FAF7F2"></span>#FAF7F2 crème</div></td>
+        <td><div class="swatch-cell"><span class="swatch" style="background:#FBF8F1"></span>#FBF8F1 sable</div></td>
+      </tr>
+      <tr>
+        <td>Accent principal</td>
+        <td><div class="swatch-cell"><span class="swatch" style="background:#14532D"></span>#14532D vert profond</div></td>
+        <td><div class="swatch-cell"><span class="swatch" style="background:#4F46E5"></span>#4F46E5 indigo</div></td>
+        <td><div class="swatch-cell"><span class="swatch" style="background:#9A3412"></span>#9A3412 terre cuite</div></td>
+        <td><div class="swatch-cell"><span class="swatch" style="background:#1E3A8A"></span>#1E3A8A bleu layette</div></td>
+      </tr>
+      <tr>
+        <td>Bouton WhatsApp</td>
+        <td><div class="swatch-cell"><span class="swatch" style="background:#15803D"></span>#15803D vert action</div></td>
+        <td><div class="swatch-cell"><span class="swatch" style="background:#6366F1"></span>#6366F1 indigo action</div></td>
+        <td><div class="swatch-cell"><span class="swatch" style="background:#C2410C"></span>#C2410C terre cuite action</div></td>
+        <td><div class="swatch-cell"><span class="swatch" style="background:#3B5BDB"></span>#3B5BDB bleu action</div></td>
+      </tr>
+      <tr>
+        <td>Police</td>
+        <td>Geist</td><td>Geist</td><td>Geist</td><td>Geist</td>
+      </tr>
+      <tr>
+        <td>Photos V1</td>
+        <td>non</td><td>non</td><td>non</td><td>non</td>
+      </tr>
+      <tr>
+        <td>Slot photo V2</td>
+        <td>—</td>
+        <td>🧩 carré 64px coin 4px</td>
+        <td>🧩 carré 64px + pastille ocre</td>
+        <td>🧩 carré 64px coin 8px doux</td>
+      </tr>
+      <tr>
+        <td>Motif arrière-plan V2</td>
+        <td>non</td><td>non</td>
+        <td>🧩 lignes géométriques 8 %</td><td>non</td>
+      </tr>
+      <tr>
+        <td>Interligne corps</td>
+        <td>1,5</td><td>1,5</td><td>1,5</td><td>1,6</td>
+      </tr>
+      <tr>
+        <td>Contraste plein soleil</td>
+        <td>15+ pour 1</td><td>18+ pour 1</td><td>15+ pour 1</td><td>14+ pour 1</td>
+      </tr>
+      <tr>
+        <td>Ancrage local</td>
+        <td>fort</td><td>nul</td><td>très fort</td><td>doux</td>
+      </tr>
+      <tr>
+        <td>Persona</td>
+        <td>acheteur local</td><td>acheteur pressé pro</td><td>acheteur ancré</td><td>acheteur prudent</td>
+      </tr>
+      <tr>
+        <td>Poids CSS additionnel</td>
+        <td>—</td><td>+0 Ko</td><td>+1,2 Ko (SVG motif V2)</td><td>+0 Ko</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <strong>PC Builder 237 — Comparateur de thèmes visuels</strong><br>
+    Charte visuelle v0.4 · Thèmes alternatifs v0.1 · 3 octobre 2026 · Document de référence : <code>themes_alternatifs_v1.md</code><br>
+    Le choix du thème et le mécanisme de commutation sont à décider dans le tableau T1-T4 du document de référence.
+  </footer>
+
+</div>
+
+<script>
+// ─── Switcher de thème ───
+const THEME_NAMES = {
+  marche: 'MARCHE VERT',
+  saas: 'SAAS INDIGO',
+  terre: 'TERRE CUITE',
+  atelier: 'ATELIER BLEU',
+};
+const THEME_LABELS = {
+  marche: 'Marche Vert (officiel · direction B)',
+  saas: 'SaaS Indigo',
+  terre: 'Terre Cuite',
+  atelier: 'Atelier Bleu',
+};
+
+const body = document.body;
+const pills = document.querySelectorAll('.theme-pill');
+const miniCards = document.querySelectorAll('.mini-card');
+const themeNameTag = document.getElementById('theme-name-tag');
+const currentThemeLabel = document.getElementById('current-theme-label');
+
+function applyTheme(theme) {
+  body.className = 'theme-' + theme;
+  pills.forEach(p => p.classList.toggle('active', p.dataset.theme === theme));
+  miniCards.forEach(c => c.classList.toggle('active', c.dataset.theme === theme));
+  if (themeNameTag) themeNameTag.textContent = THEME_NAMES[theme] || theme.toUpperCase();
+  if (currentThemeLabel) currentThemeLabel.textContent = 'Thème : ' + (THEME_LABELS[theme] || theme);
+  try { localStorage.setItem('pcb237-comparator-theme', theme); } catch (e) {}
+}
+
+pills.forEach(p => p.addEventListener('click', () => applyTheme(p.dataset.theme)));
+miniCards.forEach(c => c.addEventListener('click', () => applyTheme(c.dataset.theme)));
+
+// Restore from localStorage or default to marche
+let initial = 'marche';
+try {
+  const stored = localStorage.getItem('pcb237-comparator-theme');
+  if (stored && THEME_NAMES[stored]) initial = stored;
+} catch (e) {}
+applyTheme(initial);
+</script>
+
+</body>
+</html>
