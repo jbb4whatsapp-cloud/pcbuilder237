@@ -21,6 +21,29 @@ describe('alerteDe', () => {
     expect(alerteDe(r('suspect', []))).toEqual({ type: 'generale' })
     expect(alerteDe(r('impossible', ['code_futur']))).toEqual({ type: 'generale' })
   })
+  it('un relevé ok avec un code de confiance ne produit aucune alerte', () => {
+    expect(alerteDe(r('ok', ['new_agent']))).toEqual({ type: 'aucune' })
+    expect(alerteDe(r('ok', ['no_reference', 'price_deviation']))).toEqual({ type: 'aucune' })
+  })
+
+  it('un code de confiance est ignoré parmi les motifs d\'alerte', () => {
+    expect(alerteDe(r('suspect', ['ram_not_allowed', 'new_agent']))).toEqual({
+      type: 'motifs',
+      codes: ['ram_not_allowed'],
+    })
+  })
+
+  it('un relevé ok avec un code de confiance ne produit aucune alerte', () => {
+    expect(alerteDe(r('ok', ['new_agent']))).toEqual({ type: 'aucune' })
+    expect(alerteDe(r('ok', ['no_reference', 'price_deviation']))).toEqual({ type: 'aucune' })
+  })
+
+  it('un code de confiance est ignoré parmi les motifs d\'alerte', () => {
+    expect(alerteDe(r('suspect', ['ram_not_allowed', 'new_agent']))).toEqual({
+      type: 'motifs',
+      codes: ['ram_not_allowed'],
+    })
+  })
 })
 
 describe('parametresAlerte', () => {

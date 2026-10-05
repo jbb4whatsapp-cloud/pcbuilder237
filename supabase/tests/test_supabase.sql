@@ -23,8 +23,9 @@
 -- ci-dessous par les leurs et supprimez le bloc « 1. Utilisateurs ». Dans ce
 -- cas les utilisateurs ne seront PAS annulés : les supprimer à la main ensuite.
 --
--- Exécuté sur le projet Supabase de TEST le 02 octobre 2026 : 71 PASS, 0 FAIL ; le 04 octobre 2026, après le patch 08b (deux preuves) : 73 PASS, 0 FAIL. Rejeu complet
--- 01 à 09 sur une base de test vide, puis ce script : réussi.
+-- Exécuté sur le projet Supabase de TEST le 02 octobre 2026 : 71 PASS ; 
+-- le 04 octobre 2026, après le patch 08b : 73 PASS ; 
+-- le 05 octobre 2026, après le patch 10 (modération des relevés d'agent) : 90 PASS, 0 FAIL.
 -- =====================================================================
 
 create or replace function pg_temp.t(
@@ -79,6 +80,7 @@ declare
   v_mod     uuid := 'f0000000-0000-0000-0000-0000000000b1';
   v_agent1  uuid := 'f0000000-0000-0000-0000-0000000000c1';
   v_agent2  uuid := 'f0000000-0000-0000-0000-0000000000c2';
+  v_agent3  uuid := 'f0000000-0000-0000-0000-0000000000c3';  -- nouvel agent, sans historique
   v_owner   uuid := 'f0000000-0000-0000-0000-0000000000d1';
   v_anon    uuid := 'f0000000-0000-0000-0000-0000000000e1';  -- sans rôle, comme une connexion anonyme
   v_city    uuid := 'f1000000-0000-0000-0000-000000000001';
@@ -90,6 +92,9 @@ declare
   v_ref1    uuid := 'f4000000-0000-0000-0000-000000000001';
   v_ref2    uuid := 'f4000000-0000-0000-0000-000000000002';
   v_ref3    uuid := 'f4000000-0000-0000-0000-000000000003';
+  v_shopC   uuid := 'f2000000-0000-0000-0000-00000000000c';  -- boutique des relevés de départ
+  v_prodh   uuid := 'f3000000-0000-0000-0000-000000000002';  -- produit de l'historique des agents
+  v_i       int;
   v_col     text;
   v_n       int;
   v_pass    int;
@@ -105,6 +110,9 @@ begin
     raise exception 'PRÉPARATION : le patch pcbuilder237_data_contract_patch.sql n''est pas exécuté. Lancer la chaîne de patchs d''abord.';
   end if;
 
+  if position('new_agent' in pg_get_functiondef('public.price_reports_shop_rules()'::regprocedure)) = 0 then
+    raise exception 'PRÉPARATION : le patch 10 (modération des relevés d''agent) n''est pas exécuté.';
+  end if;
   -- -------------------------------------------------------------------
   -- 1. Utilisateurs, rôles, données de test (tout sera annulé)
   -- -------------------------------------------------------------------
@@ -113,11 +121,12 @@ begin
     (v_mod,    'test-mod@pcb237.invalid'),
     (v_agent1, 'test-agent1@pcb237.invalid'),
     (v_agent2, 'test-agent2@pcb237.invalid'),
+    (v_agent3, 'test-agent3@pcb237.invalid'),
     (v_owner,  'test-owner@pcb237.invalid'),
     (v_anon,   'test-anon@pcb237.invalid');
 
   insert into public.user_roles (user_id, role) values
-    (v_admin, 'admin'), (v_mod, 'moderator'), (v_agent1, 'agent'), (v_agent2, 'agent');
+    (v_admin, 'admin'), (v_mod, 'moderator'), (v_agent1, 'agent'), (v_agent2, 'agent'), (v_agent3, 'agent');
 
   insert into public.countries (id, name) values (v_country, 'Pays de test');
   insert into public.cities (id, country_id, name) values (v_city, v_country, 'Ville de test');
@@ -125,7 +134,8 @@ begin
 
   insert into public.shops (id, name, phone, neighborhood_id, address) values
     (v_shopA, 'Boutique A (test)', '+237699000001', v_quartier, 'Rue de test 1'),
-    (v_shopB, 'Boutique B (test, sans quartier)', '+237699000002', null, 'Rue de test 2');
+    (v_shopB, 'Boutique B (test, sans quartier)', '+237699000002', null, 'Rue de test 2'),
+    (v_shopC, 'Boutique C (test, référence)', '+237699000003', null, 'Rue de test 3');
 
   insert into public.shop_subscriptions (shop_id, starts_on, ends_on, amount_fcfa)
     values (v_shopA, public.today_douala() - 1, public.today_douala() + 20, 1);
@@ -134,6 +144,20 @@ begin
   insert into public.products (id, category, brand, name, specs) values
     (v_prod, 'laptop', 'TestBrand', 'ThinkPad Test 480',
      '{"max_ram_gb":32,"allowed_ram_gb":[8,16,32],"allowed_storage_gb":[256,512]}');
+  insert into public.products (id, category, brand, name, specs)
+    values (v_prodh, 'laptop', 'TestBrand', 'Historique agents (test)', '{}');
+
+  -- historique : 5 relevés publiés par agent, pour qu'ils ne soient plus « nouveaux »
+  for v_i in 1..5 loop
+    insert into public.price_reports (product_id, shop_id, condition, price_fcfa, reported_specs, proof_paths, reported_by, source)
+      values (v_prodh, v_shopC, 'new', 100000 + v_i, '{"ram_gb":16,"storage_gb":256}', array['seed/a.jpg'], v_agent1, 'agent'),
+             (v_prodh, v_shopC, 'new', 110000 + v_i, '{"ram_gb":16,"storage_gb":256}', array['seed/a.jpg'], v_agent2, 'agent');
+  end loop;
+
+  -- référence de prix sur le produit principal (occasion, 16 Go / 256 Go)
+  insert into public.price_reports (product_id, shop_id, condition, price_fcfa, reported_specs, proof_paths, reported_by, source)
+    values (v_prod, v_shopC, 'used', 200000, '{"ram_gb":16,"storage_gb":256}',
+            array['seed/a.jpg', 'seed/b.jpg'], v_mod, 'agent');
 
   -- -------------------------------------------------------------------
   -- 2. Relevés de départ, envoyés comme un vrai agent
@@ -165,7 +189,7 @@ begin
   v_out := v_out || pg_temp.t('anon : proof_paths refusé', 'anon', null, format('select proof_paths from public.price_reports where product_id = %L', v_prod), 'ERR 42501') || E'\n';
   v_out := v_out || pg_temp.t('anon : review_note refusé', 'anon', null, format('select review_note from public.price_reports where product_id = %L', v_prod), 'ERR 42501') || E'\n';
   v_out := v_out || pg_temp.t('anon : select * refusé', 'anon', null, 'select * from public.price_reports', 'ERR 42501') || E'\n';
-  v_out := v_out || pg_temp.t('anon : colonnes ouvertes, 2 relevés publiés', 'anon', null, format('select id, price_fcfa, status, check_codes, config_hash from public.price_reports where product_id = %L', v_prod), 'OK=2') || E'\n';
+  v_out := v_out || pg_temp.t('anon : colonnes ouvertes, 3 relevés publiés', 'anon', null, format('select id, price_fcfa, status, check_codes, config_hash from public.price_reports where product_id = %L', v_prod), 'OK=3') || E'\n';
   v_out := v_out || pg_temp.t('connexion anonyme : reported_by refusé', 'authenticated', v_anon, format('select reported_by from public.price_reports where product_id = %L', v_prod), 'ERR 42501') || E'\n';
   v_out := v_out || pg_temp.t('agent1 : check_reason direct refusé (passer par la vue)', 'authenticated', v_agent1, format('select check_reason from public.price_reports where product_id = %L', v_prod), 'ERR 42501') || E'\n';
   v_out := v_out || pg_temp.t('modérateur : check_reason direct refusé (passer par la vue)', 'authenticated', v_mod, format('select check_reason from public.price_reports where product_id = %L', v_prod), 'ERR 42501') || E'\n';
@@ -174,7 +198,7 @@ begin
   -- 4. current_prices (C1, C2, C3) et shops_public (C1)
   -- -------------------------------------------------------------------
   v_out := v_out || E'\n-- current_prices et shops_public\n';
-  v_out := v_out || pg_temp.t('anon : current_prices avec city_id et config_hash, 2 lignes', 'anon', null, format('select report_id, city_id, config_hash, check_codes from public.current_prices where product_id = %L', v_prod), 'OK=2') || E'\n';
+  v_out := v_out || pg_temp.t('anon : current_prices avec city_id et config_hash, 3 lignes', 'anon', null, format('select report_id, city_id, config_hash, check_codes from public.current_prices where product_id = %L', v_prod), 'OK=3') || E'\n';
   v_out := v_out || pg_temp.t('anon : current_prices n''a plus check_reason', 'anon', null, 'select check_reason from public.current_prices', 'ERR 42703') || E'\n';
   v_out := v_out || pg_temp.t('anon : filtre city_id = ville de test, 1 ligne (boutique A)', 'anon', null, format('select report_id from public.current_prices where product_id = %L and city_id = %L', v_prod, v_city), 'OK=1') || E'\n';
   v_out := v_out || pg_temp.t('anon : shops_public lisible, 2 boutiques de test', 'anon', null, format('select id, city_id from public.shops_public where id in (%L, %L)', v_shopA, v_shopB), 'OK=2') || E'\n';
@@ -195,7 +219,7 @@ begin
   v_out := v_out || pg_temp.t('agent1 : voit son check_reason (1 relevé en attente)', 'authenticated', v_agent1, format('select 1 from public.price_reports_visible where product_id = %L and check_reason is not null', v_prod), 'OK=1') || E'\n';
   v_out := v_out || pg_temp.t('propriétaire boutique A : voit 1 relevé (celui de sa boutique)', 'authenticated', v_owner, format('select * from public.price_reports_visible where product_id = %L', v_prod), 'OK=1') || E'\n';
   v_out := v_out || pg_temp.t('propriétaire : check_reason masqué (il n''est pas l''auteur)', 'authenticated', v_owner, format('select 1 from public.price_reports_visible where product_id = %L and check_reason is not null', v_prod), 'OK=0') || E'\n';
-  v_out := v_out || pg_temp.t('modérateur : voit les 3 relevés, en attente compris', 'authenticated', v_mod, format('select * from public.price_reports_visible where product_id = %L', v_prod), 'OK=3') || E'\n';
+  v_out := v_out || pg_temp.t('modérateur : voit les 4 relevés, en attente compris', 'authenticated', v_mod, format('select * from public.price_reports_visible where product_id = %L', v_prod), 'OK=4') || E'\n';
   v_out := v_out || pg_temp.t('modérateur : voit le check_reason (1 relevé)', 'authenticated', v_mod, format('select 1 from public.price_reports_visible where product_id = %L and check_reason is not null', v_prod), 'OK=1') || E'\n';
 
   -- -------------------------------------------------------------------
@@ -319,6 +343,72 @@ begin
   v_out := v_out || pg_temp.t('propriétaire auteur : voit proof_paths et reported_by sur son propre relevé', 'authenticated', v_owner,
     format('select 1 from public.price_reports_visible where product_id = %L and price_fcfa = 199000 and proof_paths is not null and reported_by is not null',
            v_prod), 'OK=1') || E'\n';
+
+  -- -------------------------------------------------------------------
+  -- 8d. Modération des relevés d'agent (patch 10)
+  -- -------------------------------------------------------------------
+  v_out := v_out || E'\n-- modération des relevés d''agent\n';
+
+  v_out := v_out || pg_temp.t('agent1 (confirmé) : prix proche de la médiane', 'authenticated', v_agent1,
+    format($q$insert into public.price_reports (product_id, shop_id, condition, price_fcfa, reported_specs, proof_paths)
+              values (%L, %L, 'used', 205500, '{"ram_gb":16,"storage_gb":256}', %L)$q$,
+           v_prod, v_shopB, array[v_agent1::text || '/10/a.jpg', v_agent1::text || '/10/b.jpg']), 'OK=1', 'x') || E'\n';
+  v_out := v_out || pg_temp.v('... publié, sans motif',
+    format($q$select status::text || ',' || check_level::text || ',' || check_codes::text
+              from public.price_reports where product_id = %L and price_fcfa = 205500$q$, v_prod),
+    'published,ok,{}') || E'\n';
+
+  v_out := v_out || pg_temp.t('agent1 : prix 40 % au-dessus de la médiane', 'authenticated', v_agent1,
+    format($q$insert into public.price_reports (product_id, shop_id, condition, price_fcfa, reported_specs, proof_paths)
+              values (%L, %L, 'used', 280000, '{"ram_gb":16,"storage_gb":256}', %L)$q$,
+           v_prod, v_shopB, array[v_agent1::text || '/11/a.jpg', v_agent1::text || '/11/b.jpg']), 'OK=1', 'x') || E'\n';
+  v_out := v_out || pg_temp.v('... en attente, motif price_deviation, niveau ok',
+    format($q$select status::text || ',' || check_level::text || ',' || check_codes::text
+              from public.price_reports where product_id = %L and price_fcfa = 280000$q$, v_prod),
+    'pending,ok,{price_deviation}') || E'\n';
+
+  v_out := v_out || pg_temp.t('agent1 : état sans aucun relevé de référence (reconditionné)', 'authenticated', v_agent1,
+    format($q$insert into public.price_reports (product_id, shop_id, condition, price_fcfa, reported_specs, proof_paths)
+              values (%L, %L, 'refurbished', 150000, '{"ram_gb":16,"storage_gb":256}', %L)$q$,
+           v_prod, v_shopB, array[v_agent1::text || '/12/a.jpg', v_agent1::text || '/12/b.jpg']), 'OK=1', 'x') || E'\n';
+  v_out := v_out || pg_temp.v('... en attente, motif no_reference',
+    format($q$select status::text || ',' || check_level::text || ',' || check_codes::text
+              from public.price_reports where product_id = %L and price_fcfa = 150000$q$, v_prod),
+    'pending,ok,{no_reference}') || E'\n';
+
+  -- agent3 : 5 premiers relevés (prix 203001 à 203005) puis un sixième
+  for v_i in 1..5 loop
+    v_out := v_out || pg_temp.t(format('agent3 : relevé n° %s (conforme)', v_i), 'authenticated', v_agent3,
+      format($q$insert into public.price_reports (product_id, shop_id, condition, price_fcfa, reported_specs, proof_paths)
+                values (%L, %L, 'used', %s, '{"ram_gb":16,"storage_gb":256}', %L)$q$,
+             v_prod, v_shopB, 203000 + v_i,
+             array[v_agent3::text || '/' || v_i || '/a.jpg', v_agent3::text || '/' || v_i || '/b.jpg']), 'OK=1', 'x') || E'\n';
+  end loop;
+  v_out := v_out || pg_temp.v('agent3 : le 1er relevé est en attente, motif new_agent',
+    format($q$select status::text || ',' || check_level::text || ',' || check_codes::text
+              from public.price_reports where product_id = %L and price_fcfa = 203001$q$, v_prod),
+    'pending,ok,{new_agent}') || E'\n';
+  v_out := v_out || pg_temp.v('agent3 : ses 5 premiers relevés sont tous en attente',
+    format($q$select count(*)::text from public.price_reports where reported_by = %L and status = 'pending'$q$, v_agent3),
+    '5') || E'\n';
+
+  v_out := v_out || pg_temp.t('agent3 : 6e relevé conforme', 'authenticated', v_agent3,
+    format($q$insert into public.price_reports (product_id, shop_id, condition, price_fcfa, reported_specs, proof_paths)
+              values (%L, %L, 'used', 203006, '{"ram_gb":16,"storage_gb":256}', %L)$q$,
+           v_prod, v_shopB, array[v_agent3::text || '/6/a.jpg', v_agent3::text || '/6/b.jpg']), 'OK=1', 'x') || E'\n';
+  v_out := v_out || pg_temp.v('... le 6e est publié',
+    format($q$select status::text || ',' || check_codes::text from public.price_reports
+              where product_id = %L and price_fcfa = 203006$q$, v_prod),
+    'published,{}') || E'\n';
+
+  v_out := v_out || pg_temp.t('modérateur : prix très écarté, publié quand même (personnel exempté)', 'authenticated', v_mod,
+    format($q$insert into public.price_reports (product_id, shop_id, condition, price_fcfa, reported_specs, proof_paths)
+              values (%L, %L, 'used', 281000, '{"ram_gb":16,"storage_gb":256}', %L)$q$,
+           v_prod, v_shopB, array[v_mod::text || '/1/a.jpg', v_mod::text || '/1/b.jpg']), 'OK=1', 'x') || E'\n';
+  v_out := v_out || pg_temp.v('... publié, sans motif',
+    format($q$select status::text || ',' || check_codes::text from public.price_reports
+              where product_id = %L and price_fcfa = 281000$q$, v_prod),
+    'published,{}') || E'\n';
 
   -- -------------------------------------------------------------------
   -- 9. C9 : un signalement naît toujours 'open'

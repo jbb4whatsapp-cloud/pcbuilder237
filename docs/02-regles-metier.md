@@ -1,7 +1,7 @@
 # Règles métier — PC Builder 237
 
-> **Statut** : brouillon v0.3 — 2 octobre 2026
-> **Historique** : v0.3 — section 10 réécrite d'après les documents 08 et 09 (le point 4 n'était **pas** corrigé ; point 5 renvoyé à la décision D7 du registre `00-ROADMAP-MAITRE.md`).
+> **Statut** : brouillon v0.4 — 5 octobre 2026
+> **Historique** : v0.4 — modération des relevés d'agent (trois règles de confiance, patch 10). v0.3 — section 10 réécrite d'après les documents 08 et 09 (le point 4 n'était **pas** corrigé ; point 5 renvoyé à la décision D7 du registre `00-ROADMAP-MAITRE.md`).
 > **Légende** : ✅ décidé par le porteur du projet · 🛠 déjà implémenté dans le schéma SQL v1 · ❓ proposition à valider · 🧫 vérifié sur le projet Supabase de test · 🔎 à vérifier en production
 
 Ce document décrit la logique propre au marché. Un développeur ne peut pas la deviner : elle doit être respectée dans le code, côté serveur en priorité.
@@ -18,14 +18,14 @@ Un **relevé** est une observation de prix faite pour un produit, dans une bouti
 - 🛠 **configuration réellement annoncée** (RAM, stockage, batterie…) ;
 - 🛠 **au moins une preuve photo** (relevé impossible sans preuve) ; ✅ **deux** pour l'occasion et le reconditionné (D4, 4 octobre 2026, patch à écrire) ;
 - 🛠 auteur, date, statut de modération.
-- ❓ **origine** du relevé : « agent » ou « boutique ». Absente du schéma v1.
+- 🛠 origine du relevé : "agent" ou "boutique" (patch 03) ».
 - ✅ garantie : réponse explicite exigée par le formulaire (« Aucune », N mois, « Non précisée par la boutique », D7, 4 octobre 2026) ; la base garde déjà les trois états (0, N, inconnu), donc aucun changement de schéma.
 
 ### Cycle de vie
 1. Le relevé est créé avec le statut `pending`.
-2. 🛠 Le serveur le contrôle (section 2). Sans anomalie, il passe en `published` ; sinon il reste en `pending` pour un modérateur.
+2. 🛠 Le serveur le contrôle (section 2). Sans anomalie de spécifications, il passe en `published`, sauf si une règle de confiance s'applique (section 2) ; sinon il reste en `pending` pour un modérateur.
 3. 🛠 Un modérateur peut le publier ou le rejeter, avec une note. La date et l'auteur de la décision sont conservés.
-4. ✅ Un relevé publié par une **boutique** passe toujours par un modérateur avant publication (même sans anomalie). Le schéma v1 ne le prévoit pas encore.
+4. ✅ Un relevé publié par une **boutique** passe toujours par un modérateur avant publication (même sans anomalie). ✅ 🛠 Un relevé d'**agent** y passe aussi dans trois cas : agent nouveau, produit sans référence récente, prix écarté de la médiane.
 
 ### Validité
 - 🛠 Pour un même produit, une même boutique, un même état et une même configuration, seul le **dernier relevé publié** compte.
@@ -41,7 +41,7 @@ Ils sont calculés **côté serveur** à l'enregistrement. Le navigateur ne déc
 ### Niveaux
 | Niveau | Sens | Effet |
 |---|---|---|
-| `ok` | Aucune anomalie | Publié automatiquement (sauf origine boutique, voir 1) |
+| `ok` | Aucune anomalie | Publié automatiquement (sauf origine boutique, voir 1, et règles de confiance ci-dessous) |
 | `suspect` | Anomalie possible | En attente d'un modérateur |
 | `impossible` | Incohérence physique | En attente d'un modérateur |
 
@@ -52,6 +52,19 @@ Ils sont calculés **côté serveur** à l'enregistrement. Le navigateur ne déc
 | RAM annoncée absente de la liste autorisée (`allowed_ram_gb`) | suspect |
 | Stockage annoncé absent de la liste autorisée (`allowed_storage_gb`) | suspect |
 | Prix inférieur à 50 % de la médiane (même produit, état et configuration, au moins 3 relevés publiés sur 60 jours) | suspect |
+
+### Règles de confiance (relevés d'agent) ✅ 🛠
+Elles s'ajoutent aux règles ci-dessus, sans changer le niveau : un relevé mis en attente par l'une d'elles reste de niveau `ok`. Il n'est donc pas exclu du « meilleur prix » une fois validé. Le motif est conservé dans `check_reason` et `check_codes`.
+
+| Règle | Code | Effet |
+|---|---|---|
+| Les 5 premiers relevés d'un agent, qu'ils soient publiés, en attente ou rejetés | `new_agent` | en attente |
+| Aucun relevé publié dans les 45 derniers jours pour ce produit, cet état et cette configuration | `no_reference` | en attente |
+| Prix écarté de plus de 20 % de la médiane des relevés publiés des 45 derniers jours (même produit, état et configuration) | `price_deviation` | en attente |
+
+- Le **personnel** (modérateur, admin) est exempté : ses relevés sont publiés directement, car personne ne les valide au-dessus de lui.
+- Les règles ne s'appliquent qu'à un relevé sans anomalie de spécifications. Les seuils (20 %, 45 jours, 5 relevés) sont des valeurs initiales, réglables dans la fonction `price_reports_shop_rules`.
+- Conséquence : le premier relevé d'un produit, d'un état ou d'une configuration passe toujours par un modérateur.
 
 ### Principes
 - ✅ Les règles viennent des **données du produit** (champ `specs`), pas du code.
@@ -150,7 +163,7 @@ Chaque règle est une fonction pure qui reçoit la configuration et renvoie un r
 |---|---|---|---|---|---|
 | Lire les prix publiés | ✔ | ✔ | ✔ | ✔ | ✔ |
 | Sauvegarder une configuration | connecté | ✔ | ✔ | ✔ | ✔ |
-| Envoyer un relevé avec preuves | | ✔ | ✔ pour ses boutiques, abonnement actif, toujours modéré | ✔ | ✔ |
+| Envoyer un relevé avec preuves | | ✔ publié si sans anomalie ni règle de confiance | ✔ pour ses boutiques, abonnement actif, toujours modéré | ✔ publié directement | ✔ publié directement |
 | Voir tous les relevés de sa boutique (en attente, rejetés, publiés) | | | ✔ | ✔ | ✔ |
 | Publier ou rejeter un relevé | | | | ✔ | ✔ |
 | Gérer sa ou ses boutiques (téléphone, adresse, horaires, montage et son tarif) | | | ✔ abonnement actif | ✔ | ✔ |
@@ -181,7 +194,7 @@ Chaque règle est une fonction pure qui reçoit la configuration et renvoie un r
 
 ## 10. Écarts connus entre ces règles et le schéma v1
 
-À traiter dans la phase 0. Chaque écart indique le script qui le couvre. Les patchs 3 à 9 sont exécutés sur la base de test (🧫, lot P0-1 ✅ du `00-ROADMAP-MAITRE.md`) ; **aucun n'est encore en production** (lot P1-5).
+À traiter dans la phase 0. Chaque écart indique le script qui le couvre. Les patchs 3 à 10 sont exécutés sur la base de test (🧫, lot P0-1 ✅ du `00-ROADMAP-MAITRE.md`) ; **aucun n'est encore en production** (lot P1-5).
 
 | # | Écart | Couvert par | État |
 |---|---|---|---|
@@ -190,6 +203,7 @@ Chaque règle est une fonction pure qui reçoit la configuration et renvoie un r
 | 3 | Un relevé `ok` était publié automatiquement, même venant d'une boutique (la règle ✅ de la section 1 demande une validation) | `supabase/sql/03_shop_owner_patch.sql` : un relevé de boutique est toujours `pending` | 🛠 écrit, 🧫 vérifié sur la base de test, 🔎 production |
 | 4 | **`config_hash` calculé sur toute la configuration annoncée** (`md5(reported_specs::text)`) : la batterie compte, deux relevés presque identiques donnent deux lignes. ⚠ Une version précédente de ce document l'indiquait à tort comme « déjà corrigé » (document 08, section 12, écart 1) | `supabase/sql/08_config_hash_patch.sql` : empreinte limitée à `ram_gb`, `storage_gb`, `cpu` | **FAIT sur la base de test** : 🛠 patch écrit, 🧫 exécuté sur le projet Supabase de test (P0-1 ✅). Production à faire (P1-5) |
 | 5 | Garantie facultative, même pour l'occasion et le reconditionné | Aucun patch : réponse explicite exigée par le formulaire (**D7**) | ✅ décidée le 4 octobre 2026 |
-| 6 | Règles anti-arnaque limitées à la RAM, au stockage et au prix | Partiel : `pcbuilder237_reason_codes_patch.sql` (version du zip « 08 ») pose les **codes de motif** pour ces trois règles ; la règle processeur est reportée après le pilote (**D5**, 4 octobre 2026) | 🛠 codes de motif écrits ; ⏳ règle processeur après le pilote |
+| 6 | Règles anti-arnaque limitées à la RAM, au stockage et au prix | Partiel : `pcbuilder237_reason_codes_patch.sql` (version du zip « 08 ») pose les **codes de motif** pour ces trois règles ; la règle processeur est reportée après le pilote (**D5**, 4 octobre 2026). La contrainte `price_reports_check_codes_known` limite les codes autorisés : tout nouveau code doit y être ajouté. | 🛠 codes de motif écrits ; ⏳ règle processeur après le pilote |
+| 7 | Aucune modération automatique des relevés d'agent (agent nouveau, produit sans référence, prix écarté) | `supabase/sql/10_agent_moderation_patch.sql` : règles de confiance et codes `new_agent`, `no_reference`, `price_deviation` ; extension de la contrainte `price_reports_check_codes_known` | ✅ décidé le 5 octobre 2026 ; 🛠 écrit ; 🧫 vérifié sur la base de test (90 PASS) ; 🔎 production (P1-5) |
 
 Rappel : ne jamais utiliser la version de `pcbuilder237_reason_codes_patch.sql` du zip « 07 » (défectueuse, document 08, section 12, écart 3).
