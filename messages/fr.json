@@ -380,6 +380,9 @@
     "done": {
       "created": "Boutique créée. La demande est traitée.",
       "rejected": "Demande refusée. L'agent verra votre note."
-    }
+    },
+    "open_none": "0 demande à examiner",
+    "reject_help": "La note est obligatoire. L'agent qui a envoyé la demande la verra : expliquez simplement pourquoi elle est refusée.",
+    "note_required": "Écrivez une note pour refuser cette demande."
   }
 }

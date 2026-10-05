@@ -70,7 +70,7 @@ function CarteDemande(props: {
         </div>
       ) : (
         <div style={{ marginTop: 16 }}>
-          <small style={{ display: 'block', marginBottom: 8, opacity: 0.8 }}>{message('moderation.reject.help')}</small>
+          <small style={{ display: 'block', marginBottom: 8, opacity: 0.8 }}>{t('reject_help')}</small>
           <label htmlFor={`modele-${d.id}`} style={{ display: 'block', fontWeight: 600, marginBottom: 4 }}>
             {message('moderation.reject.models')}
           </label>
@@ -104,7 +104,7 @@ function CarteDemande(props: {
           />
           {manque && (
             <small role="alert" style={{ display: 'block', marginTop: 4, color: '#b00020' }}>
-              {message('moderation.note_required')}
+              {t('note_required')}
             </small>
           )}
           <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
@@ -174,7 +174,7 @@ export default function PageDemandesBoutique() {
       {file && (
         <>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, marginBottom: 16 }}>
-            <strong>{n === 1 ? t('open_one') : t('open_many', { n })}</strong>
+            <strong>{n === 0 ? t('open_none') : n === 1 ? t('open_one') : t('open_many', { n })}</strong>
             <button type="button" disabled={occupe || chargement} onClick={() => void charger()} style={{ padding: '8px 12px', cursor: 'pointer' }}>
               {t('refresh')}
             </button>
