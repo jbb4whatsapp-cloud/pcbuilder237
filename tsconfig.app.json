@@ -15,6 +15,9 @@
     "src/app/admin/layout.tsx",
     "src/app/connexion/**/*.tsx",
     "src/app/acces-refuse/**/*.tsx",
-    "src/app/produits/**/*.tsx"
+    "src/app/produits/**/*.tsx",
+    "src/app/agent/**/*.tsx",
+    "src/app/admin/**/*.tsx",
+    "src/components/**/*.tsx"
   ]
 }
